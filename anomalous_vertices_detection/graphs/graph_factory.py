@@ -94,8 +94,8 @@ class GraphFactory(object):
         print("Data loaded.")
         return graph
 
-    def load_saved_graph(self, is_directed=False, labels_path=False, package="Networkx", pos_label=None,
-                         neg_label=None, weight_field=None, blacklist_path=False, graph_name=""):
+    def load_saved_graph(self, graph_path, is_directed=False, labels_path=False, package="Networkx", pos_label=None,
+                         neg_label=None, weight_field=None, blacklist_path=False):
         """
             Load graph that was save by the library into specified package.
             Parameters
@@ -142,7 +142,7 @@ class GraphFactory(object):
             blacklist = []
         graph.map_labels(positive=pos_label, negative=neg_label)
         print("Loading graph...")
-        graph = graph.load_saved_graph(graph_name)
+        graph = graph.load_saved_graph(graph_path)
         print("Data loaded.")
         return graph
 
