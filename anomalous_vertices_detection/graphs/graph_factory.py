@@ -1,13 +1,14 @@
 import random
 
 from networkx.generators import barabasi_albert_graph
-from networkx.utils import create_degree_sequence, powerlaw_sequence
-import GraphML.utils.utils as utils
-from GraphML.graphs.glgraph import GlGraph
-from GraphML.graphs.gtgraph import GtGraph
-from GraphML.graphs.iggraph import IGraph
-from GraphML.graphs.nxgraph import NxGraph
-from GraphML.samplers.graph_sampler import GraphSampler
+
+import anomalous_vertices_detection.utils.utils as utils
+from anomalous_vertices_detection.graphs.glgraph import GlGraph
+from anomalous_vertices_detection.graphs.gtgraph import GtGraph
+from anomalous_vertices_detection.graphs.iggraph import IGraph
+from anomalous_vertices_detection.graphs.nxgraph import NxGraph
+from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
+
 
 def get_graph(package="Networkx"):
     packages = dict(Networkx=NxGraph,
@@ -20,11 +21,11 @@ def get_graph(package="Networkx"):
 
 class GraphFactory(object):
     def factory(self, type):
-        if type =="ba":
+        if type == "ba":
             return self.make_barabasi_albert_graph
-        if type =="simulation":
+        if type == "simulation":
             return self.make_graph_with_fake_profiles
-        if type =="regular":
+        if type == "regular":
             return self.make_graph
 
     def make_barabasi_albert_graph(self, node_number, edge_number, package="Networkx"):
@@ -171,7 +172,7 @@ class GraphFactory(object):
             if len(graph.get_vertex_edges(rand_vertex, "out")) > 1:
                 graph.add_edge(node_name, rand_vertex, {"edge_label": vertex_label})
 
-    def add_random_vertices(self, graph, random_vertices_number, max_neighbors, vertex_label):
+    def add_random_vertices(self, graph, random_vertices_number, vertex_label):
         """ Return a graph with simulated random vertices
 
             Parameters
@@ -180,12 +181,6 @@ class GraphFactory(object):
 
             random_vertices_number : integer
                Hold the number of nodes that should be generated.
-
-            stdv_neighbors : integer
-               The stdv of neighbours of the generated node.
-
-            max_neighbors : integer
-               The average number of the number of neighbours of the generated node.
 
             vertex_label : string
                The label of the generated nodes.
@@ -197,8 +192,10 @@ class GraphFactory(object):
         """
         print("Generating " + str(random_vertices_number) + " vertices.")
         graph_vertices = graph.vertices
-        for i,followers_neighbors_number in enumerate(GraphSampler.sample_vertecies_by_degree_distribution(graph,random_vertices_number)):
-            self.create_random_vertex(graph, int(followers_neighbors_number), graph_vertices, "Fake" + str(i), vertex_label)
+        for i, followers_neighbors_number in enumerate(
+                GraphSampler.sample_vertecies_by_degree_distribution(graph, random_vertices_number)):
+            self.create_random_vertex(graph, int(followers_neighbors_number), graph_vertices, "Fake" + str(i),
+                                      vertex_label)
         print(str(random_vertices_number) + " fake users generated.")
         return graph
 
@@ -209,7 +206,7 @@ class GraphFactory(object):
         graph = self.make_graph(graph_path, is_directed, labels_path, package, pos_label, neg_label, start_line,
                                 max_num_of_edges, weight_field, delimiter=delimiter)
         if not fake_users_number:
-            fake_users_number = int(0.1*graph.number_of_vertices)
+            fake_users_number = int(0.1 * graph.number_of_vertices)
         if max_num_of_edges > 2:
-            graph = self.add_random_vertices(graph, fake_users_number, edge_number, pos_label)
+            graph = self.add_random_vertices(graph, fake_users_number, pos_label)
         return graph
