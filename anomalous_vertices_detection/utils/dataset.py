@@ -1,6 +1,6 @@
-import graphlab as gl
 import numpy as np
 import pandas as pd
+import graphlab as gl
 
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.utils import utils
@@ -77,7 +77,8 @@ class DataSetFactory(object):
         if isinstance(features[0], list) or isinstance(features, np.ndarray):
             return DataSet(features, labels, features_ids, metadata)
 
-    def convert_data_to_graphlab_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[], labels_map={}):
+    def convert_data_to_graphlab_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[],
+                                        labels_map={}):
         if utils.is_valid_path(features):
             features = gl.SFrame.read_csv(features, column_type_hints={feature_id_col_name: str, "dst": str})
             features_id = features[feature_id_col_name]
