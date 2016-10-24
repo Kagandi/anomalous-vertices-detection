@@ -55,7 +55,6 @@ class NxGraph(AbstractGraph):
         --------
         >>> g.save_graph("Facebook.", "graphml")
         """ 
-        save_path += "_"
         if type == "pickle":
             nx.write_gpickle(self._graph,  save_path)
         elif type == "sgraph":
