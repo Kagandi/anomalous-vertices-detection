@@ -84,8 +84,8 @@ def read_file(path):
 
 def read_bz2(path):
     with bz2.BZ2File(path, "rb") as f:
-        for i, line in enumerate(f):
-            yield i, line
+        for line in f:
+            yield line
 
 
 # def read_file(path):
@@ -210,7 +210,8 @@ def to_create_new_file(file_name="", qtext="To extract new features "):
 
 def generate_file_name(output_path):
     output = output_path.split(".")
-    return output[0] + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + "." + output[1]
+    output.insert(len(output) - 1, datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+    return ".".join(output)
 
 
 def get_newest_files(directory, starts_with="", ext="csv"):
@@ -265,7 +266,7 @@ def anonymizer(input_path, output_path, alias_map, header=False, delimiter=","):
     for line in f:
         try:
             line = extract_items_from_line(line, delimiter)
-            line[0]= alias_map[line[0]]
+            line[0] = alias_map[line[0]]
             anonymized_data.append(line)
         except:
             pass
