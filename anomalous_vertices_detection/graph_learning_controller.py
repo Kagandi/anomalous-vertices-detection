@@ -1,13 +1,11 @@
 import os
 
-from GraphML.learners.gllearner import GlLearner
-from GraphML.samplers.graph_sampler import GraphSampler
+from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
 from graphlab import SFrame, extensions
 from pandas import DataFrame
 
 from configs.predefined_features_sets import *
 from feature_controller import FeatureController
-from graphs.graph_factory import GraphFactory
 from ml_controller import MlController
 from utils import utils
 
@@ -185,63 +183,3 @@ def get_output_paths(set_name, argv):
         else:
             load_new_graph = False
     return load_new_graph, new_train_test, result_path, test_path, training_path, labels_output_path
-
-
-def main(argv, graph_config=None, my_graph=None):
-    print "start"
-    # labels = ["Real", "Fake"]
-    # argv = ["True", "False", "True"]
-    labels = {"neg": "Real", "pos": "Fake"}
-    max_num_of_edges = 7000000
-    gf = GraphFactory()
-    # cls = SkLearner(labels=labels)
-    cls = GlLearner(labels=labels)
-    dataset_config = academia_config
-    if graph_config:
-        dataset_config = graph_config
-    gl = GraphLearningController(cls, labels, dataset_config)
-    load_new_graph, new_test, result_path, test_path, training_path, labels_output_path = \
-        get_output_paths(dataset_config.name, argv)
-    result_path = utils.generate_file_name(result_path)
-    if not new_test:
-        max_num_of_edges = 2
-    if not my_graph:
-        if load_new_graph:
-            if dataset_config.type == "ba":
-                my_graph = gf.make_ba_graph_with_fake_profiles(dataset_config.node_number, dataset_config.edge_number,
-                                                               fake_users_number=int(0.1 * dataset_config.node_number),
-                                                               max_neighbors=dataset_config.max_neighbors_number,
-                                                               pos_label=labels["pos"], neg_label=labels["neg"])
-            if dataset_config.type == "regular":
-                my_graph = gf.make_graph(dataset_config.data_path, labels_path=dataset_config.labels_path,
-                                         is_directed=dataset_config.is_directed, pos_label=labels["pos"],
-                                         neg_label=labels["neg"], start_line=dataset_config._first_line,
-                                         max_num_of_edges=max_num_of_edges,  # blacklist_path=wiki_blacklist,
-                                         delimiter=dataset_config.delimiter, package="Networkx", weight_field="weight")
-            if dataset_config.type == "simulation":
-                my_graph = gf.make_graph_with_fake_profiles(dataset_config.data_path,
-                                                            edge_number=dataset_config.max_neighbors_number,
-                                                            labels_path=dataset_config.labels_path,
-                                                            is_directed=dataset_config.is_directed,
-                                                            pos_label=labels["pos"],
-                                                            neg_label=labels["neg"],
-                                                            start_line=dataset_config._first_line,
-                                                            max_num_of_edges=max_num_of_edges,
-                                                            delimiter=dataset_config.delimiter, package="Networkx",
-                                                            weight_field="weight")
-            if max_num_of_edges > 2:
-                # my_graph.save_graph(dataset_config.name, "sgraph")
-                my_graph.save_graph(dataset_config.name, "pickle")
-
-                # my_graph.save_graph(dataset_config.name, "graphml")
-        else:
-            my_graph = gf.load_graph(is_directed=dataset_config.is_directed, pos_label=labels["pos"],
-                                     neg_label=labels["neg"], labels_path=labels_output_path,
-                                     graph_name=dataset_config.name)  # , weight_field="weight")
-
-    gl.classify_by_links(my_graph, test_path, training_path, result_path,
-                         labels_output_path, test_size={"neg": 20, "pos": 20},
-                         train_size={"neg": 20, "pos": 20})
-    print gl._ml.validation_classification_by_links("twitter_labels.csv")
-    print "end"
-    return my_graph

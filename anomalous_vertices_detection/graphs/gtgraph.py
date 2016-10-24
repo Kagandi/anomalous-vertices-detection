@@ -1,6 +1,6 @@
-from GraphML.utils import utils
+from anomalous_vertices_detection.utils import utils
 import string_gtgraph as gt
-from GraphML.graphs import AbstractGraph
+from anomalous_vertices_detection.graphs import AbstractGraph
 
 
 class GtGraph(AbstractGraph):

@@ -2,10 +2,10 @@ from sklearn import svm, tree, ensemble, feature_extraction, cross_validation, p
 import numpy as np
 from sklearn.metrics import roc_curve, auc, recall_score, precision_score, accuracy_score, roc_auc_score
 import pandas as pd
-from GraphML.configs.config import *
-from GraphML.learners import AbstractLearner
-from GraphML.utils.dataset import DataSetFactory, DataSet
-from GraphML.utils.exceptions import *
+from anomalous_vertices_detection.configs.config import *
+from anomalous_vertices_detection.learners import AbstractLearner
+from anomalous_vertices_detection.utils.dataset import DataSetFactory, DataSet
+from anomalous_vertices_detection.utils.exceptions import *
 
 def dict_to_array(my_dict):
     vec = feature_extraction.DictVectorizer()

@@ -1,8 +1,8 @@
 import igraph
 import cProfile
-from GraphML.configs.config import *
-from GraphML.graphs import AbstractGraph
-from GraphML.utils.utils import *
+from anomalous_vertices_detection.configs.config import *
+from anomalous_vertices_detection.graphs import AbstractGraph
+from anomalous_vertices_detection.utils.utils import *
 
 
 class IGraph(AbstractGraph):

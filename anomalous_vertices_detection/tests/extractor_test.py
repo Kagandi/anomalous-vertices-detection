@@ -2,8 +2,8 @@ __author__ = 'DimaK'
 
 import unittest
 
-from GraphML.feature_extractor import FeatureExtractor
-from GraphML.graphs import NxGraph
+from anomalous_vertices_detection.feature_extractor import FeatureExtractor
+from anomalous_vertices_detection.graphs import NxGraph
 
 
 class ExtractorTest(unittest.TestCase):

@@ -4,9 +4,9 @@ import community
 import networkx as nx
 import numpy as np
 
-from GraphML.graphs import AbstractGraph
-from GraphML.utils.graphlab_utils import load_nxgraph_from_sgraph, save_nx_as_sgraph
-from GraphML.utils.utils import *
+from anomalous_vertices_detection.graphs import AbstractGraph
+from anomalous_vertices_detection.utils.graphlab_utils import load_nxgraph_from_sgraph, save_nx_as_sgraph
+from anomalous_vertices_detection.utils.utils import *
 
 
 class NxGraph(AbstractGraph):

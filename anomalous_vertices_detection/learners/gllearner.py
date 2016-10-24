@@ -1,7 +1,7 @@
 import graphlab as gl
 
-from GraphML.learners import AbstractLearner
-from GraphML.utils.dataset import DataSetFactory
+from anomalous_vertices_detection.learners import AbstractLearner
+from anomalous_vertices_detection.utils.dataset import DataSetFactory
 
 
 class GlLearner(AbstractLearner):
@@ -47,7 +47,7 @@ class GlLearner(AbstractLearner):
         train_df = gl.SFrame()
         train_df["probas"] = probas
         train_df["src_id"] = features_ids
-        # frame = gl.SFrame.read_csv("C:\\Users\\user\\GraphML\\GraphML\\utils\\malicious-users-map.csv", header=True, delimiter=',',column_type_hints={"id":str})
+        # frame = gl.SFrame.read_csv("C:\\Users\\user\\anomalous_vertices_detection\\anomalous_vertices_detection\\utils\\malicious-users-map.csv", header=True, delimiter=',',column_type_hints={"id":str})
         # train_df.join(frame, on={'src_id':'id'}, how='left').save("test.csv", format="csv")
         train_df["link_label"] = train_df["probas"].apply(lambda avg: 1 if avg >= threshold else 0)
         train_df = train_df.groupby("src_id", operations={"prob": gl.aggregate.MEAN('probas'),

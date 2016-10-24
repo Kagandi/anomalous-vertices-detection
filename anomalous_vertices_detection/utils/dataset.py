@@ -2,8 +2,8 @@ import graphlab as gl
 import numpy as np
 import pandas as pd
 
-from GraphML.configs.config import *
-from GraphML.utils import utils
+from anomalous_vertices_detection.configs.config import *
+from anomalous_vertices_detection.utils import utils
 
 
 class DataSet(object):

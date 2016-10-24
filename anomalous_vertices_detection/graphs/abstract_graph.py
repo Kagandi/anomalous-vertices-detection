@@ -1,5 +1,5 @@
-from GraphML.configs.config import *
-import GraphML.utils.utils as utils
+from anomalous_vertices_detection.configs.config import *
+import anomalous_vertices_detection.utils.utils as utils
 import collections
 
 

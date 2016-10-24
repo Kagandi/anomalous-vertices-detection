@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 
-from GraphML.utils.utils import memoize2
+from anomalous_vertices_detection.utils.utils import memoize2
 
 
 class FeatureExtractor(object):

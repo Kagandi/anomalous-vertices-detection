@@ -1,7 +1,7 @@
 import itertools
 import random
 
-import GraphML.utils.utils as utils
+import anomalous_vertices_detection.utils.utils as utils
 
 
 class GraphSampler(object):
