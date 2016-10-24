@@ -30,15 +30,14 @@ class GraphFactory(object):
 
     def make_barabasi_albert_graph(self, node_number, edge_number, package="Networkx"):
         ba_graph = barabasi_albert_graph(node_number, edge_number)
-        # write_adjlist(ba_graph,"ba_test.csv")
         return get_graph(package)(ba_graph.is_directed(), graph_obj=ba_graph)
 
-    def make_ba_graph_with_fake_profiles(self, node_number, edge_number, fake_users_number, max_neighbors,
+    def make_ba_graph_with_fake_profiles(self, node_number, edge_number, fake_users_number,
                                          pos_label=None, neg_label=None, package="Networkx"):
         graph = self.make_barabasi_albert_graph(node_number, edge_number)
         graph.write_graph("tmp_graph.csv")
         is_directed = graph.is_directed
-        return self.make_graph_with_fake_profiles("tmp_graph.csv", fake_users_number, max_neighbors, is_directed,
+        return self.make_graph_with_fake_profiles("tmp_graph.csv", fake_users_number, is_directed,
                                                   package="Networkx", pos_label=pos_label, neg_label=neg_label)
 
     def make_graph(self, graph_path, is_directed=False, labels_path=False, package="Networkx", pos_label=None,
@@ -95,10 +94,10 @@ class GraphFactory(object):
         print("Data loaded.")
         return graph
 
-    def load_graph(self, is_directed=False, labels_path=False, package="Networkx", pos_label=None,
-                   neg_label=None, weight_field=None, blacklist_path=False, delimiter=',', graph_name=""):
+    def load_saved_graph(self, is_directed=False, labels_path=False, package="Networkx", pos_label=None,
+                         neg_label=None, weight_field=None, blacklist_path=False, graph_name=""):
         """
-            Loads graph into specified package.
+            Load graph that was save by the library into specified package.
             Parameters
             ----------
             graph_path : string
@@ -199,7 +198,7 @@ class GraphFactory(object):
         print(str(random_vertices_number) + " fake users generated.")
         return graph
 
-    def make_graph_with_fake_profiles(self, graph_path, fake_users_number=None, edge_number=290,
+    def make_graph_with_fake_profiles(self, graph_path, fake_users_number=None,
                                       is_directed=True, labels_path=False, package="Networkx", pos_label=None,
                                       neg_label=None, start_line=0, max_num_of_edges=10000000, weight_field=None,
                                       delimiter=','):
