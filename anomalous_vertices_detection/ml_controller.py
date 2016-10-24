@@ -1,5 +1,5 @@
 from anomalous_vertices_detection.utils.exceptions import ValueNotSet
-from anomalous_vertices_detection.utils.dataset import DataSetFactory, DataSet
+from anomalous_vertices_detection.utils.dataset import DataSet
 
 
 class MlController(object):
