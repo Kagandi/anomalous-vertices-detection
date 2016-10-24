@@ -1,13 +1,13 @@
 import os
 
 from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
-from graphlab import SFrame, extensions
 from pandas import DataFrame
-
+from configs.config import *
 from configs.predefined_features_sets import *
 from feature_controller import FeatureController
 from ml_controller import MlController
 from utils import utils
+from graphlab import SFrame
 
 
 class GraphLearningController:
@@ -50,7 +50,7 @@ class GraphLearningController:
         print "Features were written to: " + output_path
 
     def create_training_test_sets(self, my_graph, test_path, train_path, test_size, training_size,
-                                  labels_path=None, feature_dict):
+                                  feature_dict, labels_path=None):
         """
         Creates and extracts features for training and test set.
 
@@ -113,7 +113,7 @@ class GraphLearningController:
 
         # meta_data_cols = ["dst"]
         self.create_training_test_sets(my_graph, test_path, train_path, test_size=test_size,
-                                       training_size=training_size, is_labeled=my_graph.has_labels,
+                                       training_size=training_size,
                                        labels_path=labels_path, feature_dict=feature_dict)  # Training the classifier
         self._ml.load_training_set(train_path, "edge_label", id_col_name, meta_data_cols)
         print("Training 10-fold validation: {}".format(self._ml.k_fold_validation()))
@@ -148,38 +148,9 @@ class GraphLearningController:
         # Output
         classified = self._ml._learner.merge_with_labels(classified, real_labels_path)
         if isinstance(classified, SFrame):
-            print "________________________________"
-            print results_output_path
-            print "________________________________"
             classified.save(results_output_path)
         if isinstance(classified, DataFrame):
             classified.to_csv(results_output_path)
-        try:
-            print self._ml.validate_prediction_by_links(classified)
-        except extensions._ToolkitError:
-            print "One class"
 
+        print self._ml.validate_prediction_by_links(classified)
 
-def get_output_paths(set_name, argv):
-    test_path, training_path, result_path, labels_output_path = io_path + set_name + "_test.csv", \
-                                                                io_path + set_name + "_train.csv", \
-                                                                results_path + set_name + "_res.csv", \
-                                                                io_path + set_name + "_labels.csv"
-    if len(argv) != 2:
-        new_train_test = utils.to_create_new_file("train and test")
-    else:
-        new_train_test, load_new_graph = [x == "True" for x in argv]
-    if new_train_test:
-        training_path = utils.generate_file_name(training_path)
-        test_path = utils.generate_file_name(test_path)
-    else:
-        training_path = utils.get_newest_files(io_path, set_name + "_train")
-        print("Loading " + training_path)
-        test_path = utils.get_newest_files(io_path, set_name + "_test")
-        print("Loading " + test_path)
-    if len(argv) != 2:
-        if new_train_test:
-            load_new_graph = utils.to_create_new_file("graph", "To load new ")
-        else:
-            load_new_graph = False
-    return load_new_graph, new_train_test, result_path, test_path, training_path, labels_output_path
