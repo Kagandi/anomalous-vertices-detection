@@ -47,8 +47,6 @@ class GlLearner(AbstractLearner):
         train_df = gl.SFrame()
         train_df["probas"] = probas
         train_df["src_id"] = features_ids
-        # frame = gl.SFrame.read_csv("C:\\Users\\user\\anomalous_vertices_detection\\anomalous_vertices_detection\\utils\\malicious-users-map.csv", header=True, delimiter=',',column_type_hints={"id":str})
-        # train_df.join(frame, on={'src_id':'id'}, how='left').save("test.csv", format="csv")
         train_df["link_label"] = train_df["probas"].apply(lambda avg: 1 if avg >= threshold else 0)
         train_df = train_df.groupby("src_id", operations={"prob": gl.aggregate.MEAN('probas'),
                                                           "median_prob": gl.aggregate.QUANTILE('probas', 0.5),
@@ -74,13 +72,13 @@ class GlLearner(AbstractLearner):
         merged_data['actual'] = merged_data['actual'] == self._labels['pos']
         return merged_data
 
-    def cross_validate_prediction_by_links(self, result):
+    def validate_prediction_by_links(self, result):
         targets, predictions, probas = result["actual"], result["predicted"], \
                                        result["prob"]
         precision = gl.evaluation.precision(targets, predictions)
         accuracy = gl.evaluation.accuracy(targets, predictions)
         recall = gl.evaluation.recall(targets, predictions)
-        auc = gl.evaluation.auc(targets, probas)
+        auc = gl.evaluation.auc(targets, predictions)
         return {"recall": recall,
                 "precision": precision,
                 "accuracy": accuracy,
