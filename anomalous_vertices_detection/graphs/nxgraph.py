@@ -41,27 +41,27 @@ class NxGraph(AbstractGraph):
             else:
                 self._graph = nx.DiGraph()
 
-    def save_graph(self, graph_name, type="pickle"):
+    def save_graph(self, save_path, type="pickle"):
         """ Saves the graph into a file
         
         Parameters
         ----------
-        graph_name: string,
-            The name that should be given to the file
+        save_path: string,
+            The path where the file shpuld be saved
         type: string, optional (default=pickle)
             The format in which the graph should be saved
 
         Examples
         --------
-        >>> g.save_graph("Facebook", "graphml")
+        >>> g.save_graph("Facebook.", "graphml")
         """ 
-        graph_name += "_"
+        save_path += "_"
         if type == "pickle":
-            nx.write_gpickle(self._graph, "pickle/" + graph_name + "graph.bz2")
+            nx.write_gpickle(self._graph,  save_path)
         elif type == "sgraph":
-            self.save_as_sgraph("pickle/" + graph_name + "graph.sgraph")
+            self.save_as_sgraph(save_path)
         elif type == "graphml":
-            nx.write_graphml(self._graph, "pickle/" + graph_name + "graph.graphml")
+            nx.write_graphml(self._graph, save_path)
         else:
             msg = "The file type %s is unknown" % (type)
             raise TypeError(msg)
@@ -86,13 +86,13 @@ class NxGraph(AbstractGraph):
             res['attr'].append(edge[2])
         save_nx_as_sgraph(res, graph_path)
 
-    def load_saved_graph(self, graph_name, type="pickle"):
+    def load_saved_graph(self, graph_path, type="pickle"):
         """ Load a saved graph
 
         Parameters
         ----------
-        graph_name: string,
-            The name of the graph that is should be loaded
+        graph_path: string,
+            The path of the graph that is should be loaded
         type: string, optional (default=pickle)
             The format of the loaded graph
 
@@ -104,14 +104,13 @@ class NxGraph(AbstractGraph):
         --------
         >>>  g.load_saved_graph("graph")
         """
-        graph_name += "_"
-        graph_path = "pickle/" + graph_name + "graph"
+
         if type == "sgraph":
-            return self.load_saved_sgraph(graph_path + ".sgraph")
+            return self.load_saved_sgraph(graph_path)
         if type == "pickle":
-            return self.load_saved_pickle(graph_path + ".bz2")
+            return self.load_saved_pickle(graph_path)
         if type == "graphml":
-            return self.load_graphml(graph_path + ".graphml")
+            return self.load_graphml(graph_path)
 
     @classmethod
     def load_saved_pickle(cls, graph_path):
