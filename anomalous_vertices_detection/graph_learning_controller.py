@@ -1,12 +1,11 @@
 import os
-import time
-
-from graphlab import SFrame, extensions
-from pandas import DataFrame
 
 from GraphML.learners.gllearner import GlLearner
 from GraphML.samplers.graph_sampler import GraphSampler
-from configs.config import *
+from graphlab import SFrame, extensions
+from pandas import DataFrame
+
+from configs.predefined_features_sets import *
 from feature_controller import FeatureController
 from graphs.graph_factory import GraphFactory
 from ml_controller import MlController
@@ -31,7 +30,7 @@ class GraphLearningController:
         self._config = config
 
     @staticmethod
-    def extract_features_for_set(graph, dataset, output_path, max_items_num):
+    def extract_features_for_set(graph, dataset, output_path, max_items_num, feature_dict):
         """ Extracts features for given set and writes it to file.
 
             Parameters
@@ -41,19 +40,19 @@ class GraphLearningController:
             dataset : list, iterable
                List that contains the name of the objects(vertex/edge) that
                their features should be extracted.
-
             output_path : string
                Path including file name for writing the extracted features.
+            feature_dict : dict, optional
 
         """
         features = FeatureController(graph)
         print "Graph loaded"
-        features.extract_features(dataset, max_items_num=max_items_num)
+        features.extract_features(dataset, feature_dict, max_items_num=max_items_num)
         os.rename(temp_path, output_path)
         print "Features were written to: " + output_path
 
     def create_training_test_sets(self, my_graph, test_path, train_path, test_size, training_size,
-                                  labels_path=None):
+                                  labels_path=None, feature_dict):
         """
         Creates and extracts features for training and test set.
 
@@ -78,14 +77,15 @@ class GraphLearningController:
                 my_graph.write_nodes_labels(labels_path)
             training_set, test_set = gs.split_training_test_set(training_size, test_size)
 
-            self.extract_features_for_set(my_graph, test_set, test_path, test_size["neg"] + test_size["pos"])
+            self.extract_features_for_set(my_graph, test_set, test_path, test_size["neg"] + test_size["pos"],
+                                          feature_dict)
             self.extract_features_for_set(my_graph, training_set, train_path,
-                                          training_size["neg"] + training_size["pos"])
+                                          training_size["neg"] + training_size["pos"], feature_dict)
         else:
             print "Existing files were loaded."
 
     def classify_data(self, my_graph, test_path, train_path, test_size,
-                      training_size, id_col_name="src", labels_path=None):
+                      training_size, id_col_name="src", labels_path=None, feature_dict=fast_link_features):
         """Execute the link classifier
 
         Parameters
@@ -104,6 +104,7 @@ class GraphLearningController:
             The column name of the vertices id
         labels_path : string, (default=None)
             The path to where the labels should be saved.
+        feature_dict: dict
         """
         print "Setting training and test sets"
         if my_graph.is_directed:
@@ -115,7 +116,7 @@ class GraphLearningController:
         # meta_data_cols = ["dst"]
         self.create_training_test_sets(my_graph, test_path, train_path, test_size=test_size,
                                        training_size=training_size, is_labeled=my_graph.has_labels,
-                                       labels_path=labels_path)  # Training the classifier
+                                       labels_path=labels_path, feature_dict=feature_dict)  # Training the classifier
         self._ml.load_training_set(train_path, "edge_label", id_col_name, meta_data_cols)
         print("Training 10-fold validation: {}".format(self._ml.k_fold_validation()))
         self._ml.load_test_set(test_path, "edge_label", id_col_name, meta_data_cols)
@@ -208,7 +209,7 @@ def main(argv, graph_config=None, my_graph=None):
         if load_new_graph:
             if dataset_config.type == "ba":
                 my_graph = gf.make_ba_graph_with_fake_profiles(dataset_config.node_number, dataset_config.edge_number,
-                                                               fake_users_number=int(0.1*dataset_config.node_number),
+                                                               fake_users_number=int(0.1 * dataset_config.node_number),
                                                                max_neighbors=dataset_config.max_neighbors_number,
                                                                pos_label=labels["pos"], neg_label=labels["neg"])
             if dataset_config.type == "regular":
