@@ -272,3 +272,28 @@ def anonymizer(input_path, output_path, alias_map, header=False, delimiter=","):
             pass
     write_to_file(output_path, two_dimensional_list_to_string(anonymized_data))
     return alias_map
+
+
+def get_output_paths(set_name, output_foldr, argv):
+    test_path, training_path, result_path, labels_output_path = output_foldr + set_name + "_test.csv", \
+                                                                output_foldr + set_name + "_train.csv", \
+                                                                output_foldr + set_name + "_res.csv", \
+                                                                output_foldr + set_name + "_labels.csv"
+    if len(argv) != 2:
+        new_train_test = to_create_new_file("train and test")
+    else:
+        new_train_test, load_new_graph = [x == "True" for x in argv]
+    if new_train_test:
+        training_path = generate_file_name(training_path)
+        test_path = generate_file_name(test_path)
+    else:
+        training_path = get_newest_files(output_foldr, set_name + "_train")
+        print("Loading " + training_path)
+        test_path = get_newest_files(output_foldr, set_name + "_test")
+        print("Loading " + test_path)
+    if len(argv) != 2:
+        if new_train_test:
+            load_new_graph = to_create_new_file("graph", "To load new ")
+        else:
+            load_new_graph = False
+    return load_new_graph, new_train_test, result_path, test_path, training_path, labels_output_path
