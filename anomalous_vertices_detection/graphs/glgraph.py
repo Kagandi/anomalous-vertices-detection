@@ -1,7 +1,6 @@
-from graphlab import (Edge, SArray, SFrame, SGraph, aggregate,
-                      connected_components, pagerank,
-                      shortest_path, canvas,  aggregate as agg)
-
+# from sframe import (Edge, SArray, SFrame, SGraph, aggregate)
+from graphlab import (Edge, SArray, SFrame, SGraph, aggregate, connected_components, pagerank,
+                      shortest_path)
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
 from anomalous_vertices_detection.utils import utils
