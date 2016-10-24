@@ -1,13 +1,10 @@
 class GraphConfig(object):
     def __init__(self, set_name, dataset_path, is_directed=True, labels_path=False,
-                 type="regular",max_neighbors_number=False, stdv_neighbors=False,
-                 vertex_min_edge_number=1, vertex_max_edge_number=50000, delimiter=',', first_line=2):
+                 type="regular", vertex_min_edge_number=1, vertex_max_edge_number=50000, delimiter=',', first_line=2):
         self._dataset_path = dataset_path
         self._labels_path = labels_path
         self._is_directed = is_directed
         self._name = set_name
-        self._max_neighbors_number = max_neighbors_number
-        self._stdv_neighbors = stdv_neighbors
         self._vertex_min_edge_number = vertex_min_edge_number
         self._vertex_max_edge_number = vertex_max_edge_number
         self._delimiter = delimiter
@@ -19,16 +16,8 @@ class GraphConfig(object):
         return self._delimiter
 
     @property
-    def max_neighbors_number(self):
-        return self._max_neighbors_number
-
-    @property
     def type(self):
         return self._type
-
-    @property
-    def stdv_neighbors(self):
-        return self._stdv_neighbors
 
     @property
     def vertex_min_edge_number(self):
@@ -53,6 +42,10 @@ class GraphConfig(object):
     @property
     def is_directed(self):
         return self._is_directed
+
+    @property
+    def first_line(self):
+        return self.first_line
 
 
 class GraphSimConfig(GraphConfig):
