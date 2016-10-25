@@ -1,6 +1,6 @@
 from itertools import product
 
-import community
+# import community
 import networkx as nx
 import numpy as np
 
@@ -747,24 +747,24 @@ class NxGraph(AbstractGraph):
         """
         return nx.clustering(self._graph, node, weight=self._weight_field)
 
-    def disjoint_communities(self):
-        """
-        Parameters
-        ----------
-
-        Returns
-        -------
-        NxGraph: Graph object
-
-        Examples
-        --------
-        >>>
-        """
-        if self.is_directed:
-            partition = community.best_partition(self._graph.to_undirected())
-        else:
-            partition = community.best_partition(self._graph)
-        return partition
+    # def disjoint_communities(self):
+    #     """
+    #     Parameters
+    #     ----------
+    #
+    #     Returns
+    #     -------
+    #     NxGraph: Graph object
+    #
+    #     Examples
+    #     --------
+    #     >>>
+    #     """
+    #     if self.is_directed:
+    #         partition = community.best_partition(self._graph.to_undirected())
+    #     else:
+    #         partition = community.best_partition(self._graph)
+    #     return partition
 
     def average_neighbor_degree(self):
         """
