@@ -46,7 +46,6 @@ class GraphLearningController:
         features = FeatureController(graph)
         print "Graph loaded"
         features.extract_features(dataset, feature_dict, max_items_num=max_items_num)
-        os.rename(temp_path, output_path)
         print "Features were written to: " + output_path
 
     def create_training_test_sets(self, my_graph, test_path, train_path, test_size, training_size,
