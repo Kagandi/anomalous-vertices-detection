@@ -33,7 +33,7 @@ class FeatureExtractor(object):
         self._pagerank = None
         self._hits = None
         self._closeness = None
-        self._disjoint_communities = None
+        # self._disjoint_communities = None
         self._load_centrality = None
         self._nodes_number_of_cliques = None
         self._average_neighbor_degree = None
@@ -690,8 +690,8 @@ class FeatureExtractor(object):
         u, v, p = self._graph.get_resource_allocation_index(v, u)
         return p
 
-    def is_same_community(self, v, u):
-        return self._disjoint_communities[v] == self._disjoint_communities[u]
+    # def is_same_community(self, v, u):
+    #     return self._disjoint_communities[v] == self._disjoint_communities[u]
 
     # def is_same_community(self, v, u):
     # disjoint_communities = self._disjoint_communities
@@ -702,11 +702,11 @@ class FeatureExtractor(object):
     #             return 1
     #     return 0
 
-    def get_number_of_neighbors_communities(self, v):
-        communities = []
-        for u in self._graph.neighbors_iter(v):
-            communities.append(self._disjoint_communities[u])
-        return len(set(communities))
+    # def get_number_of_neighbors_communities(self, v):
+    #     communities = []
+    #     for u in self._graph.neighbors_iter(v):
+    #         communities.append(self._disjoint_communities[u])
+    #     return len(set(communities))
 
     def get_bi_degree_density(self, v):
         if self._graph.is_directed:
