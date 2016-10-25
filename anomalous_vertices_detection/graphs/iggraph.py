@@ -1,12 +1,11 @@
 import igraph
-import cProfile
+
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
 from anomalous_vertices_detection.utils.utils import *
 
 
 class IGraph(AbstractGraph):
-
     __slots__ = ['_is_directed']
 
     def __init__(self, is_directed=False, weight_field=None, graph_obj=[]):
@@ -107,7 +106,7 @@ class IGraph(AbstractGraph):
         return self._graph.es[self._weight_field][self._graph.get_eid(u, v)]
 
     def edge(self, u, v):
-        return self._graph.es[self._graph.get_eid(u,v)].attributes()
+        return self._graph.es[self._graph.get_eid(u, v)].attributes()
 
     @property
     def vertices(self):
@@ -190,4 +189,3 @@ class IGraph(AbstractGraph):
             return self._graph.predecessors(node)
         else:
             return self.get_neighbors(node)
-
