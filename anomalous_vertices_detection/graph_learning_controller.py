@@ -28,7 +28,7 @@ class GraphLearningController:
         self._config = config
 
     @staticmethod
-    def extract_features_for_set(graph, dataset, output_path, max_items_num, feature_dict):
+    def extract_features_for_set(graph, dataset, output_path, feature_dict, max_items_num=None):
         """ Extracts features for given set and writes it to file.
 
             Parameters
@@ -75,10 +75,10 @@ class GraphLearningController:
                 my_graph.write_nodes_labels(labels_path)
             training_set, test_set = gs.split_training_test_set(training_size, test_size)
 
-            self.extract_features_for_set(my_graph, test_set, test_path, test_size["neg"] + test_size["pos"],
-                                          feature_dict)
-            self.extract_features_for_set(my_graph, training_set, train_path,
-                                          training_size["neg"] + training_size["pos"], feature_dict)
+            self.extract_features_for_set(my_graph, test_set, test_path, feature_dict,
+                                          test_size["neg"] + test_size["pos"])
+            self.extract_features_for_set(my_graph, training_set, train_path, feature_dict,
+                                          training_size["neg"] + training_size["pos"])
         else:
             print "Existing files were loaded."
 
