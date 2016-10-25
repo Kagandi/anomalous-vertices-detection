@@ -1,4 +1,7 @@
-import igraph
+try:
+    import igraph
+except ImportError:
+    pass
 
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
