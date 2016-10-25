@@ -2,10 +2,12 @@ anomalous-vertices-detection is a generic graph machine learning project.
 The library support many different graph packages(NetworkX, SGraph,iGraph, GraphTools) and ML packages (SciKit, GraphLab/Turi).
 This project is still under development and has a many planned improvements.
 
-##Download
+##Installation
 ```
-$ git clone git://github.com/Kagandi/anomalous-vertices-detection.git
+git clone git://github.com/Kagandi/anomalous-vertices-detection.git
+pip install -r requirements.txt
 ```
+GraphLab may require installation of additional requirements, if needed a message with instruction will be presented.
 ##Usage
 Init:
 ```python
@@ -24,7 +26,7 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 - [ ] Write Jupiter notebooks
 - [ ] Clean the code
 - [ ] Add setup.py
-- [ ] Add requirements.txt
+- [X] Add requirements.txt
 - [ ] Add examples
 - [ ] Add more test
 - [ ] Python 3.5 support
