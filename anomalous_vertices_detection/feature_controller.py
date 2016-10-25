@@ -1,7 +1,7 @@
 from configs.config import *
 from feature_extractor import FeatureExtractor
 from utils.utils import dict_writer, delete_file_content
-
+import types
 
 class FeatureController(object):
     """
@@ -176,9 +176,9 @@ class FeatureController(object):
             Maximal number of features that should be extracted, used to show progress information.
         """
         delete_file_content(temp_path)
-        self.run_feature_extractor(data_iter, max_items_num, features_dict[self._graph.is_directed])
+        self.run_feature_extractor(data_iter, features_dict[self._graph.is_directed], max_items_num)
 
-    def run_feature_extractor(self, item_iter, max_items_num, features_list):
+    def run_feature_extractor(self, item_iter, features_list, max_items_num=None):
         """Extract edge features from the graph and saves them to file.
 
         Parameters
@@ -189,8 +189,10 @@ class FeatureController(object):
             Maximal number of features that should be extracted, used to show progress information.
         """
         features_array = []
+        if not isinstance(item_iter, types.GeneratorType):
+            max_items_num = len(item_iter)
         for count, entry in enumerate(self.features_generator(features_list, item_iter)):
-            if count % (max_items_num / 10) == 0:
+            if max_items_num and count % (max_items_num / 10) == 0:
                 print "%d%% (%d out of %d features were extracted)." % \
                       (100 * count / max_items_num, count, max_items_num)
             features_array.append(entry)
