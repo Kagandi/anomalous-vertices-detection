@@ -1,6 +1,7 @@
-anomalous-vertices-detection is a generic graph machine learning project.
-The library support many different graph packages(NetworkX, SGraph,iGraph, GraphTools) and ML packages (SciKit, GraphLab/Turi).
-This project is still under development and has a many planned improvements.
+The Anomalous-Vertices-Detection project is a Python package for performing graph analysis.
+The package supports extracting graphs'  topological features, performing link prediction, and identifying anomalous vertices.
+The package supports various graph packages (NetworkX, SGraph, iGraph, and GraphTools) and Machine Learning packages (SciKit and GraphLab).
+This project is under development and has a many planned improvements. More details on the project can be find in the our paper titled "Unsupervised Anomalous Vertices Detection UtilizingLink Prediction Algorithms".
 
 ##Installation
 ```
