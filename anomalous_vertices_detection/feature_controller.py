@@ -3,6 +3,7 @@ from feature_extractor import FeatureExtractor
 from utils.utils import dict_writer, delete_file_content
 import types
 
+
 class FeatureController(object):
     """
     This class control the extraction of features from FeatureController.
@@ -40,7 +41,7 @@ class FeatureController(object):
         ----------
         v : string
             Vertex
-        u : string, (default=None)
+        u : string, optional
             Vertex
         """
         if u is None:
@@ -96,7 +97,7 @@ class FeatureController(object):
             Dictionary that contains the feature that should be extracted and with which function.
         vertex1 : string
             Vertex
-        vertex2 : string, (default=None)
+        vertex2 : string, optional
             Vertex
         """
         self.extract_single_entry(features_list, "vertex_v", vertex1)
@@ -156,7 +157,7 @@ class FeatureController(object):
         self._graph.get_neighbors.reset()
 
     @staticmethod
-    def save_progress(array):
+    def save_progress(array, temp_path):
         """ Save the progress od the feature extraction.
 
         Parameters
@@ -165,39 +166,27 @@ class FeatureController(object):
         """
         dict_writer(array, temp_path, "a+")
 
-    def extract_features(self, data_iter, features_dict, max_items_num=10000):
+    def extract_features(self, data_iter, features_dict, output_path, max_items_num=10000):
         """ Extract features from the graph and saves them to file.
 
         Parameters
         ----------
         data_iter : iterator
             An iterable objects that contains the vertices/edges that their features should be extracted
-        max_items_num : int, (default=1000)
+        max_items_num : int, optional
             Maximal number of features that should be extracted, used to show progress information.
         """
-        delete_file_content(temp_path)
-        self.run_feature_extractor(data_iter, features_dict[self._graph.is_directed], max_items_num)
-
-    def run_feature_extractor(self, item_iter, features_list, max_items_num=None):
-        """Extract edge features from the graph and saves them to file.
-
-        Parameters
-        ----------
-        item_iter : iterator
-            An iterable objects that contains the vertices/edges that their features should be extracted
-        max_items_num : int, (default=1000)
-            Maximal number of features that should be extracted, used to show progress information.
-        """
+        delete_file_content(output_path)
         features_array = []
-        if not isinstance(item_iter, types.GeneratorType):
-            max_items_num = len(item_iter)
-        for count, entry in enumerate(self.features_generator(features_list, item_iter)):
+        if not isinstance(data_iter, types.GeneratorType):
+            max_items_num = len(data_iter)
+        for count, entry in enumerate(self.features_generator(features_dict, data_iter)):
             if max_items_num and count % (max_items_num / 10) == 0:
                 print "%d%% (%d out of %d features were extracted)." % \
                       (100 * count / max_items_num, count, max_items_num)
             features_array.append(entry)
             if len(features_array) == save_progress_interval:
-                self.save_progress(features_array)
+                self.save_progress(features_array, output_path)
                 features_array = []
         if features_array:
-            self.save_progress(features_array)
+            self.save_progress(features_array, output_path)
