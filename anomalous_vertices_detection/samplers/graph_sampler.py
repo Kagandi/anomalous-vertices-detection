@@ -10,18 +10,16 @@ class GraphSampler(object):
         self._edges = list(graph.edges)
         self._vertices = list(graph.vertices)
         random.shuffle(self._edges)
+        random.shuffle(self._vertices)
         self._open_vertices = set()
         self._closed_vertices = set()
-        random.shuffle(self._vertices)
-        # self._expanded_vertices = self.get_vertices_with_more_than_n_friends(sampler["vertex_min_edge_number"])
         self._vertex_min_edge_number = vertex_min_edge_number
         self._vertex_max_edge_number = vertex_max_edge_number
 
     def split_training_test_set(self, training_size={"neg": 10000, "pos": 10000},
                                 test_size={"neg": 1000, "pos": 100}):
-        # self._open_vertices = self.get_vertices_with_more_than_n_friends(self._vertex_min_edge_number)
         self._open_vertices = set(self.get_vertices_with_more_than_n_friends(self._vertex_min_edge_number,
-                                                                         list(self._vertices)))
+                                                                             list(self._vertices)))
         test_set = self.generate_labeled_sample_by_vertices(test_size["neg"], test_size["pos"])
         training_set = self.generate_sample_for_unlabeled_links(training_size["neg"], training_size["pos"])
         return training_set, test_set
@@ -30,9 +28,7 @@ class GraphSampler(object):
         vertex_edges = self._graph.get_vertex_edges(vertex, "out")
         if self._vertex_min_edge_number <= len(vertex_edges) < self._vertex_max_edge_number:
             return vertex_edges
-
         return False
-
 
     def get_random_edges_by_vertices(self, edge_number, node_label=[False], open_vertices=[]):
         """
@@ -52,7 +48,6 @@ class GraphSampler(object):
                 List that contains random edges.
         """
         node_label = utils.to_iterable(node_label)
-        random.shuffle(self._edges)
         for v_edge in self._edges:
             vertex = v_edge[0]
             if vertex in open_vertices and vertex not in self._closed_vertices:
@@ -60,7 +55,6 @@ class GraphSampler(object):
                     self._open_vertices.remove(vertex)
                     self._closed_vertices.add(vertex)
                     for edge in self._graph.get_vertex_edges(vertex, "out"):
-                        # if self.vertex_has_enough_edges(edge[1]):
                         yield edge
                         edge_number -= 1
                         if not edge_number:
@@ -92,19 +86,17 @@ class GraphSampler(object):
             if self._graph.get_node_label(vertex) in node_label or False in node_label:
                 edge_count, temp_edges = 0, []
                 for edge in self._graph.get_vertex_edges(vertex, "out"):
-                    # if self.vertex_has_enough_edges(edge[1]):
                     if edge[1] in self._open_vertices:
                         temp_edges.append(edge)
                         edge_count += 1
-                if edge_count > 3:
+                if edge_count > self._vertex_min_edge_number:
                     self._closed_vertices.add(vertex)
                     vertices_number -= 1
                     for edge in temp_edges:
                         yield edge
                 if not vertices_number:
                     break
-        # self._open_vertices = self._open_vertices.difference(self._closed_vertices)
-
+                    # self._open_vertices = self._open_vertices.difference(self._closed_vertices)
 
     def get_random_vertices_by_edges(self, vertices_number, node_label=[False], open_vertices=[]):
         """
@@ -124,20 +116,17 @@ class GraphSampler(object):
                 List that contains random edges.
         """
         node_label = utils.to_iterable(node_label)
-        # open_vertices = self._vertices
         random.shuffle(self._edges)
         for v_edge in self._edges:
-            # if vertex not in self._closed_vertices:
             vertex = v_edge[0]
             if vertex in open_vertices:
                 open_vertices.remove(vertex)
                 if self._graph.get_node_label(vertex) in node_label or False in node_label:
                     edge_count, temp_edges = 0, []
                     for edge in self._graph.get_vertex_edges(vertex, "out"):
-                        # if self.vertex_has_enough_edges(edge[1]):
                         temp_edges.append(edge)
                         edge_count += 1
-                    if edge_count > 3:
+                    if edge_count > self._vertex_min_edge_number:
                         self._closed_vertices.add(vertex)
                         vertices_number -= 1
                         for edge in temp_edges:
@@ -158,23 +147,19 @@ class GraphSampler(object):
                Holds the label of the generated edge.
 
             Returns
-            Returns< 3
             -------
             el : list
                 List that contains random edges.
         """
-        # random.shuffle(self._edges)
         self._open_vertices = self._open_vertices.difference(self._closed_vertices)
         for edge in self._edges:
             if self._graph.get_edge_label(edge[0], edge[1]) == selection_label:
                 if edge[0] in self._open_vertices and edge[1] in self._open_vertices:
-                    # if self.vertex_has_enough_edges(edge[0]) and self.vertex_has_enough_edges(edge[1]):
                     yield (edge[0], edge[1])
                     self._closed_vertices.add(edge[0])
                     edge_number -= 1
                     if not edge_number:
                         break
-        # self._open_vertices = self._open_vertices.difference(self._closed_vertices)
 
     def transform_edge(self, edge, selection_label):
         if not self._graph.is_directed:
@@ -183,7 +168,6 @@ class GraphSampler(object):
                 return edge[1], edge[0]
         return edge
 
-    # @todo make a case for directed and undirected
     def get_vertices_with_more_than_n_friends(self, n, vertices, edge_label=None):
         """
             Return all vertices in the graph that have more than n neighbours.
@@ -201,7 +185,8 @@ class GraphSampler(object):
         expended_vertices = []
         for vertex in vertices:
             if self._vertex_min_edge_number < self._graph.get_vertex_out_degree(
-                    vertex) < self._vertex_max_edge_number and (self._graph.get_node_label(vertex) == edge_label or edge_label is None):
+                    vertex) < self._vertex_max_edge_number and (
+                    self._graph.get_node_label(vertex) == edge_label or edge_label is None):
                 expended_vertices.append(vertex)
         return expended_vertices
 
@@ -228,46 +213,34 @@ class GraphSampler(object):
         """
         new_edges = set()
         open_vertices = list(self._open_vertices)
-        # open_vertices = [e[0] for e in self._edges if e[0] in self._open_vertices]
         while edge_number != len(new_edges):
-            v, u = self.sample_two_vertices(open_vertices)
+            v, u = self.get_random_vertex(open_vertices), self.get_random_vertex(open_vertices)
             if is_fit(v, u) and not (v, u, edge_label) in new_edges:
                 yield (v, u, edge_label)
                 self._closed_vertices.add(v)
                 new_edges.add((v, u, edge_label))
         self._open_vertices = self._open_vertices.difference(self._closed_vertices)
 
-
-    def sample_two_vertices(self, open_vertices=[]):
-        if open_vertices:
-            v, u = random.choice(open_vertices), random.choice(open_vertices)
-        else:
-            v, u = random.choice(self._edges), random.choice(self._edges)
-            v, u = v[0], u[0]
-        return v, u
+    def get_random_vertex(self, open_vertices=[]):
+        if not open_vertices:
+            open_vertices = self.vertices
+        return random.choice(open_vertices)
 
     @staticmethod
     def sample_vertecies_by_degree_distribution(graph, n):
         closed_vertices = set()
         edges = graph.edges
-        while len(closed_vertices)!= n:
+        while len(closed_vertices) != n:
             v = random.choice(edges)[0]
             if v not in closed_vertices:
                 closed_vertices.add(v)
                 yield graph.get_vertex_out_degree(v)
-        # for i in range(n):
-        #     yield random.choice(graph.edges[0])
+
+    def is_not_linked(self, v, u):
+        return not (self._graph.has_edge(v, u) or self._graph.has_edge(u, v) or v == u)
 
     def is_in_distance_of_one_hop(self, v, u):
         return self.is_not_linked(v, u) and len(self._graph.get_common_neighbors(v, u)) > 0
-
-    def is_in_distance_of_two_hops(self, v, u):
-        return self.is_not_linked(v, u) and self._graph.get_shortest_path_length(v, u) == 2
-
-    def is_not_linked(self, v, u):
-        # if self._graph.is_directed:
-        return not (self._graph.has_edge(v, u) or self._graph.has_edge(u, v) or v == u)
-        # return not (self._graph.has_edge(v, u) or self._graph.has_edge(u, v) or v == u)
 
     def is_in_distance_of_two_hops(self, v, u):
         dist = self._graph.get_shortest_path_length_with_limit(v, u, 3)[0]
@@ -321,9 +294,7 @@ class GraphSampler(object):
                 List that contains the negative and  positive generated edges.
         """
         return itertools.chain(
-            # self.get_random_edges_by_vertices(negative_number, self._graph.negative_label, open_vertices=open_vertices)
-        self.get_random_edge_sample(negative_number, self._graph.negative_label),
-        self.generate_random_edges_with_condition(positive_number, self.is_not_linked,
+            self.get_random_edge_sample(negative_number, self._graph.negative_label),
+            self.generate_random_edges_with_condition(positive_number, self.is_not_linked,
                                                       edge_label=self._graph.positive_label)
-
         )
