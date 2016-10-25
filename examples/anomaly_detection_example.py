@@ -17,7 +17,7 @@ test_path, training_path, result_path, labels_output_path = output_foldr + datas
 my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path,
                                             is_directed=dataset_config.is_directed,
                                             pos_label=labels["pos"],
-                                            neg_label=labels["neg"], max_num_of_edges=2)
+                                            neg_label=labels["neg"])
 
 glc.classify_by_links(my_graph, test_path, training_path, result_path,
                       labels_output_path, test_size={"neg": 1000, "pos": 100},
