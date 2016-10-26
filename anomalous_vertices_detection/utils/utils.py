@@ -4,6 +4,7 @@ import csv
 import datetime
 import functools
 import glob
+import gzip
 import json
 import os
 from functools import wraps
@@ -88,12 +89,11 @@ def read_bz2(path):
             yield line
 
 
-# def read_file(path):
-#     curr_line = 0
-#     with open(path, "rb") as f:
-#         for line in f:
-#             yield curr_line, line
-#             curr_line += 1
+def read_gzip(path):
+    with gzip.open(path, "rb") as f:
+        for line in f:
+            yield line
+
 
 def append_to_file(data, path):
     with open(path, 'a') as f:
