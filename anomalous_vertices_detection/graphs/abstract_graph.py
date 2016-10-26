@@ -75,6 +75,8 @@ class AbstractGraph(object):
         if isinstance(graph_path, str):
             if graph_path.lower().endswith(".bz2"):
                 f = utils.read_bz2(graph_path)
+            elif graph_path.lower().endswith(".gz"):
+                f = utils.read_gzip(graph_path)
             else:
                 f = utils.read_file(graph_path)
         for i, edge in enumerate(f):
