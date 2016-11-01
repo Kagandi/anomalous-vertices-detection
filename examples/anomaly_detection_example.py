@@ -5,7 +5,7 @@ from anomalous_vertices_detection.learners.gllearner import GlLearner
 
 labels = {"neg": "Real", "pos": "Fake"}
 
-dataset_config = GraphConfig("academia", "..\\data\\academia.bz2", True, type="simulation",
+dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, type="simulation",
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
 glc = GraphLearningController(GlLearner(labels=labels), labels, dataset_config)
 output_foldr = "../output/"
@@ -17,7 +17,7 @@ test_path, training_path, result_path, labels_output_path = output_foldr + datas
 my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path,
                                             is_directed=dataset_config.is_directed,
                                             pos_label=labels["pos"],
-                                            neg_label=labels["neg"])
+                                            neg_label=labels["neg"], max_num_of_edges=1000000)
 
 glc.classify_by_links(my_graph, test_path, training_path, result_path,
                       labels_output_path, test_size={"neg": 1000, "pos": 100},
