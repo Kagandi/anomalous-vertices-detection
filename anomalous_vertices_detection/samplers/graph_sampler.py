@@ -11,24 +11,17 @@ class GraphSampler(object):
         self._vertices = list(graph.vertices)
         random.shuffle(self._edges)
         random.shuffle(self._vertices)
-        self._open_vertices = set()
         self._closed_vertices = set()
         self._vertex_min_edge_number = vertex_min_edge_number
         self._vertex_max_edge_number = vertex_max_edge_number
+        self._open_vertices = set(self.get_vertices_with_more_than_n_friends(vertex_min_edge_number,
+                                                                             list(self._vertices)))
 
     def split_training_test_set(self, training_size={"neg": 10000, "pos": 10000},
                                 test_size={"neg": 1000, "pos": 100}):
-        self._open_vertices = set(self.get_vertices_with_more_than_n_friends(self._vertex_min_edge_number,
-                                                                             list(self._vertices)))
         test_set = self.generate_labeled_sample_by_vertices(test_size["neg"], test_size["pos"])
         training_set = self.generate_sample_for_unlabeled_links(training_size["neg"], training_size["pos"])
         return training_set, test_set
-
-    def vertex_has_enough_edges(self, vertex):
-        vertex_edges = self._graph.get_vertex_edges(vertex, "out")
-        if self._vertex_min_edge_number <= len(vertex_edges) < self._vertex_max_edge_number:
-            return vertex_edges
-        return False
 
     def get_random_edges_by_vertices(self, edge_number, node_label=[False], open_vertices=[]):
         """
@@ -223,7 +216,7 @@ class GraphSampler(object):
 
     def get_random_vertex(self, open_vertices=[]):
         if not open_vertices:
-            open_vertices = self.vertices
+            open_vertices = self._vertices
         return random.choice(open_vertices)
 
     @staticmethod
