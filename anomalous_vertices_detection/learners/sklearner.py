@@ -15,18 +15,6 @@ def dict_to_array(my_dict):
 def encode_labels(labels):
     le = preprocessing.LabelEncoder()
     return le.fit_transform(labels)
-    # le.fit(labels)
-    # return le.transform(labels)
-
-
-# false_positive = float(len(np.where(l_test - prediction == -1)[0])) # 0 (truth) - 1 (prediction) == -1 which is a false positive
-# false_negative = float(len(np.where(l_test - prediction == 1)[0])) # 1 (truth) - 0 (prediction) == 1 which is a false negative
-# true_negative = float(len(np.where(l_test + prediction == 0)[0])) # 0 (truth) - 0 (prediction) == 0 which is a false positive
-# true_positive = float(len(np.where(l_test + prediction == 2)[0]))# 1 (truth) - 1 (prediction) == 0 which is a false positive
-# print true_positive/(true_positive+false_negative) #tpr
-# print false_negative/(true_positive+false_negative) #fnr
-# print false_positive/(true_negative+false_positive) #fpr
-# print true_negative/(true_negative+false_positive) #tnr
 
 
 class SkLearner(AbstractLearner):
@@ -81,7 +69,7 @@ class SkLearner(AbstractLearner):
 
     def train_classifier(self, dataset):
         self._classifier = self._classifier.fit(dataset.features, dataset.labels)
-        return self._classifier
+        return self
 
     def get_prediction(self, prediction_data):
         return self._classifier.predict(prediction_data.features)
