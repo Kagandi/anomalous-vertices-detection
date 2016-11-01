@@ -8,11 +8,17 @@ This project is under development and has a many planned improvements. More deta
 ```
 git clone git://github.com/Kagandi/anomalous-vertices-detection.git
 pip install -r requirements.txt
+python setup.py install
 ```
 GraphLab may require installation of additional requirements, if needed a message with instruction will be presented.
 ##Usage
 Init:
 ```python
+from anomalous_vertices_detection.configs.graph_config import GraphConfig
+from anomalous_vertices_detection.graph_learning_controller import *
+from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
+from anomalous_vertices_detection.learners.gllearner import GlLearner
+
 labels = {"neg": "Real", "pos": "Fake"}
 cls = GlLearner(labels=labels) #GraphLab Learner
 dataset_config = GraphConfig("my_dataset", my_dataset, is_directed=True)
@@ -27,9 +33,10 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 - [ ] Complete documentation
 - [ ] Write Jupiter notebooks
 - [ ] Clean the code
-- [ ] Add setup.py
+- [X] Add setup.py
 - [X] Add requirements.txt
-- [ ] Add examples
+- [X] Add basic examples
+- [ ] Add more examples
 - [ ] Add more test
 - [ ] Python 3.5 support
 
