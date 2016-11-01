@@ -24,4 +24,4 @@ glc.extract_features_for_set(my_graph, sampler.generate_sample_for_unlabeled_lin
                              fast_link_features[my_graph.is_directed])
 glc.extract_features_for_set(my_graph, sampler.generate_sample_for_labeled_links(10000, 10000), test_path,
                              fast_link_features[my_graph.is_directed])
-print glc.evaluate_classifier(my_graph, test_path, training_path)
+glc.evaluate_classifier(my_graph, test_path, training_path)
