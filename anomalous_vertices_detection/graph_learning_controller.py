@@ -1,13 +1,11 @@
-import os
+from graphlab import SFrame
+from pandas import DataFrame
 
 from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
-from pandas import DataFrame
-from configs.config import *
 from configs.predefined_features_sets import *
 from feature_controller import FeatureController
 from ml_controller import MlController
 from utils import utils
-from graphlab import SFrame
 
 
 class GraphLearningController:
@@ -45,7 +43,7 @@ class GraphLearningController:
         """
         features = FeatureController(graph)
         print "Graph loaded"
-        features.extract_features(dataset, feature_dict, max_items_num=max_items_num)
+        features.extract_features(dataset, feature_dict, output_path, max_items_num=max_items_num)
         print "Features were written to: " + output_path
 
     def create_training_test_sets(self, my_graph, test_path, train_path, test_size, training_size,
@@ -74,15 +72,15 @@ class GraphLearningController:
                 my_graph.write_nodes_labels(labels_path)
             training_set, test_set = gs.split_training_test_set(training_size, test_size)
 
-            self.extract_features_for_set(my_graph, test_set, test_path, feature_dict,
+            self.extract_features_for_set(my_graph, test_set, test_path, feature_dict[my_graph.is_directed],
                                           test_size["neg"] + test_size["pos"])
-            self.extract_features_for_set(my_graph, training_set, train_path, feature_dict,
+            self.extract_features_for_set(my_graph, training_set, train_path, feature_dict[my_graph.is_directed],
                                           training_size["neg"] + training_size["pos"])
         else:
             print "Existing files were loaded."
 
-    def classify_data(self, my_graph, test_path, train_path, test_size,
-                      training_size, id_col_name="src", labels_path=None, feature_dict=fast_link_features):
+    def evaluate_classifier(self, my_graph, test_path, train_path, test_size=0,
+                            training_size=0, id_col_name="src", labels_path=None, feature_dict=fast_link_features):
         """Execute the link classifier
 
         Parameters
@@ -115,14 +113,14 @@ class GraphLearningController:
                                        training_size=training_size,
                                        labels_path=labels_path, feature_dict=feature_dict)  # Training the classifier
         self._ml.load_training_set(train_path, "edge_label", id_col_name, meta_data_cols)
+        # self._ml.load_test_set(test_path, "edge_label", id_col_name, meta_data_cols)
+        cls = self._ml.train_classifier()
         print("Training 10-fold validation: {}".format(self._ml.k_fold_validation()))
-        self._ml.load_test_set(test_path, "edge_label", id_col_name, meta_data_cols)
-        self._ml.train_classifier()
         # Testing the classifier
-        print("Test evaluation: {}".format(self._ml.evaluate_test()))
+        print("Test evaluation: {}".format(cls.evaluate(test_path, "edge_label", id_col_name, meta_data_cols)))
 
-    def classify_by_links(self, my_graph, test_path, train_path, results_output_path, real_labels_path, test_size,
-                          train_size):
+    def classify_by_links(self, my_graph, test_path, train_path, results_output_path, real_labels_path, test_size=0,
+                          train_size=0, meta_data_cols=[], id_col_name="src"):
         """Execute the vertex anomaly detection process
 
         Parameters
@@ -142,8 +140,8 @@ class GraphLearningController:
         test_size : int
             The size of the test set that should be generated
         """
-        self.classify_data(my_graph, test_path, train_path, test_size, train_size, labels_path=real_labels_path)
-        classified = self._ml.classify_by_links_probability()
+        self.evaluate_classifier(my_graph, test_path, train_path, test_size, train_size, labels_path=real_labels_path)
+        classified = self._ml.classify_by_links_probability(test_path, "edge_label", id_col_name, meta_data_cols)
         # Output
         classified = self._ml._learner.merge_with_labels(classified, real_labels_path)
         if isinstance(classified, SFrame):
@@ -151,5 +149,4 @@ class GraphLearningController:
         if isinstance(classified, DataFrame):
             classified.to_csv(results_output_path)
 
-        print self._ml.validate_prediction_by_links(classified)
-
+        return self._ml.validate_prediction_by_links(classified)
