@@ -8,9 +8,11 @@ class GlLearner(AbstractLearner):
     def __init__(self, classifier=None, labels=None):
         super(GlLearner, self).__init__(classifier)
         self._labels = labels
+        self._base_classifier = classifier
 
     def convert_data_to_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[]):
-        return DataSetFactory().convert_data_to_graphlab_format(features, labels, feature_id_col_name, metadata_cols, self._labels)
+        return DataSetFactory().convert_data_to_graphlab_format(features, labels, feature_id_col_name, metadata_cols,
+                                                                self._labels)
 
     def set_boosted_trees_classifier(self):
         return GlLearner(gl.boosted_trees_classifier.create, self._labels)
@@ -27,7 +29,7 @@ class GlLearner(AbstractLearner):
     def train_classifier(self, dataset, **kwargs):
         self._classifier = self._classifier(dataset.features, target=dataset.labels)
         print self.get_evaluation(dataset)
-        return self._classifier
+        return self
 
     def get_prediction(self, prediction_data):
         return self._classifier.predict(prediction_data.features)
@@ -86,14 +88,15 @@ class GlLearner(AbstractLearner):
                 }
 
     def cross_validate(self, dataset, n_folds=10):
-        # data['label'] = (data['label'] == 'p')
         folds = self.split_kfold(dataset.features, n_folds)
         params = {'target': dataset.labels}
         job = gl.cross_validation.cross_val_score(folds,
-                                                  self._classifier,
+                                                  self._base_classifier,
                                                   params)
         res = job.get_results()["summary"]
         print "------------------------------------------------"
         print ("validation_accuracy:{} , training_accuracy:{}.".format(res["validation_accuracy"].mean(),
                                                                        res["training_accuracy"].mean()))
         print "------------------------------------------------"
+        return {"validation_accuracy": res["validation_accuracy"].mean(),
+                "training_accuracy": res["training_accuracy"].mean()}
