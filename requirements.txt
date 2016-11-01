@@ -1,0 +1,7 @@
+numpy
+networkx
+#community
+graphlab-create
+python-igraph
+scikit-learn
+pandas
