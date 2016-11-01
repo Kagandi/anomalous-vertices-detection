@@ -20,7 +20,6 @@ from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
 from anomalous_vertices_detection.learners.gllearner import GlLearner
 
 labels = {"neg": "Real", "pos": "Fake"}
-cls = GlLearner(labels=labels) #GraphLab Learner
 dataset_config = GraphConfig("my_dataset", my_dataset, is_directed=True)
 gl = GraphLearningController(GlLearner(labels=labels), labels, dataset_config)
 my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path,
