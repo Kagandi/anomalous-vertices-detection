@@ -166,7 +166,7 @@ class FeatureController(object):
         """
         dict_writer(array, temp_path, "a+")
 
-    def extract_features(self, data_iter, features_dict, output_path, max_items_num=10000):
+    def extract_features(self, data_iter, features_dict, output_path, max_items_num=0):
         """ Extract features from the graph and saves them to file.
 
         Parameters
@@ -179,7 +179,10 @@ class FeatureController(object):
         delete_file_content(output_path)
         features_array = []
         if not isinstance(data_iter, types.GeneratorType):
-            max_items_num = len(data_iter)
+            try:
+                max_items_num = len(data_iter)
+            except:
+                pass
         for count, entry in enumerate(self.features_generator(features_dict, data_iter)):
             if max_items_num and count % (max_items_num / 10) == 0:
                 print "%d%% (%d out of %d features were extracted)." % \
