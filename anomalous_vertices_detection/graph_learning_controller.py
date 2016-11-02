@@ -9,19 +9,16 @@ from utils import utils
 
 
 class GraphLearningController:
-    def __init__(self, cls, labels, config):
+    def __init__(self, cls, config):
         """ Initialize a class the combines ml and graphs.
 
         Parameters
         ----------
         cls : AbstractLearner
             An object of a class the implements AbstractLearner
-        labels : dict
-            Map of binary labels for instance: {"neg": "Negative", "pos": "Positive"}
         config : GraphConfig
             config object that contains all the necessary information about the graph
         """
-        self._labels = labels
         self._ml = MlController(cls.set_randomforest_classifier())
         self._config = config
 

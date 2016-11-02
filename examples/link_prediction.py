@@ -7,7 +7,7 @@ labels = {"neg": "Real", "pos": "Fake"}
 #
 dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, type="simulation",
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
-glc = GraphLearningController(GlLearner(labels=labels), labels, dataset_config)
+glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
 output_foldr = "../output/"
 test_path, training_path, result_path, labels_output_path = output_foldr + dataset_config.name + "_test.csv", \
                                                             output_foldr + dataset_config.name + "_train.csv", \

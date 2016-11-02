@@ -1,5 +1,4 @@
 import math
-
 import numpy as np
 
 from anomalous_vertices_detection.utils.utils import memoize2
