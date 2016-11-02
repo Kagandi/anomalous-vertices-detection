@@ -2,12 +2,16 @@ import graphlab as gl
 
 from anomalous_vertices_detection.learners import AbstractLearner
 from anomalous_vertices_detection.utils.dataset import DataSetFactory
+from anomalous_vertices_detection.utils.exceptions import *
 
 
 class GlLearner(AbstractLearner):
     def __init__(self, classifier=None, labels=None):
         super(GlLearner, self).__init__(classifier)
-        self._labels = labels
+        if len(labels) == 2:
+            self._labels = labels
+        else:
+            raise NonBinaryLabels("Must be only two labels, negative and positive")
         self._base_classifier = classifier
 
     def convert_data_to_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[]):
@@ -94,9 +98,5 @@ class GlLearner(AbstractLearner):
                                                   self._base_classifier,
                                                   params)
         res = job.get_results()["summary"]
-        print "------------------------------------------------"
-        print ("validation_accuracy:{} , training_accuracy:{}.".format(res["validation_accuracy"].mean(),
-                                                                       res["training_accuracy"].mean()))
-        print "------------------------------------------------"
         return {"validation_accuracy": res["validation_accuracy"].mean(),
                 "training_accuracy": res["training_accuracy"].mean()}
