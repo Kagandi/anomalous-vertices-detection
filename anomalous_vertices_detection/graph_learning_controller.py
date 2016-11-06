@@ -111,10 +111,10 @@ class GraphLearningController:
                                        labels_path=labels_path, feature_dict=feature_dict)  # Training the classifier
         self._ml.load_training_set(train_path, "edge_label", id_col_name, meta_data_cols)
         # self._ml.load_test_set(test_path, "edge_label", id_col_name, meta_data_cols)
-        cls = self._ml.train_classifier()
+        self._ml = self._ml.train_classifier()
         print("Training 10-fold validation: {}".format(self._ml.k_fold_validation()))
         # Testing the classifier
-        print("Test evaluation: {}".format(cls.evaluate(test_path, "edge_label", id_col_name, meta_data_cols)))
+        print("Test evaluation: {}".format(self._ml.evaluate(test_path, "edge_label", id_col_name, meta_data_cols)))
 
     def classify_by_links(self, my_graph, test_path, train_path, results_output_path, real_labels_path, test_size=0,
                           train_size=0, meta_data_cols=[], id_col_name="src"):
