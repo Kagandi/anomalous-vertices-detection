@@ -1,6 +1,7 @@
+from django.contrib.gis.geos.prototypes import predicates
 from sklearn import svm, tree, ensemble, feature_extraction, cross_validation, preprocessing
 import numpy as np
-from sklearn.metrics import roc_curve, auc, recall_score, precision_score, accuracy_score, roc_auc_score
+from sklearn.metrics import roc_curve, auc, recall_score, precision_score, accuracy_score, roc_auc_score, classification_report, confusion_matrix
 import pandas as pd
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.learners import AbstractLearner
@@ -35,6 +36,7 @@ class SkLearner(AbstractLearner):
         node_labels["actual"] = labels
         merged_data = pd.merge(classified, node_labels, left_on='src_id', right_on=merge_col_name, how='left')
         merged_data["actual"].fillna(default_label, inplace=True)
+        merged_data["actual"] = self.transform_labels(merged_data["actual"])
         return merged_data
 
     @staticmethod
@@ -72,16 +74,22 @@ class SkLearner(AbstractLearner):
         return self
 
     def get_prediction(self, prediction_data):
-        return self._classifier.predict(prediction_data.features)
+        if isinstance(prediction_data, DataSet):
+            return self._classifier.predict(prediction_data.features)
+        else:
+            return self._classifier.predict(prediction_data)
 
     def get_prediction_probabilities(self, prediction_data):
-        return self._classifier.predict_proba(prediction_data.features)
+        if isinstance(prediction_data, DataSet):
+            return self._classifier.predict_proba(prediction_data.features)
+        else:
+            return self._classifier.predict_proba(prediction_data)
 
     def split_kfold(self, labels, n_folds=10):
         # StratifiedKFold(self._labels, n_folds)
         return cross_validation.StratifiedKFold(labels, n_folds)
 
-    def get_classification_metrics(self, l_test, prediction):
+    def get_classification_metrics(self, l_test, prediction, probas):
         fpr, tpr, thresholds = roc_curve(l_test, prediction)
         # false_positive = float(len(np.where(l_test - prediction == -1)[0])) # 0 (truth) - 1 (prediction) == -1 which is a false positive
         # false_negative = float(len(np.where(l_test - prediction == 1)[0])) # 1 (truth) - 0 (prediction) == 1 which is a false negative
@@ -95,12 +103,12 @@ class SkLearner(AbstractLearner):
             len(np.where(l_test - prediction == -1)[0]))  # 0 (truth) - 1 (prediction) == -1 which is a false positive
         true_negative = float(
             len(np.where(l_test + prediction == 0)[0]))  # 0 (truth) - 0 (prediction) == 0 which is a true positive
-        return {"auc": roc_auc_score(l_test, prediction)
-                # "recall": recall_score(l_test, prediction),
-                # "precision": precision_score(l_test, prediction),
-                # "accuracy": accuracy_score(l_test, prediction),
-                # "fpr": false_positive / (true_negative + false_positive),
-                # "tnr": true_negative / (true_negative + false_positive)
+        return {"auc": roc_auc_score(l_test, probas),
+                "recall": recall_score(l_test, prediction),
+                "precision": precision_score(l_test, prediction),
+                "accuracy": accuracy_score(l_test, prediction),
+                "fpr": false_positive / (true_negative + false_positive),
+                "tnr": true_negative / (true_negative + false_positive)
                 }
 
     def cross_validate(self, dataset, n_folds=10):
@@ -109,36 +117,39 @@ class SkLearner(AbstractLearner):
             f_train, f_test = dataset.features[train_index], dataset.features[test_index]
             l_train, l_test = dataset.labels[train_index], dataset.labels[test_index]
             # prediction = self.train_classifier(DataSet(f_train, l_train)).predict(f_test)
-            prediction = self.train_classifier(DataSet(f_train, l_train)).predict_proba(f_test)[:, 1]
-            metrics = self.get_classification_metrics(l_test, prediction)
+            prediction = self.train_classifier(DataSet(f_train, l_train)).get_prediction(f_test)
+            probas = self.train_classifier(DataSet(f_train, l_train)).get_prediction_probabilities(f_test)[:, 1]
+            metrics = self.get_classification_metrics(l_test, prediction, probas)
             roc_auc.append(metrics["auc"])
-            # recall.append(metrics["recall"])  # TPR
-            # precision.append(metrics["precision"])
-            # accuracy.append(metrics["accuracy"])
-            # fpr.append(metrics["fpr"])
-            # tnr.append(metrics["tnr"])
-        return {"auc": np.mean(roc_auc)}
-        # return {"auc": np.mean(roc_auc), "recall": np.mean(recall), "precision": np.mean(precision),
-        #         "accuracy": np.mean(accuracy), "fpr": np.mean(fpr), "tnr": np.mean(tnr)}
+            recall.append(metrics["recall"])  # TPR
+            precision.append(metrics["precision"])
+            accuracy.append(metrics["accuracy"])
+            fpr.append(metrics["fpr"])
+            tnr.append(metrics["tnr"])
+        # return {"auc": np.mean(roc_auc)}
+        # print classification_report(l_test, prediction)
+        # print "Predicted: 0   1"
+        # print confusion_matrix(l_test, prediction)
+        return {"auc": np.mean(roc_auc), "recall": np.mean(recall), "precision": np.mean(precision),
+                "accuracy": np.mean(accuracy), "fpr": np.mean(fpr), "tnr": np.mean(tnr)}
 
     def get_evaluation(self, data):
-        prediction = self.get_prediction_probabilities(data)
-        data.merge_dataset_with_predictions(prediction).to_csv(results_path + "res.csv")
-        return self.get_classification_metrics(data.labels, prediction[:, 1])
+        prediction = self.get_prediction(data)
+        probas = self.get_prediction_probabilities(data)[:, 1]
+        data.merge_dataset_with_predictions(prediction)
+        return self.get_classification_metrics(data.labels, prediction,probas)
 
-    def validate_prediction_by_links(self, train, test, nodes_label_path):
+    def validate_prediction_by_links(self, prediction):
         roc_auc, recall, precision, accuracy, fpr, tpr = [], [], [], [], [], []
 
         # f_train, f_test = features[train_index], features[test_index]
         # l_train, l_test = labels[train_index], labels[test_index]
         # print l_train
-        prediction = self.train_classifier(train).predict_proba(test)
-        # prediction.to_csv("res2.csv")
-        prediction = self.classify_by_links_probability(prediction, test.features_ids, threshold=0.5, metadata=test.metadata)
-        prediction = self.merge_with_labels(prediction, nodes_label_path, default_label="Real")
-        # prediction.to_csv("res3.csv")
+        # prediction = self.train_classifier(train).get_prediction_probabilities(test.features)
+        # prediction = self.classify_by_links_probability(prediction, test.features_ids, threshold=0.5, metadata=test.metadata)
+        # prediction = self.merge_with_labels(prediction, nodes_label_path, default_label="Real")
         try:
-            metrics = self.get_classification_metrics(prediction["label_y"].values, prediction["label_x"].values)
+            metrics = self.get_classification_metrics(prediction["predicted_label"].values, prediction["actual"].values, prediction["pos probability"].values)
             roc_auc.append(metrics["auc"])
             recall.append(metrics["recall"])  # TPR
             precision.append(metrics["precision"])
@@ -146,7 +157,6 @@ class SkLearner(AbstractLearner):
             fpr.append(metrics["fpr"])
         except ValueError:
             print "Error"
-            # print recall
         return {"auc": np.mean(roc_auc), "recall": np.mean(recall), "precision": np.mean(precision),
                 "accuracy": np.mean(accuracy), "fpr": np.mean(fpr)}
 
@@ -155,7 +165,6 @@ class SkLearner(AbstractLearner):
         train_df["src_id"] = pd.DataFrame(features_ids)
         if isinstance(metadata, pd.DataFrame):
             train_df["dst_id"] = metadata["dst"]
-            # train_df.to_csv(results_path + "res.csv")
             train_df.pop("dst_id")
         train_df["link_label"] = train_df[0].apply(lambda avg: 1 if avg <= threshold else 0)
         train_df = train_df.groupby("src_id", as_index=False).agg(
@@ -163,4 +172,3 @@ class SkLearner(AbstractLearner):
         train_df.columns = ['src_id', "neg probability", 'edge number', "pos probability", 'mean_link_label', 'sum_link_label']
         train_df["predicted_label"] = train_df["pos probability"].apply(lambda avg: labels["pos"] if avg >= threshold else labels["neg"])
         return train_df
-        # return train_df.loc[train_df[0] <= threshold], train_df.loc[train_df[0] <= threshold]
