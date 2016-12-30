@@ -1,6 +1,6 @@
 from itertools import product
 
-# import community
+import community
 import networkx as nx
 import numpy as np
 
@@ -164,6 +164,9 @@ class NxGraph(AbstractGraph):
         >>> g.load_gaphml("graph.gaphml")
         """
         return cls(graph_obj=nx.read_graphml(graph_path))
+
+    def add_node(self, vertex, attr_dict={}):
+        self._graph.add_node(vertex, attr_dict)
 
     def add_edge(self, vertex1, vertex2, edge_atrr={}):
         """ Adds a new edge to the graph
@@ -747,24 +750,24 @@ class NxGraph(AbstractGraph):
         """
         return nx.clustering(self._graph, node, weight=self._weight_field)
 
-    # def disjoint_communities(self):
-    #     """
-    #     Parameters
-    #     ----------
-    #
-    #     Returns
-    #     -------
-    #     NxGraph: Graph object
-    #
-    #     Examples
-    #     --------
-    #     >>>
-    #     """
-    #     if self.is_directed:
-    #         partition = community.best_partition(self._graph.to_undirected())
-    #     else:
-    #         partition = community.best_partition(self._graph)
-    #     return partition
+    def disjoint_communities(self):
+        """
+        Parameters
+        ----------
+
+        Returns
+        -------
+        NxGraph: Graph object
+
+        Examples
+        --------
+        >>>
+        """
+        if self.is_directed:
+            partition = community.best_partition(self._graph.to_undirected())
+        else:
+            partition = community.best_partition(self._graph)
+        return partition
 
     def average_neighbor_degree(self):
         """
