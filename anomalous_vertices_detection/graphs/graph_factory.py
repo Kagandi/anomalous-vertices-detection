@@ -167,6 +167,7 @@ class GraphFactory(object):
         """
         random_vertices = random.sample(graph_vertices, neighbors_number)
         graph._labels_dict[node_name] = vertex_label
+        graph.add_node(node_name, {"type": "sim"})
         for rand_vertex in random_vertices:
             if len(graph.get_vertex_edges(rand_vertex, "out")) > 1:
                 graph.add_edge(node_name, rand_vertex, {"edge_label": vertex_label})
