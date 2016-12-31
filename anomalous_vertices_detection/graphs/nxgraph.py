@@ -275,6 +275,24 @@ class NxGraph(AbstractGraph):
         """
         return self.edge(u, v)[self._weight_field]
 
+    def get_node_attributes(self, u):
+        """ Return the node attributes.
+
+        Parameters
+        ----------
+        u: string
+            vertex.
+
+        Returns
+        -------
+        dict : The node attribute dict
+
+        Examples
+        --------
+        >>> g.get_node_attributes("1")
+        """
+        return self._graph.node[u]
+
     def edge(self, u, v):
         """ Return the edge
         Parameters
