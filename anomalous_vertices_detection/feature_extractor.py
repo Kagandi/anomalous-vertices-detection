@@ -1,4 +1,5 @@
 import math
+
 import numpy as np
 
 from anomalous_vertices_detection.utils.utils import memoize2
@@ -32,12 +33,18 @@ class FeatureExtractor(object):
         self._pagerank = None
         self._hits = None
         self._closeness = None
-        # self._disjoint_communities = None
+        self._disjoint_communities = None
         self._load_centrality = None
         self._nodes_number_of_cliques = None
         self._average_neighbor_degree = None
         self._communicability_centrality = None
         self._betweenness = None
+
+    @property
+    def disjoint_communities(self):
+        if not self._disjoint_communities:
+            self._disjoint_communities = self._graph.disjoint_communities()
+        return self._disjoint_communities
 
     # def get_output_path(self, feature_name):
     #     """
@@ -112,7 +119,7 @@ class FeatureExtractor(object):
         return self._graph
 
     def load_feature(self, feature, feature_func):
-        if feature is None:
+        if feature:
             feature = feature_func()
 
     # def load_centrality_features(self):
@@ -701,11 +708,14 @@ class FeatureExtractor(object):
     #             return 1
     #     return 0
 
-    # def get_number_of_neighbors_communities(self, v):
-    #     communities = []
-    #     for u in self._graph.neighbors_iter(v):
-    #         communities.append(self._disjoint_communities[u])
-    #     return len(set(communities))
+    def get_number_of_neighbors_communities(self, v):
+        communities = []
+        for u in self._graph.neighbors_iter(v):
+            try:
+                communities.append(self.disjoint_communities[u])
+            except TypeError:
+                continue
+        return len(set(communities))
 
     def get_bi_degree_density(self, v):
         if self._graph.is_directed:
@@ -836,3 +846,42 @@ class FeatureExtractor(object):
 
     def get_vertex(self, v):
         return v
+
+    def friends_connections(self, u):
+        """
+
+        Parameters
+        ----------
+        u : string
+            Vertex
+
+        Returns
+        -------
+
+        """
+        conn_number = 0
+        if self._graph.is_directed:
+            for friend1 in self._graph.get_neighbors(u):
+                for friend2 in self._graph.get_neighbors(u):
+                    if self._graph.has_edge(friend1, friend2):
+                        conn_number += 1
+        else:
+            friends = self._graph.get_neighbors(u)
+            for i in range(self.get_number_of_friends(u)):
+                for j in range(self.get_number_of_friends(u) - i):
+                    if self._graph.has_edge(friends[i], friends[j + i]):
+                        conn_number += 1
+        return conn_number
+
+    def avg_friends_comm(self, u):
+        """
+
+        Parameters
+        ----------
+        u :
+
+        Returns
+        -------
+
+        """
+        return self.get_number_of_friends(u) / self.get_number_of_neighbors_communities(u)
