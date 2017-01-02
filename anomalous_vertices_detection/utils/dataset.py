@@ -87,7 +87,7 @@ class DataSetFactory(object):
                 if col in features.column_names():
                     temp_metadata_cols.append(col)
             features = features.remove_columns(temp_metadata_cols)
-        if 'label' not in features:
+        if 'label' not in features.column_names():
             features.rename({labels: 'label'})
             if labels_map:
                 features["label"] = features["label"] == labels_map["pos"]
