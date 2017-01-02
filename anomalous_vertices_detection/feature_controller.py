@@ -9,27 +9,11 @@ class FeatureController(object):
     This class control the extraction of features from FeatureController.
     """
 
-    def __init__(self, graph_obj, enabled_features={}):
-        self._enabled_features = enabled_features
-        self.init_enabled_features()
+    def __init__(self, graph_obj):
         self._graph = graph_obj
         self._fe = FeatureExtractor(self._graph)
-        # self._fe.load_centrality_features()
         self._temp_result = {}
         self._labels = []
-
-    def init_enabled_features(self):
-        if "same_community" in self._enabled_features or "number_of_neighbors_communities" in self._enabled_features:
-            self._enabled_features["disjoint_communities"] = 1
-        if "hubs" in self._enabled_features or "authorities" in self._enabled_features:
-            self._enabled_features["hits"] = 1
-
-    def is_enabled(self, feature_name):
-        if len(self._enabled_features) == 0:
-            return True
-        elif feature_name in self._enabled_features:
-            return True
-        return False
 
     def set_label(self, v, u=None):
         """Set the edge/vertex label attribute in temp_result.
