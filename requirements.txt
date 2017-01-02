@@ -1,6 +1,6 @@
 numpy
 networkx
-#community
+python-louvain
 graphlab-create
 python-igraph
 scikit-learn
