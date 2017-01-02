@@ -46,19 +46,6 @@ class FeatureExtractor(object):
             self._disjoint_communities = self._graph.disjoint_communities()
         return self._disjoint_communities
 
-    # def get_output_path(self, feature_name):
-    #     """
-    #
-    #     Parameters
-    #     ----------
-    #     feature_name :
-    #
-    #     Returns
-    #     -------
-    #
-    #     """
-    #     return "Output\\" + self._graph_name + feature_name + ".pkl"
-
     def get_node_label(self, vertex):
         """Return the vertex label.
 
@@ -117,10 +104,6 @@ class FeatureExtractor(object):
 
     def get_graph(self):
         return self._graph
-
-    def load_feature(self, feature, feature_func):
-        if feature:
-            feature = feature_func()
 
     # def load_centrality_features(self):
     #     return
@@ -696,8 +679,8 @@ class FeatureExtractor(object):
         u, v, p = self._graph.get_resource_allocation_index(v, u)
         return p
 
-    # def is_same_community(self, v, u):
-    #     return self._disjoint_communities[v] == self._disjoint_communities[u]
+    def is_same_community(self, v, u):
+        return self._disjoint_communities[v] == self._disjoint_communities[u]
 
     # def is_same_community(self, v, u):
     # disjoint_communities = self._disjoint_communities
