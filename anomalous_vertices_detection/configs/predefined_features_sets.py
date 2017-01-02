@@ -91,3 +91,15 @@ fast_vertex_features = {
                 }
            }
 }
+
+stranger_intrusion_features = {
+    True: {"vertex_v":
+               {"src": "get_vertex",
+                "label": "get_label",
+                "out_degree": "get_out_degree",
+                "friends_connections": "friends_connections",
+                "avg_friends_comm": "avg_friends_comm",
+                "number_of_neighbors_communities": "get_number_of_neighbors_communities"
+                }
+           }
+}
