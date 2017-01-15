@@ -8,11 +8,11 @@ labels = {"neg": "Real", "pos": "Fake"}
 dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, type="simulation",
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
 glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
-output_foldr = "../output/"
-test_path, training_path, result_path, labels_output_path = output_foldr + dataset_config.name + "_test.csv", \
-                                                            output_foldr + dataset_config.name + "_train.csv", \
-                                                            output_foldr + dataset_config.name + "_res.csv", \
-                                                            output_foldr + dataset_config.name + "_labels.csv"
+output_folder = "../output/"
+test_path, training_path, result_path, labels_output_path = output_folder + dataset_config.name + "_test.csv", \
+                                                            output_folder + dataset_config.name + "_train.csv", \
+                                                            output_folder + dataset_config.name + "_res.csv", \
+                                                            output_folder + dataset_config.name + "_labels.csv"
 
 my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path,
                                                         is_directed=dataset_config.is_directed,
