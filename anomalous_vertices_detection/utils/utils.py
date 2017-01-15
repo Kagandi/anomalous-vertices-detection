@@ -297,3 +297,18 @@ def get_output_paths(set_name, output_foldr, argv):
         else:
             load_new_graph = False
     return load_new_graph, new_train_test, result_path, test_path, training_path, labels_output_path
+
+
+def is_attributes_match(selection_attr, attr_dict):
+    attr_count = 0
+    for key, value in selection_attr.items():
+        try:
+            if attr_dict[key] != value:
+                return False
+            else:
+                attr_count += 1
+        except:
+            continue
+    if attr_count == len(selection_attr):
+        return True
+    return False
