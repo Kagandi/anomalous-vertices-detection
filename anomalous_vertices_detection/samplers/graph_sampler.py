@@ -154,6 +154,34 @@ class GraphSampler(object):
                     if not edge_number:
                         break
 
+    def get_random_vertices(self, vertices_number, selection_label=None, condition=lambda x: True):
+        """
+            Return randomly selected existing vertices with specific label.
+
+            Parameters
+            ----------
+            vertices_number : integer
+                The number of vertices that should be generated and returned.
+            selection_label : string/integer, optional (default= no attributes)
+               Holds the label of the generated edge.
+
+            Returns
+            -------
+            el : list
+                List that contains random edges.
+        """
+        self._open_vertices = self._open_vertices.difference(self._closed_vertices)
+        open_vertices = list(self._open_vertices)
+        random.shuffle(open_vertices)
+        for vertex in open_vertices:
+            if self._graph.get_node_label(vertex) == selection_label or not selection_label:
+                if condition(vertex):
+                    yield vertex
+                    self._closed_vertices.add(vertex)
+                    vertices_number -= 1
+                    if not vertices_number:
+                        break
+
     def transform_edge(self, edge, selection_label):
         if not self._graph.is_directed:
             selection_label = utils.to_iterable(selection_label)
@@ -179,7 +207,7 @@ class GraphSampler(object):
         for vertex in vertices:
             if self._vertex_min_edge_number < self._graph.get_vertex_out_degree(
                     vertex) < self._vertex_max_edge_number and (
-                    self._graph.get_node_label(vertex) == edge_label or edge_label is None):
+                            self._graph.get_node_label(vertex) == edge_label or edge_label is None):
                 expended_vertices.append(vertex)
         return expended_vertices
 
@@ -241,6 +269,12 @@ class GraphSampler(object):
             return dist[u] == 3
         return False
 
+    def is_simulated_vertex(self, v):
+        return utils.is_attributes_match({"type": "sim"}, self._graph.get_node_attributes(v))
+
+    def is_not_simulated_vertex(self, v):
+        return not utils.is_attributes_match({"type": "sim"}, self._graph.get_node_attributes(v))
+
     def generate_labeled_sample_by_vertices(self, negative_number, positive_number):
         positive_set = self.get_random_vertices_edges(positive_number, self._graph.positive_label)
         negative_set = self.get_random_vertices_edges(negative_number, [None, self._graph.negative_label])
@@ -290,4 +324,46 @@ class GraphSampler(object):
             self.get_random_edge_sample(negative_number, self._graph.negative_label),
             self.generate_random_edges_with_condition(positive_number, self.is_not_linked,
                                                       edge_label=self._graph.positive_label)
+        )
+
+    def generate_sample_for_labeled_vertices(self, negative_number, positive_number):
+        """ Return a sample of vertices from the graph.
+
+            Parameters
+            ----------
+            negative_number : integer
+                The number of negative links that should be returned.
+
+            positive_number : integer
+               The number of positive links that should be returned.
+
+            Returns
+            -------
+            el : list
+                List that contains the negative and  positive sampled vertices.
+        """
+        return itertools.chain(
+            self.get_random_vertices(positive_number, self._graph.positive_label, self.is_simulated_vertex),
+            self.get_random_vertices(negative_number, self._graph.negative_label)
+        )
+
+    def generate_sample_for_test_labeled_vertices(self, negative_number, positive_number):
+        """ Return a sample of vertices from the graph.
+
+            Parameters
+            ----------
+            negative_number : integer
+                The number of negative links that should be returned.
+
+            positive_number : integer
+               The number of positive links that should be returned.
+
+            Returns
+            -------
+            el : list
+                List that contains the negative and  positive sampled vertices.
+        """
+        return itertools.chain(
+            self.get_random_vertices(positive_number, self._graph.positive_label, self.is_not_simulated_vertex),
+            self.get_random_vertices(negative_number, self._graph.negative_label)
         )
