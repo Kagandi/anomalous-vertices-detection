@@ -100,10 +100,10 @@ class GraphLearningController:
         """
         print "Setting training and test sets"
         if my_graph.is_directed:
-            meta_data_cols = ["dst", "src", "out_degree_v", "in_degree_v", "out_degree_u", "in_degree_u"]
+            meta_data_cols = ["dst", "src", "out_degree_v", "in_degree_v", "out_degree_u", "in_degree_u", "vertex_label"]
             # meta_data_cols = ["dst", "src"]
         else:
-            meta_data_cols = ["dst", "src", "number_of_friends_u", "number_of_friends_v"]
+            meta_data_cols = ["dst", "src", "number_of_friends_u", "number_of_friends_v", "vertex_label"]
 
         # meta_data_cols = ["dst"]
         self.create_training_test_sets(my_graph, test_path, train_path, test_size=test_size,
@@ -116,8 +116,8 @@ class GraphLearningController:
         # Testing the classifier
         print("Test evaluation: {}".format(self._ml.evaluate(test_path, "edge_label", id_col_name, meta_data_cols)))
 
-    def classify_by_links(self, my_graph, test_path, train_path, results_output_path, real_labels_path, test_size=0,
-                          train_size=0, meta_data_cols=[], id_col_name="src"):
+    def classify_by_links(self, my_graph, test_path, train_path, results_output_path, real_labels_path, test_size={},
+                          train_size={}, meta_data_cols=[], id_col_name="src"):
         """Execute the vertex anomaly detection process
 
         Parameters
