@@ -29,7 +29,7 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 ```
 
 ##Todo
-- [ ] Complete documentation
+- [ ] Complete the documentation
 - [ ] Write Jupiter notebooks
 - [ ] Clean the code
 - [X] Add setup.py
