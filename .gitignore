@@ -1,0 +1,19 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+/build
+# IntelliJ project files
+.idea
+*.iml
+out
+gen### CVS template
+/CVS/*
+**/CVS/*
+.cvsignore
+*/.cvsignore
+### Dropbox template
+# Dropbox settings and caches
+.dropbox
+.dropbox.attr
+.dropbox.cache
+
