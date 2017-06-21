@@ -32,6 +32,17 @@ a publication together. [[Source][19]]
 [Flixster][14] is a social movie site which allows users to share movie reviews, discover new movies, and communicate with others.
 We collected the data using a dedicated crawler during 2012
 ### Twitter
+[Twitter][15] is an undirected online social network where people publish
+short messages and updates. Currently, Twitter has 310 million monthly
+active users. According to recent reports, Twitter has a bot infestation
+problem. We used a dedicated API crawler to obtain our dataset
+in 2014.
+### Yelp
+[Yelp][16] is is a web platform to help people find local businesses.
+In addition to finding local business and writing reviews, Yelp allows its users to discover
+events, make lists, and talk with other Yelpers.
+In 2016 Yelp published several big datasets as part of the Yelp Dataset Challenge; one is a social network of its users. [[Source][20]]
+
 
 [1]: http://proj.ise.bgu.ac.il/sns/datasets/academia.csv.gz
 [2]: http://proj.ise.bgu.ac.il/sns/datasets/Cit-HepPh.txt.csv.gz
