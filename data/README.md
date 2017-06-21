@@ -1,4 +1,4 @@
-##Data
+## Data
 | Network               | Directed | Labeled   | Vertices  | Edges      |
 |-----------------------|----------|-----------|-----------|------------|
 | [Academia][1]         | True     | False     | 200,169   | 1,389,063  |
@@ -9,13 +9,13 @@
 | [Twitter][6]          | True     | [True][9] | 5,384,160 | 16,011,443 |
 | [Yelp][7]             | Fasle    | Fasle     | 249,443   | 3,563,818  |
 
-###Academia
+### Academia
 [Academia.edu][10] is a social platform for academics to share and follow research, and to follow other researchers’ work. Using our dedicated crawler,
 we crawled most of the Academia.edu graph during 2011.
 ###ArXiv HepPh
 [ArXiv][11] is an e-print service in fields such as physics and computer science.
 We used the ArXiv HEP-PH (high energy physics phenomenology) citation graph that was released as part of the 2003 KDD Cup. [[Source][17]]
-###CLASS OF 1880/81
+### CLASS OF 1880/81
 [CLASS OF 1880/81][12] is a dataset which contains the friendship network of a German school class from 1880-81 that was assembled by the class’s primary school teacher, Johannes Delitsch.
 The dataset itself was generated from observing students, interviewing pupils and parents, and analyzing school essays .
 Delitsch found that there were 13 outliers out of 53 students, which Heidler et al. defined as students who did not fit perfectly into their predicted position within the network structure.
@@ -24,24 +24,14 @@ students who often led the games; “sweets giver,” a student who bought
 his peers’ friendship with candies; and a specific group of seven students
 who were psychologically or physically handicapped, or socio-economically deprived.
 This is probably the first-ever primarily collected social network dataset. [[Source][18]]
-###DBLP
+### DBLP
 [DBLP][13] is  is the online reference for bibliographic information on major computer science publications.
 We used a version of the DBLP dataset to build a co-authorship graph where two authors are connected if they published
 a publication together. [[Source][19]]
-###Flixster
+### Flixster
 [Flixster][14] is a social movie site which allows users to share movie reviews, discover new movies, and communicate with others.
 We collected the data using a dedicated crawler during 2012
-###Twitter
-[Twitter][15] is an undirected online social network where people publish
-short messages and updates. Currently, Twitter has 310 million monthly
-active users. According to recent reports, Twitter has a bot infestation
-problem. We used a dedicated API crawler to obtain our dataset
-in 2014.
-###Yelp
-[Yelp][16] is is a web platform to help people find local businesses.
-In addition to finding local business and writing reviews, Yelp allows its users to discover
-events, make lists, and talk with other Yelpers.
-In 2016 Yelp published several big datasets as part of the Yelp Dataset Challenge; one is a social network of its users. [[Source][20]]
+### Twitter
 
 [1]: http://proj.ise.bgu.ac.il/sns/datasets/academia.csv.gz
 [2]: http://proj.ise.bgu.ac.il/sns/datasets/Cit-HepPh.txt.csv.gz

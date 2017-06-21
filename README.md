@@ -5,14 +5,14 @@ The package supports various graph packages ([NetworkX](https://networkx.github.
 This project is under development and has a many planned improvements. More details on the project can be find in the our paper titled ["Unsupervised Anomalous Vertices Detection Utilizing Link Prediction Algorithms"](https://arxiv.org/abs/1610.07525) and in the NetSciX 2017 [presentation](http://slides.com/dimakagan/netscix).
 
 
-##Installation
+## Installation
 ```
 git clone git://github.com/Kagandi/anomalous-vertices-detection.git
 pip install -r requirements.txt
 python setup.py install
 ```
 GraphLab may require installation of additional requirements, if needed a message with instruction will be presented.
-##Usage
+## Usage
 Init:
 ```python
 from anomalous_vertices_detection.configs.graph_config import GraphConfig
@@ -29,7 +29,7 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 
 ```
 
-##Todo
+## Todo
 - [ ] Complete the documentation
 - [ ] Write Jupiter notebooks
 - [ ] Clean the code
