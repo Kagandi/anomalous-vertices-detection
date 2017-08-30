@@ -1,4 +1,5 @@
 import math
+from collections import Counter
 
 import numpy as np
 
@@ -34,6 +35,7 @@ class FeatureExtractor(object):
         self._hits = None
         self._closeness = None
         self._disjoint_communities = None
+        self._disjoint_communities_size = Counter()
         self._load_centrality = None
         self._nodes_number_of_cliques = None
         self._average_neighbor_degree = None
@@ -45,6 +47,13 @@ class FeatureExtractor(object):
         if not self._disjoint_communities:
             self._disjoint_communities = self._graph.disjoint_communities()
         return self._disjoint_communities
+
+    @property
+    def disjoint_communities_size(self):
+        if not self._disjoint_communities_size:
+            for com in self.disjoint_communities.values():
+                self._disjoint_communities_size[com] += 1
+        return self._disjoint_communities_size
 
     def get_node_label(self, vertex):
         """Return the vertex label.
@@ -695,7 +704,8 @@ class FeatureExtractor(object):
         communities = []
         for u in self._graph.neighbors_iter(v):
             try:
-                communities.append(self.disjoint_communities[u])
+                if self.disjoint_communities_size[self.disjoint_communities[u]] > 50:
+                    communities.append(self.disjoint_communities[u])
             except TypeError:
                 continue
         return len(set(communities))
@@ -867,4 +877,7 @@ class FeatureExtractor(object):
         -------
 
         """
-        return self.get_number_of_friends(u) / self.get_number_of_neighbors_communities(u)
+        try:
+            return self.get_number_of_friends(u) / self.get_number_of_neighbors_communities(u)
+        except ZeroDivisionError:
+            return 0
