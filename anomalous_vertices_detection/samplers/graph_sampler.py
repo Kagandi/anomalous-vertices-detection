@@ -217,7 +217,7 @@ class GraphSampler(object):
 
         expended_vertices = []
         for vertex in vertices:
-            if self._vertex_min_edge_number < self._graph.get_vertex_out_degree(
+            if n < self._graph.get_vertex_out_degree(
                     vertex) < self._vertex_max_edge_number and (
                             self._graph.get_node_label(vertex) == edge_label or edge_label is None):
                 expended_vertices.append(vertex)

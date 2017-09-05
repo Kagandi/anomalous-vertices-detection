@@ -21,7 +21,6 @@ class FeatureExtractor(object):
             One of the class that implements AbstractGraph API
         """
         self._graph = graph
-        self.init_centrality_features()
         self._degree_centrality = None
         self._out_degree_centrality = None
         self._in_degree_centrality = None
@@ -111,20 +110,20 @@ class FeatureExtractor(object):
 
     # def load_centrality_features(self):
     #     return
-    #     self._degree_centrality = self.load_feature("degree_centrality", self._graph.degree_centrality)
-    #     self._out_degree_centrality = self.load_feature("out_degree_centrality", self._graph.out_degree_centrality)
-    #     self._in_degree_centrality = self.load_feature("degree_centrality", self._graph.in_degree_centrality)
-    #     self._pagerank = self.load_feature("pagerank", self._graph.pagerank)
-    #     self._disjoint_communities = self.load_feature("disjoint_communities", self._graph.disjoint_communities)
-    #     self._hits = self.load_feature("hits", self._graph.hits)
-    #     self._closeness = self.load_feature("closeness", self._graph.closeness)
-    #     self._load_centrality = self.load_feature("load_centrality", self._graph.load_centrality)
-    #     self._nodes_number_of_cliques = self.load_feature("nodes_number_of_cliques", self._graph.nodes_number_of_cliques)
-    #     self._average_neighbor_degree = self.load_feature("average_neighbor_degree",
+    #     self._degree_centrality = if not "degree_centrality", self._graph.degree_centrality)
+    #     self._out_degree_centrality = if not "out_degree_centrality", self._graph.out_degree_centrality)
+    #     self._in_degree_centrality = if not "degree_centrality", self._graph.in_degree_centrality)
+    #     self._pagerank = if not "pagerank", self._graph.pagerank)
+    #     self._disjoint_communities = if not "disjoint_communities", self._graph.disjoint_communities)
+    #     self._hits = if not "hits", self._graph.hits)
+    #     self._closeness = if not "closeness", self._graph.closeness)
+    #     self._load_centrality = if not "load_centrality", self._graph.load_centrality)
+    #     self._nodes_number_of_cliques = if not "nodes_number_of_cliques", self._graph.nodes_number_of_cliques)
+    #     self._average_neighbor_degree = if not "average_neighbor_degree",
     #     self._graph.average_neighbor_degree)
-    #     self._communicability_centrality = self.load_feature("communicability", self._graph.communicability_centrality)
-    #     self._betweenness = self.load_feature("betweenness", self._graph.betweenness_centrality)
-    #     self._eigenvector = self.load_feature("eigenvector", self._graph.eigenvector)
+    #     self._communicability_centrality = if not "communicability", self._graph.communicability_centrality)
+    #     self._betweenness = if not "betweenness", self._graph.betweenness_centrality)
+    #     self._eigenvector = if not "eigenvector", self._graph.eigenvector)
 
     @property
     def nodes(self):
@@ -431,91 +430,104 @@ class FeatureExtractor(object):
         return len(self._graph.get_transitive_friends(v, u))
 
     def get_in_degree_centrality(self, node):
-        self.load_feature(self._in_degree_centrality, self._graph.in_degree_centrality)
+        if not self._in_degree_centrality:
+            self._in_degree_centrality = self._graph.in_degree_centrality
         if node in self._in_degree_centrality.keys():
             return self._in_degree_centrality[node]
         else:
             return 0
 
     def get_out_degree_centrality(self, node):
-        self.load_feature(self._out_degree_centrality, self._graph.out_degree_centrality)
+        if not self._out_degree_centrality:
+            self._out_degree_centrality = self._graph.out_degree_centrality
         if node in self._out_degree_centrality.keys():
             return self._out_degree_centrality[node]
         else:
             return 0
 
     def get_nodes_number_of_cliques(self, node):
-        self.load_feature(self._nodes_number_of_cliques, self._graph.nodes_number_of_cliques)
+        if not self._nodes_number_of_cliques:
+            self._nodes_number_of_cliques = self._graph.nodes_number_of_cliques
         if node in self._nodes_number_of_cliques:
             return self._nodes_number_of_cliques[node]
         else:
             return 0
 
     def get_degree_centrality(self, node):
-        self.load_feature(self._degree_centrality, self._graph.degree_centrality)
+        if not self._degree_centrality:
+            self._degree_centrality = self._graph.degree_centrality
         if node in self._degree_centrality.keys():
             return self._degree_centrality[node]
         else:
             return 0
 
     def get_pagerank(self, node):
-        self.load_feature(self._pagerank, self._graph.pagerank)
+        if not self._pagerank:
+            self._pagerank = self._graph.pagerank
         if node in self._pagerank[0].keys():
             return self._pagerank[0][node]
         else:
             return 0
 
     def get_hubs(self, node):
-        self.load_feature(self._hits, self._graph.hits)
+        if not self._hits:
+            self._hits = self._graph.hits
         if node in self._hits[0].keys():
             return self._hits[0][node]
         else:
             return 0
 
     def get_authorities(self, node):
-        self.load_feature(self._hits, self._graph.hits)
+        if not self._hits:
+            self._hits = self._graph.hits
         if node in self._hits[1].keys():
             return self._hits[1][node]
         else:
             return 0
 
     def get_average_neighbor_degree(self, node):
-        self.load_feature(self._average_neighbor_degree, self._graph.average_neighbor_degree)
+        if not self._average_neighbor_degree:
+            self._average_neighbor_degree = self._graph.average_neighbor_degree
         if node in self._average_neighbor_degree.keys():
             return self._average_neighbor_degree[node]
         else:
             return 0
 
     def get_eigenvector(self, node):
-        self.load_feature(self._eigenvector, self._graph.eigenvector)
+        if not self._eigenvector:
+            self._eigenvector = self._graph.eigenvector
         if node in self._eigenvector.keys():
             return self._eigenvector[node]
         else:
             return 0
 
     def get_betweenness(self, node):
-        self.load_feature(self._betweenness, self._graph.betweenness)
+        if not self._betweenness:
+            self._betweenness = self._graph.betweenness
         if node in self._betweenness.keys():
             return self._betweenness[node]
         else:
             return 0
 
     def get_load_centrality(self, node):
-        self.load_feature(self._load_centrality, self._graph.load_centrality)
+        if not self._load_centrality:
+            self._load_centrality = self._graph.load_centrality
         if node in self._load_centrality.keys():
             return self._load_centrality[node]
         else:
             return 0
 
     def get_communicability_centrality(self, node):
-        self.load_feature(self._communicability_centrality, self._graph.communicability_centrality)
+        if not self._communicability_centrality:
+            self._communicability_centrality = self._graph.communicability_centrality
         if node in self._communicability_centrality.keys():
             return self._communicability_centrality[node]
         else:
             return 0
 
     def get_closeness(self, node):
-        self.load_feature(self._closeness, self._graph.closeness)
+        if not self._closeness:
+            self._closeness = self._graph.closeness
         if node in self._closeness.keys():
             return self._closeness[node]
         else:
@@ -616,8 +628,6 @@ class FeatureExtractor(object):
         friend_measure = 0
         for v_friend in self._graph.neighbors_iter(v):
             for u_friend in self._graph.neighbors_iter(u):
-                # friend_measure = Parallel(n_jobs=4)(delayed(self.is_linked)(v_friend, u_friend) for u_friend in self._graph.get_neighbors(u))
-                # friend_measure = sum(friend_measure)
                 if self.is_linked(v_friend, u_friend):
                     friend_measure += 1
         return friend_measure

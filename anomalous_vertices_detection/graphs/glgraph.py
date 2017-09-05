@@ -1,7 +1,6 @@
 # from sframe import (Edge, SArray, SFrame, SGraph, aggregate)
 from graphlab import (Edge, SArray, SFrame, SGraph, aggregate, connected_components, pagerank,
                       shortest_path)
-from pip._vendor.pyparsing import delimitedList
 
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
@@ -11,13 +10,11 @@ from anomalous_vertices_detection.utils import utils
 class GlGraph(AbstractGraph):
     # __slots__ = ['_is_directed']
 
-    def __init__(self, is_directed=False, weight_field="", graph_obj=SGraph()):
+    def __init__(self, is_directed=False, weight_field="", graph_obj=None):
         super(GlGraph, self).__init__(weight_field)
-        # self._graph = graph_obj
+        if graph_obj:
+            self._graph = graph_obj
         self._is_directed = is_directed
-
-    def set_sgraph(self, sgraph):
-        self._graph = sgraph
 
     def load_graph(self, graph_path, direction=1, start_line=0, limit=graph_max_edge_number, blacklist=set(),
                    delimiter=','):

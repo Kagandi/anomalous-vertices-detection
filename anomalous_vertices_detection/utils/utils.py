@@ -63,7 +63,7 @@ def memoize2(f):
 def extract_graph_from_csv(f, labels=False):
     elems = csv.reader(open(f, 'r'))
 
-    elem = next(elems)
+    next(elems)
     for elem in elems:
         if labels:
             yield elem[0], elem[1], elem[2]  # empty page will yield None print
@@ -236,11 +236,11 @@ def get_number(s):
 
 
 def graph_anonymizer(graph_path, output_path, header=False, delimiter=","):
-    def map_vertex(vertex, vertex_count):
+    def map_vertex(vertex, vertex_counter):
         if vertex not in vertecies_map:
-            vertecies_map[vertex] = str(vertex_count)
-            vertex_count += 1
-        return vertecies_map[vertex], vertex_count
+            vertecies_map[vertex] = str(vertex_counter)
+            vertex_counter += 1
+        return vertecies_map[vertex], vertex_counter
 
     vertecies_map, anonymized_data, vertex_count = {}, [], 1
     f = read_file(graph_path)

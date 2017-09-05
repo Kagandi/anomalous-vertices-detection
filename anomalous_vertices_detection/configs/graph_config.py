@@ -1,6 +1,7 @@
 class GraphConfig(object):
     def __init__(self, set_name, dataset_path, is_directed=True, labels_path=False,
-                 graph_type="regular", vertex_min_edge_number=1, vertex_max_edge_number=50000, delimiter=',', first_line=0):
+                 graph_type="regular", vertex_min_edge_number=1, vertex_max_edge_number=50000, delimiter=',',
+                 first_line=0):
         self._dataset_path = dataset_path
         self._labels_path = labels_path
         self._is_directed = is_directed

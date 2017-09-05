@@ -90,7 +90,8 @@ def open_gzip():
 
 def papers():
     for line in open_gzip():
-        if line.strip() in '[]': continue
+        if line.strip() in '[]':
+            continue
         line = line.rstrip().rstrip(',')
         yield json.loads(line)
 

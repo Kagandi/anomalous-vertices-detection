@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from sklearn import svm, tree, ensemble, feature_extraction, cross_validation, preprocessing
-from sklearn.metrics import roc_curve, recall_score, precision_score, accuracy_score, roc_auc_score
+from sklearn import svm, tree, ensemble, feature_extraction, preprocessing
+from sklearn.metrics import recall_score, precision_score, accuracy_score, roc_auc_score
 from sklearn.model_selection import KFold
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.learners import AbstractLearner
@@ -94,15 +94,7 @@ class SkLearner(AbstractLearner):
             # return cross_validation.StratifiedKFold(labels, n_folds)
 
     def get_classification_metrics(self, l_test, prediction, probas):
-        fpr, tpr, thresholds = roc_curve(l_test, prediction)
-        # false_positive = float(len(np.where(l_test - prediction == -1)[0])) # 0 (truth) - 1 (prediction) == -1 which is a false positive
-        # false_negative = float(len(np.where(l_test - prediction == 1)[0])) # 1 (truth) - 0 (prediction) == 1 which is a false negative
-        # true_negative = float(len(np.where(l_test + prediction == 0)[0])) # 0 (truth) - 0 (prediction) == 0 which is a false positive
-        # true_positive = float(len(np.where(l_test + prediction == 2)[0]))# 1 (truth) - 1 (prediction) == 0 which is a false positive
-        # print true_positive/(true_positive+false_negative) #tpr
-        # print false_negative/(true_positive+false_negative) #fnr
-        # print false_positive/(true_negative+false_positive) #fpr
-        # print true_negative/(true_negative+false_positive) #tnr
+        # fpr, tpr, thresholds = roc_curve(l_test, prediction)
         false_positive = float(
             len(np.where(l_test - prediction == -1)[0]))  # 0 (truth) - 1 (prediction) == -1 which is a false positive
         true_negative = float(
@@ -146,12 +138,6 @@ class SkLearner(AbstractLearner):
     def validate_prediction_by_links(self, prediction):
         roc_auc, recall, precision, accuracy, fpr, tpr = [], [], [], [], [], []
 
-        # f_train, f_test = features[train_index], features[test_index]
-        # l_train, l_test = labels[train_index], labels[test_index]
-        # print l_train
-        # prediction = self.train_classifier(train).get_prediction_probabilities(test.features)
-        # prediction = self.classify_by_links_probability(prediction, test.features_ids, threshold=0.5, metadata=test.metadata)
-        # prediction = self.merge_with_labels(prediction, nodes_label_path, default_label="Real")
         try:
             metrics = self.get_classification_metrics(prediction["predicted_label"].values, prediction["actual"].values,
                                                       prediction["pos probability"].values)
@@ -171,6 +157,7 @@ class SkLearner(AbstractLearner):
         train_df = pd.DataFrame(probas)
         train_df["src_id"] = pd.DataFrame(features_ids)
         if isinstance(metadata, pd.DataFrame):
+            # Very weird I don't remember why I wrote this.
             train_df["dst_id"] = metadata["dst"]
             train_df.pop("dst_id")
         train_df["link_label"] = train_df[0].apply(lambda avg: 1 if avg <= threshold else 0)

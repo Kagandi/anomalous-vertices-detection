@@ -54,7 +54,6 @@ class IGraph(AbstractGraph):
         vetices_list = set()
         edges_list, label_list, weight_list = [], [], []
         for i, edge in graph_path:
-            edge_attr = {}
             if i >= start_line:
                 if i == limit + start_line:
                     break
