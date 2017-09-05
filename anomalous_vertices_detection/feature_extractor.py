@@ -694,7 +694,7 @@ class FeatureExtractor(object):
         return p
 
     def is_same_community(self, v, u):
-        return self._disjoint_communities[v] == self._disjoint_communities[u]
+        return self.disjoint_communities[v] == self.disjoint_communities[u]
 
     # def is_same_community(self, v, u):
     # disjoint_communities = self._disjoint_communities
