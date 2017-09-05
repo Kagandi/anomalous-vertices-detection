@@ -5,7 +5,7 @@ from anomalous_vertices_detection.learners.gllearner import GlLearner
 
 labels = {"neg": "Real", "pos": "Fake"}
 #
-dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, type="simulation",
+dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, graph_type="simulation",
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
 glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
 output_folder = "../output/"

@@ -22,11 +22,6 @@ class FeatureExtractor(object):
         """
         self._graph = graph
         self.init_centrality_features()
-
-    def init_centrality_features(self):
-        """
-        Initialize all centrality features
-        """
         self._degree_centrality = None
         self._out_degree_centrality = None
         self._in_degree_centrality = None

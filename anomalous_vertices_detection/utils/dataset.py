@@ -7,7 +7,16 @@ from anomalous_vertices_detection.utils import utils
 
 
 class DataSet(object):
-    def __init__(self, features=[], labels=[], features_ids=[], metadata=[], container_type="DataFrame"):
+    def __init__(self, features=None, labels=None, features_ids=None, metadata=None, container_type="DataFrame"):
+        if not features:
+            features = []
+        if not features_ids:
+            features_ids = []
+        if not metadata:
+            metadata = []
+        if not labels:
+            labels = []
+
         self._features_ids = features_ids
         self._labels = labels
         self._features = features
@@ -55,7 +64,9 @@ class DataSet(object):
 
 
 class DataSetFactory(object):
-    def convert_data_to_sklearn_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[]):
+    def convert_data_to_sklearn_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=None):
+        if not metadata_cols:
+            metadata_cols = []
         features_ids = None
         metadata = pd.DataFrame()
         if utils.is_valid_path(features):
@@ -77,8 +88,10 @@ class DataSetFactory(object):
         if isinstance(features[0], list) or isinstance(features, np.ndarray):
             return DataSet(features, labels, features_ids, metadata)
 
-    def convert_data_to_graphlab_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[],
-                                        labels_map={}):
+    def convert_data_to_graphlab_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=None,
+                                        labels_map=None):
+        if not metadata_cols:
+            metadata_cols = []
         if utils.is_valid_path(features):
             features = gl.SFrame.read_csv(features, column_type_hints={feature_id_col_name: str, "dst": str})
             features_id = features[feature_id_col_name]

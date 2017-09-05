@@ -1,12 +1,13 @@
-from django.contrib.gis.geos.prototypes import predicates
-from sklearn import svm, tree, ensemble, feature_extraction, cross_validation, preprocessing
 import numpy as np
-from sklearn.metrics import roc_curve, auc, recall_score, precision_score, accuracy_score, roc_auc_score, classification_report, confusion_matrix
 import pandas as pd
+from sklearn import svm, tree, ensemble, feature_extraction, cross_validation, preprocessing
+from sklearn.metrics import roc_curve, recall_score, precision_score, accuracy_score, roc_auc_score
+from sklearn.model_selection import KFold
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.learners import AbstractLearner
 from anomalous_vertices_detection.utils.dataset import DataSetFactory, DataSet
 from anomalous_vertices_detection.utils.exceptions import *
+
 
 def dict_to_array(my_dict):
     vec = feature_extraction.DictVectorizer()
@@ -51,7 +52,7 @@ class SkLearner(AbstractLearner):
     def inverse_transform_labels(labels):
         return label_encoder.inverse_transform(labels)
 
-    def convert_data_to_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[]):
+    def convert_data_to_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=None):
         return DataSetFactory().convert_data_to_sklearn_format(features, labels, feature_id_col_name, metadata_cols)
 
     def set_decision_tree_classifier(self, tree_number=100):
@@ -87,7 +88,10 @@ class SkLearner(AbstractLearner):
 
     def split_kfold(self, labels, n_folds=10):
         # StratifiedKFold(self._labels, n_folds)
-        return cross_validation.StratifiedKFold(labels, n_folds)
+        skf = KFold(n_folds)
+        for train_index, test_index in skf.split(labels):
+            yield train_index, test_index
+            # return cross_validation.StratifiedKFold(labels, n_folds)
 
     def get_classification_metrics(self, l_test, prediction, probas):
         fpr, tpr, thresholds = roc_curve(l_test, prediction)
@@ -137,7 +141,7 @@ class SkLearner(AbstractLearner):
         prediction = self.get_prediction(data)
         probas = self.get_prediction_probabilities(data)[:, 1]
         data.merge_dataset_with_predictions(prediction)
-        return self.get_classification_metrics(data.labels, prediction,probas)
+        return self.get_classification_metrics(data.labels, prediction, probas)
 
     def validate_prediction_by_links(self, prediction):
         roc_auc, recall, precision, accuracy, fpr, tpr = [], [], [], [], [], []
@@ -149,7 +153,8 @@ class SkLearner(AbstractLearner):
         # prediction = self.classify_by_links_probability(prediction, test.features_ids, threshold=0.5, metadata=test.metadata)
         # prediction = self.merge_with_labels(prediction, nodes_label_path, default_label="Real")
         try:
-            metrics = self.get_classification_metrics(prediction["predicted_label"].values, prediction["actual"].values, prediction["pos probability"].values)
+            metrics = self.get_classification_metrics(prediction["predicted_label"].values, prediction["actual"].values,
+                                                      prediction["pos probability"].values)
             roc_auc.append(metrics["auc"])
             recall.append(metrics["recall"])  # TPR
             precision.append(metrics["precision"])
@@ -160,7 +165,9 @@ class SkLearner(AbstractLearner):
         return {"auc": np.mean(roc_auc), "recall": np.mean(recall), "precision": np.mean(precision),
                 "accuracy": np.mean(accuracy), "fpr": np.mean(fpr)}
 
-    def classify_by_links_probability(self, probas, features_ids, labels={"neg": 0, "pos": 1}, threshold=0.5, metadata=[]):
+    def classify_by_links_probability(self, probas, features_ids, labels=None, threshold=0.5, metadata=None):
+        if not labels:
+            labels = {"neg": 0, "pos": 1}
         train_df = pd.DataFrame(probas)
         train_df["src_id"] = pd.DataFrame(features_ids)
         if isinstance(metadata, pd.DataFrame):
@@ -169,6 +176,8 @@ class SkLearner(AbstractLearner):
         train_df["link_label"] = train_df[0].apply(lambda avg: 1 if avg <= threshold else 0)
         train_df = train_df.groupby("src_id", as_index=False).agg(
             {0: ['mean', 'count'], 1: 'mean', "link_label": ['mean', 'sum']})
-        train_df.columns = ['src_id', "neg probability", 'edge number', "pos probability", 'mean_link_label', 'sum_link_label']
-        train_df["predicted_label"] = train_df["pos probability"].apply(lambda avg: labels["pos"] if avg >= threshold else labels["neg"])
+        train_df.columns = ['src_id', "neg probability", 'edge number', "pos probability", 'mean_link_label',
+                            'sum_link_label']
+        train_df["predicted_label"] = train_df["pos probability"].apply(
+            lambda avg: labels["pos"] if avg >= threshold else labels["neg"])
         return train_df

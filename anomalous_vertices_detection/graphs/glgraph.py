@@ -1,24 +1,26 @@
 # from sframe import (Edge, SArray, SFrame, SGraph, aggregate)
 from graphlab import (Edge, SArray, SFrame, SGraph, aggregate, connected_components, pagerank,
                       shortest_path)
+from pip._vendor.pyparsing import delimitedList
+
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
 from anomalous_vertices_detection.utils import utils
 
 
 class GlGraph(AbstractGraph):
-
-    __slots__ = ['_is_directed']
+    # __slots__ = ['_is_directed']
 
     def __init__(self, is_directed=False, weight_field="", graph_obj=SGraph()):
         super(GlGraph, self).__init__(weight_field)
-        self._graph = graph_obj
+        # self._graph = graph_obj
         self._is_directed = is_directed
 
     def set_sgraph(self, sgraph):
         self._graph = sgraph
 
-    def load_graph(self, graph_path, direction=1, start_line=0, limit=graph_max_edge_number, header=False):
+    def load_graph(self, graph_path, direction=1, start_line=0, limit=graph_max_edge_number, blacklist=set(),
+                   delimiter=','):
         json_object = utils.is_json(graph_path)
         if json_object is not False:
             # print json_object
@@ -26,7 +28,7 @@ class GlGraph(AbstractGraph):
             graph_path.rename({'X.0': 'X1', 'X.1': 'X2', 'X.2': 'Weight'})
         else:
             # load_sgraph()
-            graph_path = SFrame.read_csv(graph_path, header=False, column_type_hints={
+            graph_path = SFrame.read_csv(graph_path, delimiter=delimiter, header=False, column_type_hints={
                 'X1': str, 'X2': str}, nrows=graph_max_edge_number, skiprows=start_line)
             if self._weight_field != "":
                 graph_path.rename({'X3': 'Weight'})
@@ -40,7 +42,9 @@ class GlGraph(AbstractGraph):
         self._graph.show(vlabel='id', arrows=True)
         raw_input()
 
-    def add_edge(self, vertex1, vertex2, edge_atrr={}):
+    def add_edge(self, vertex1, vertex2, edge_atrr=None):
+        if not edge_atrr:
+            edge_atrr = {}
         self._graph = self._graph.add_edges(Edge(vertex1, vertex2, attr=edge_atrr))
 
     @property
@@ -110,6 +114,7 @@ class GlGraph(AbstractGraph):
             item for item in shortest_paths if item["__id"] == vertex2).next()['distance']
         # print path_distance
         return 0 if path_distance == 1e30 else path_distance
+
     #
     # def get_subgraph(self, nodes):
     #     # print nodes
@@ -119,34 +124,33 @@ class GlGraph(AbstractGraph):
     #         return GlGraph(self._is_directed, self._weight_field)
 
     def get_subgraph(self, ids, radius=1, full_subgraph=True):
-            verts = ids
+        verts = ids
 
-            ## find the vertices within radius (and the path edges)
-            for i in range(radius):
-                edges_out = self._graph.get_edges(src_ids=verts)
-                # edges_in = self._graph.get_edges(dst_ids=verts)
+        # find the vertices within radius (and the path edges)
+        for i in range(radius):
+            edges_out = self._graph.get_edges(src_ids=verts)
+            # edges_in = self._graph.get_edges(dst_ids=verts)
 
-                verts = list(edges_out['__src_id']) + list(edges_out['__dst_id'])
-                verts = list(set(verts))
+            verts = list(edges_out['__src_id']) + list(edges_out['__dst_id'])
+            verts = list(set(verts))
 
-            ## make a new graph to return and add the vertices
-            g = SGraph()
-            g = g.add_vertices(self._graph.get_vertices(verts), vid_field='__id')
+        # make a new graph to return and add the vertices
+        g = SGraph()
+        g = g.add_vertices(self._graph.get_vertices(verts), vid_field='__id')
 
-            ## add the requested edge set
-            if full_subgraph is True:
-                df_induced = self._graph.get_edges(src_ids=verts)
-                # induced_edge_in = self._graph.get_edges(dst_ids=verts)
-                # df_induced = induced_edge_out.append(induced_edge_in)
-                df_induced = df_induced.groupby(df_induced.column_names(), {})
+        # add the requested edge set
+        if full_subgraph is True:
+            df_induced = self._graph.get_edges(src_ids=verts)
+            # induced_edge_in = self._graph.get_edges(dst_ids=verts)
+            # df_induced = induced_edge_out.append(induced_edge_in)
+            df_induced = df_induced.groupby(df_induced.column_names(), {})
 
-                verts_sa = SArray(list(ids))
-                edges = df_induced.filter_by(verts_sa, "__src_id")
-                edges.append(df_induced.filter_by(verts_sa, "__dst_id"))
+            verts_sa = SArray(list(ids))
+            edges = df_induced.filter_by(verts_sa, "__src_id")
+            edges.append(df_induced.filter_by(verts_sa, "__dst_id"))
 
             g = g.add_edges(edges, src_field='__src_id', dst_field='__dst_id')
-            return g
-
+        return g
 
     def get_number_weakly_connected_components(self, g):
         cc = connected_components.create(g)

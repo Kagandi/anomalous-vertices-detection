@@ -1,18 +1,22 @@
 #!/usr/bin/env python
-import fileinput
 import csv
 import sys
 import gzip
 
+
 def intersect(a, b):
     """ return the intersection of two lists """
     return list(set(a) & set(b))
+
+
 # This prevents prematurely closed pipes from raising
 # an exception in Python
 # from signal import signal, SIGPIPE, SIG_DFL
 # signal(SIGPIPE, SIG_DFL)
-writer = csv.writer(open("categorylinks.csv","w"), quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
-stop_words=set(["redirects","articles","wikipedia","cs1","pages","dmy","mdy" ])
+# writer = csv.writer(open("categorylinks.csv", "w"), quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
+stop_words = {"redirects", "articles", "wikipedia", "cs1", "pages", "dmy", "mdy"}
+
+
 def is_insert(line):
     """
     Returns true if the line begins a SQL insert statement.
@@ -49,9 +53,9 @@ def parse_values(values, outfile):
                         escapechar='\\',
                         quotechar="'",
                         strict=True
-    )
+                        )
 
-    # writer = csv.writer(open(outfile,"w"), quoting=csv.QUOTE_MINIMAL)
+    writer = csv.writer(open(outfile, "w"), quoting=csv.QUOTE_MINIMAL)
     for reader_row in reader:
         for column in reader_row:
             # If our current string is empty...
@@ -81,7 +85,7 @@ def parse_values(values, outfile):
                     category = latest_row[1].lower()
                     category = category.split("_")
                     if not intersect(category, stop_words):
-                         writer.writerow(latest_row[0:2])
+                        writer.writerow(latest_row[0:2])
                     latest_row = []
                 # If we're beginning a new row, eliminate the
                 # opening parentheses.
@@ -106,7 +110,7 @@ def main():
     # listed in sys.argv[1:]
     # or stdin if no args given.
     try:
-        for line in gzip.open("C:\Users\user\Downloads\enwiki-latest-categorylinks.sql.gz","r"):
+        for line in gzip.open("C:\Users\user\Downloads\enwiki-latest-categorylinks.sql.gz", "r"):
             # Look for an INSERT statement and parse it.
             if is_insert(line):
                 values = get_values(line)
@@ -114,6 +118,7 @@ def main():
                     parse_values(values, "categorylinks.csv")
     except KeyboardInterrupt:
         sys.exit(0)
+
 
 if __name__ == "__main__":
     print "start"

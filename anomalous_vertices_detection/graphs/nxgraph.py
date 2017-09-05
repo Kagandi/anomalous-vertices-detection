@@ -10,7 +10,7 @@ from anomalous_vertices_detection.utils.utils import *
 
 
 class NxGraph(AbstractGraph):
-    __slots__ = []
+    # __slots__ = []
 
     def __init__(self, is_directed=False, weight_field=None, graph_obj=None):
         """ Initialize a graph
@@ -41,28 +41,27 @@ class NxGraph(AbstractGraph):
             else:
                 self._graph = nx.DiGraph()
 
-    def save_graph(self, save_path, type="pickle"):
+    def save_graph(self, save_path, file_type="pickle"):
         """ Saves the graph into a file
         
         Parameters
         ----------
+        file_type
         save_path: string,
             The path where the file shpuld be saved
-        type: string, optional (default=pickle)
-            The format in which the graph should be saved
 
         Examples
         --------
         >>> g.save_graph("Facebook.", "graphml")
-        """ 
-        if type == "pickle":
-            nx.write_gpickle(self._graph,  save_path)
-        elif type == "sgraph":
+        """
+        if file_type == "pickle":
+            nx.write_gpickle(self._graph, save_path)
+        elif file_type == "sgraph":
             self.save_as_sgraph(save_path)
-        elif type == "graphml":
+        elif file_type == "graphml":
             nx.write_graphml(self._graph, save_path)
         else:
-            msg = "The file type %s is unknown" % (type)
+            msg = "The file type %s is unknown" % file_type
             raise TypeError(msg)
 
     def save_as_sgraph(self, graph_path):
@@ -85,15 +84,14 @@ class NxGraph(AbstractGraph):
             res['attr'].append(edge[2])
         save_nx_as_sgraph(res, graph_path)
 
-    def load_saved_graph(self, graph_path, type="pickle"):
+    def load_saved_graph(self, graph_path, file__type="pickle"):
         """ Load a saved graph
 
         Parameters
         ----------
+        file__type
         graph_path: string,
             The path of the graph that is should be loaded
-        type: string, optional (default=pickle)
-            The format of the loaded graph
 
         Returns
         -------
@@ -104,11 +102,11 @@ class NxGraph(AbstractGraph):
         >>>  g.load_saved_graph("graph")
         """
 
-        if type == "sgraph":
+        if file__type == "sgraph":
             return self.load_saved_sgraph(graph_path)
-        if type == "pickle":
+        if file__type == "pickle":
             return self.load_saved_pickle(graph_path)
-        if type == "graphml":
+        if file__type == "graphml":
             return self.load_graphml(graph_path)
 
     @classmethod
@@ -165,10 +163,10 @@ class NxGraph(AbstractGraph):
         """
         return cls(graph_obj=nx.read_graphml(graph_path))
 
-    def add_node(self, vertex, attr_dict={}):
+    def add_node(self, vertex, attr_dict=None):
         self._graph.add_node(vertex, attr_dict)
 
-    def add_edge(self, vertex1, vertex2, edge_atrr={}):
+    def add_edge(self, vertex1, vertex2, edge_atrr=None):
         """ Adds a new edge to the graph
         Parameters
         ----------
@@ -717,11 +715,11 @@ class NxGraph(AbstractGraph):
         """
         return self._graph.neighbors(node)
 
-    def neighbors_iter(self, node):
+    def neighbors_iter(self, vertex):
         """
         Parameters
         ----------
-        node:
+        vertex:
 
         Returns
         -------
@@ -731,7 +729,7 @@ class NxGraph(AbstractGraph):
         --------
         >>>
         """
-        return self._graph.neighbors_iter(node)
+        return self._graph.neighbors_iter(vertex)
 
     def get_followers(self, node):
         """

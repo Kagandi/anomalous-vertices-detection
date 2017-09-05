@@ -4,8 +4,7 @@ import collections
 
 
 class AbstractGraph(object):
-
-    __slots__ = ['_graph', '_labels_dict', '_labels_map', '_weight_field']
+    # __slots__ = ['_graph', '_labels_dict', '_labels_map', '_weight_field']
 
     def __init__(self, weight_field=None):
         self._graph = None
@@ -48,8 +47,9 @@ class AbstractGraph(object):
 
     # def get_vertex(self, vertex):
     #     return vertex
-    #@profile
-    def load_graph(self, graph_path, direction=1, start_line=1, limit=graph_max_edge_number, blacklist=set(), delimiter=','):
+    # @profile
+    def load_graph(self, graph_path, direction=1, start_line=1, limit=graph_max_edge_number, blacklist=set(),
+                   delimiter=','):
         """Load a graph.
         The graph should be in csv format
 
@@ -196,6 +196,9 @@ class AbstractGraph(object):
     def get_subgraph(self, vertices):
         pass
 
+    def neighbors_iter(self, vertex):
+        pass
+
     def get_inner_subgraph(self, vertex1, vertex2):
         if self.is_directed:
             inner_subgraph = self.__class__(True)
@@ -249,6 +252,7 @@ class AbstractGraph(object):
         pass
 
     """Common Friends"""
+
     @utils.memoize2
     def get_common_neighbors(self, vertex1, vertex2):
         vertex1_neighbors = self.get_neighbors(vertex1)

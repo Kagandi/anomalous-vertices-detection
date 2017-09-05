@@ -28,6 +28,7 @@ class GraphLearningController:
 
             Parameters
             ----------
+            max_items_num
             graph : AbstractGraph
 
             dataset : list, iterable
@@ -50,6 +51,7 @@ class GraphLearningController:
 
         Parameters
         ----------
+        feature_dict
         my_graph : AbstractGraph
             A graph object that implements the AbstractGraph interface
         test_path : string
@@ -100,7 +102,8 @@ class GraphLearningController:
         """
         print "Setting training and test sets"
         if my_graph.is_directed:
-            meta_data_cols = ["dst", "src", "out_degree_v", "in_degree_v", "out_degree_u", "in_degree_u", "vertex_label"]
+            meta_data_cols = ["dst", "src", "out_degree_v", "in_degree_v", "out_degree_u", "in_degree_u",
+                              "vertex_label"]
             # meta_data_cols = ["dst", "src"]
         else:
             meta_data_cols = ["dst", "src", "number_of_friends_u", "number_of_friends_v", "vertex_label"]
@@ -116,18 +119,19 @@ class GraphLearningController:
         # Testing the classifier
         print("Test evaluation: {}".format(self._ml.evaluate(test_path, "edge_label", id_col_name, meta_data_cols)))
 
-    def classify_by_links(self, my_graph, test_path, train_path, results_output_path, real_labels_path, test_size={},
-                          train_size={}, meta_data_cols=[], id_col_name="src"):
+    def classify_by_links(self, my_graph, test_path, train_path, results_output_path, real_labels_path, test_size,
+                          train_size, meta_data_cols=None, id_col_name="src"):
         """Execute the vertex anomaly detection process
 
         Parameters
         ----------
+        train_size
+        meta_data_cols
+        id_col_name
         my_graph : AbstractGraph
             A graph object that implements the AbstractGraph interface
         test_path : string
             A path to where the test set should be saved
-        training_size : int
-            The size of the training set that should be generated
         results_output_path : string
             The path to where the classification results should be saved
         real_labels_path : string
@@ -137,6 +141,8 @@ class GraphLearningController:
         test_size : int
             The size of the test set that should be generated
         """
+        # if not meta_data_cols:
+        #     meta_data_cols = []
         self.evaluate_classifier(my_graph, test_path, train_path, test_size, train_size, labels_path=real_labels_path)
         classified = self._ml.classify_by_links_probability(test_path, "edge_label", id_col_name, meta_data_cols)
         # Output

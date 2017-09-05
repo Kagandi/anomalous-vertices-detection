@@ -4,7 +4,8 @@ from anomalous_vertices_detection.graphs import AbstractGraph
 
 
 class GtGraph(AbstractGraph):
-    __slots__ = []
+    # __slots__ = []
+
     def __init__(self, is_directed=False):
         super(GtGraph, self).__init__()
         self._graph = gt.StringGtGraph(directed=is_directed)
@@ -28,7 +29,9 @@ class GtGraph(AbstractGraph):
     ##
     # Todo weights
     ##
-    def add_edge(self, vertex1, vertex2, edge_atrr):
+    def add_edge(self, vertex1, vertex2, weight=None):
+        if not weight:
+            weight = {}
         vertex1, vertex2 = str(vertex1).strip(), str(vertex2).strip()
         if not self.has_edge(vertex1, vertex2):
             v1 = self.add_vertex(vertex1)

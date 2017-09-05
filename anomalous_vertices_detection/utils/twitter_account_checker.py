@@ -66,10 +66,10 @@ def yql_url_builder(search_url):
 def get_webpage_final_url_yql(url):
     query_result = get_webpage_source(yql_url_builder(url))
     response = json.loads(query_result)
-    if not "redirect" in response["query"]["diagnostics"]:
+    if "redirect" not in response["query"]["diagnostics"]:
         return ""
     redirect_route = response["query"]["diagnostics"]["redirect"]
-    if not "content" in redirect_route:
+    if "content" not in redirect_route:
         return redirect_route[len(redirect_route) - 1]["content"]
     else:
         return redirect_route["content"]
@@ -99,7 +99,7 @@ def read_csv(file_path):
     return [line.strip().split(",") for line in read_file(file_path)]
 
 
-def slice_csv(file_path, from_col, to_col):
+def slice_csv(file_path):
     f = open(file_path, "rb")
     return set([line.strip().split(",")[0] for line in f])
 
@@ -110,17 +110,17 @@ def get_twitter_account_state(user_id):
     if full_url[1] == 200:
         # print(url)
         if "suspended" in full_url[0]:
-            print((url[0], "Fake"))
-            return (url[0], "Fake")
+            print(url[0], "Fake")
+            return url[0], "Fake"
     elif full_url[1] == 404:
-        print((full_url, "Not Found"))
-        return (url[0], "Not Found")
+        print(full_url, "Not Found")
+        return url[0], "Not Found"
     else:
         print(url)
         # time.sleep(sleep_time + random.randint(0, 10))
 
 
-def batch_url_extractor(input_path, output_path, sleep_time):
+def batch_url_extractor(input_path, output_path):
     last_id = False
     if os.path.isfile(output_path):
         last_id = get_last_written_id(output_path)
@@ -140,7 +140,7 @@ def batch_url_extractor(input_path, output_path, sleep_time):
 
 
 def twitter_user_name_to_url(username):
-    return (username, "https://twitter.com/" + username)
+    return username, "https://twitter.com/" + username
 
 
 def get_last_written_id(file_path):
@@ -151,7 +151,7 @@ def get_last_written_id(file_path):
 
 if __name__ == '__main__':
     print "start"
-    batch_url_extractor("twitter_nodes.csv", "fake_users.txt", 0)
+    batch_url_extractor("twitter_nodes.csv", "fake_users.txt")
     # if len(sys.argv) == 3:
     # batch_url_extractor(sys.argv[2], sys.argv[3], 0)
     # else:

@@ -14,7 +14,7 @@ class GlLearner(AbstractLearner):
             raise NonBinaryLabels("Must be only two labels, negative and positive")
         self._base_classifier = classifier
 
-    def convert_data_to_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=[]):
+    def convert_data_to_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=None):
         return DataSetFactory().convert_data_to_graphlab_format(features, labels, feature_id_col_name, metadata_cols,
                                                                 self._labels)
 
@@ -48,8 +48,26 @@ class GlLearner(AbstractLearner):
     def split_kfold(self, data, n_folds=10):
         return gl.cross_validation.KFold(data, n_folds)
 
-    def classify_by_links_probability(self, probas, features_ids, labels={"neg": 0, "pos": 1}, threshold=0.78,
-                                      metadata=[]):
+    def classify_by_links_probability(self, probas, features_ids, labels=None, threshold=0.78,
+                                      metadata=None):
+        """
+        @todo add metadata usgae
+        Parameters
+        ----------
+        probas
+        features_ids
+        labels
+        threshold
+        metadata
+
+        Returns
+        -------
+
+        """
+        if not metadata:
+            metadata = []
+        if not labels:
+            labels = {"neg": 0, "pos": 1}
         train_df = gl.SFrame()
         train_df["probas"] = probas
         train_df["src_id"] = features_ids

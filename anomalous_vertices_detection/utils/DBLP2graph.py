@@ -1,8 +1,7 @@
 # !/usr/bin/python
-## wget -N http://dblp.uni-trier.de/xml/dblp.xml.gz
-## then run this script
+# wget -N http://dblp.uni-trier.de/xml/dblp.xml.gz
+# then run this script
 import gzip
-import json
 import os
 import csv
 import DBLP2json
@@ -29,4 +28,5 @@ def force():
     print '--', edgecount, 'total coauthorship edges'
 
 
-if __name__ == '__main__': force()
+if __name__ == '__main__':
+    force()

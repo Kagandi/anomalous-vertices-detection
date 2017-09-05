@@ -1,9 +1,7 @@
-__author__ = 'DimaK'
-
-import unittest
-
 from anomalous_vertices_detection.feature_extractor import FeatureExtractor
 from anomalous_vertices_detection.graphs import NxGraph
+
+import unittest
 
 
 class ExtractorTest(unittest.TestCase):

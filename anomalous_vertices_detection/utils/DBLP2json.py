@@ -1,6 +1,6 @@
 #!/usr/bin/python
-## wget -N http://dblp.uni-trier.de/xml/dblp.xml.gz
-## then run this script
+# wget -N http://dblp.uni-trier.de/xml/dblp.xml.gz
+# then run this script
 import gzip
 import json
 import os
@@ -14,8 +14,8 @@ report_frequency = 10000
 
 
 class DBLPHandler(xml.sax.ContentHandler):
-    papertypes = set(
-        ['article', 'book', 'inproceedings', 'incollection', 'www', 'proceedings', 'phdthesis', 'mastersthesis'])
+    papertypes = {'article', 'book', 'inproceedings', 'incollection', 'www', 'proceedings', 'phdthesis',
+                  'mastersthesis'}
 
     def __init__(self, out):
         self.out = out
@@ -83,16 +83,17 @@ def main(parse_args=False):
         force()
 
 
-def open():
+def open_gzip():
     main()
     return gzip.GzipFile(json_gz_filename, 'r')
 
 
 def papers():
-    for line in open():
+    for line in open_gzip():
         if line.strip() in '[]': continue
         line = line.rstrip().rstrip(',')
         yield json.loads(line)
 
 
-if __name__ == '__main__': main(True)
+if __name__ == '__main__':
+    main(True)

@@ -13,12 +13,29 @@ from anomalous_vertices_detection.configs.graph_config import GraphConfig
 from anomalous_vertices_detection.graph_learning_controller import *
 from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
 from anomalous_vertices_detection.learners.gllearner import GlLearner
+import os
+from graphlab import aggregate
+
+
+def aggreagate_res(data_folder, res_path):
+    res = SFrame()
+    for file in os.listdir(data_folder):
+        temp_sf = SFrame.read_csv(data_folder + "\\" + file,
+                                  column_type_hints={"prob": float})
+        res = res.append(temp_sf)
+
+    res = res.groupby("src_id", operations={"prob": aggregate.MEAN('prob'), "actual": aggregate.SELECT_ONE('actual')})
+
+    # res["actual"] = res["actual"].apply(lambda x: "P" if x == 1 else "N")
+    res.save(res_path, 'csv')
+
 
 labels = {"neg": "Real", "pos": "Fake"}
 #
+output_folder = "../output/twitter/"
 twitter_path = "C:\\Users\\user\\Documents\\Datasets\\Twitter\\twitter_clean2.csv"
 twitter_labels = "C:\\Users\\user\\Documents\\Datasets\\Twitter\\fake_users.txt"
-dataset_config = GraphConfig("twitter", twitter_path, True, labels_path=twitter_labels, type="simulation",
+dataset_config = GraphConfig("twitter", twitter_path, True, labels_path=twitter_labels, graph_type="simulation",
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
 glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
 output_foldr = "../output/"
@@ -31,18 +48,30 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
                                                         is_directed=dataset_config.is_directed,
                                                         labels_path=dataset_config.labels_path,
                                                         pos_label=labels["pos"],
-                                                        fake_users_number=1000,
+                                                        fake_users_number=5000,
                                                         neg_label=labels["neg"], max_num_of_edges=1000000)
 print("Graph was loaded")
-sampler = GraphSampler(my_graph, 3, 10000)
-glc.extract_features_for_set(my_graph, sampler.generate_sample_for_labeled_vertices(100, 100), training_path,
-                             stranger_intrusion_features[my_graph.is_directed])
-glc.extract_features_for_set(my_graph, sampler.generate_sample_for_test_labeled_vertices(900, 100), test_path,
-                             stranger_intrusion_features[my_graph.is_directed])
-meta_data_cols = ["src", "vertex_label"]
-glc._ml.load_training_set(training_path, "label", "src", meta_data_cols)
-glc._ml = glc._ml.train_classifier()
-print("Training 10-fold validation: {}".format(glc._ml.k_fold_validation()))
-# Testing the classifier
-print("Test evaluation: {}".format(glc._ml.evaluate(test_path, "label", "src", meta_data_cols)))
+for i in range(10):
+    sampler = GraphSampler(my_graph, 3, 10000)
+    features = FeatureController(my_graph)
+    features.extract_features(sampler.generate_sample_for_labeled_vertices(1000, 100),
+                              stranger_intrusion_features[my_graph.is_directed], training_path)
+    features.extract_features(sampler.generate_sample_for_test_labeled_vertices(900, 100),
+                              stranger_intrusion_features[my_graph.is_directed], test_path)
+    meta_data_cols = ["src", "vertex_label"]
+    ml = MlController(GlLearner(labels=labels).set_randomforest_classifier())
+    ml.load_training_set(training_path,
+                         "label", "src", meta_data_cols)
 
+    ml = ml.train_classifier()
+    features = ml._learner.convert_data_to_format(test_path, "label", "src", meta_data_cols)
+    res = SFrame()
+    res["src_id"] = features.features_ids
+    res["actual"] = features.features["label"]
+    res["prob"] = ml.predict_class_probabilities(features)
+    result_path = output_folder + dataset_config.name + "_" + str(i) + "res.csv"
+    res.save(result_path, "csv")
+
+# Testing the classifier
+# print("Test evaluation: {}".format(glc._ml.evaluate(test_path, "label", "src", meta_data_cols)))
+aggreagate_res(output_folder, "twitter_res.csv")

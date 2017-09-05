@@ -35,7 +35,7 @@ def aggreagate_res(data_folder, res_path):
 labels = {"neg": "Real", "pos": "Fake"}
 #
 kids_path = "C:\Users\user\Documents\Datasets\German Friend\\Heidler_et_al_2013_Relationship_patterns_in_the_19th_century.csv"
-dataset_config = GraphConfig("kids", kids_path, True, type="simulation",
+dataset_config = GraphConfig("kids", kids_path, True, graph_type="simulation",
                              vertex_min_edge_number=1, vertex_max_edge_number=50000)
 
 output_folder = "../output/kids/"

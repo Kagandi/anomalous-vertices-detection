@@ -45,7 +45,7 @@ try:
             if isinstance(t, basestring):
                 t = self[t]
             if s is not None and t is not None:
-                return super(StringGtGraph, self).edge(s, t, all_edges=False)
+                return super(StringGtGraph, self).edge(s, t, all_edges=all_edges)
             return None
 
 except ImportError:

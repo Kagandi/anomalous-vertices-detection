@@ -7,14 +7,18 @@ import glob
 import gzip
 import json
 import os
+import tarfile
+import zipfile
 from functools import wraps
+import requests
+from anomalous_vertices_detection.configs.config import DATA_DIR
 
 
 class memoize(object):
-    '''Decorator. Caches a function's return value each time it is called.
+    """Decorator. Caches a function's return value each time it is called.
     If called later with the same arguments, the cached value is returned
     (not reevaluated).
-    '''
+    """
 
     def __init__(self, func):
         self.func = func
@@ -29,11 +33,11 @@ class memoize(object):
             return value
 
     def __repr__(self):
-        '''Return the function's docstring.'''
+        """Return the function's docstring."""
         return self.func.__doc__
 
     def __get__(self, obj, objtype):
-        '''Support instance methods.'''
+        """Support instance methods."""
         fn = functools.partial(self.__call__, obj)
         fn.reset = self._reset
 
@@ -132,9 +136,9 @@ def list_to_string(str_list, delimiter=","):
     return delimiter.join(map(str, str_list))
 
 
-def two_dimensional_list_to_string(list):
+def two_dimensional_list_to_string(two_dim_list):
     str_list = []
-    for row in list:
+    for row in two_dim_list:
         str_list.append(list_to_string(row))
     return list_to_string(str_list, "\n")
 
@@ -170,7 +174,7 @@ def is_json(myjson):
         return False
     try:
         json_object = json.loads(myjson)
-    except ValueError, e:
+    except ValueError:
         return False
     return json_object
 
@@ -279,6 +283,7 @@ def get_output_paths(set_name, output_foldr, argv):
                                                                 output_foldr + set_name + "_train.csv", \
                                                                 output_foldr + set_name + "_res.csv", \
                                                                 output_foldr + set_name + "_labels.csv"
+    load_new_graph = False
     if len(argv) != 2:
         new_train_test = to_create_new_file("train and test")
     else:
@@ -294,8 +299,7 @@ def get_output_paths(set_name, output_foldr, argv):
     if len(argv) != 2:
         if new_train_test:
             load_new_graph = to_create_new_file("graph", "To load new ")
-        else:
-            load_new_graph = False
+
     return load_new_graph, new_train_test, result_path, test_path, training_path, labels_output_path
 
 
@@ -312,3 +316,66 @@ def is_attributes_match(selection_attr, attr_dict):
     if attr_count == len(selection_attr):
         return True
     return False
+
+
+def get_vertices_with_more_than_n_friends(n, max_friends, graph, edge_label=None):
+    """
+        Return all vertices in the graph that have more than n neighbours.
+        Parameters
+        ----------
+        n
+        max_friends
+        graph
+        edge_label
+
+
+        Returns
+        -------
+        el : list
+            List that contains vertices.
+    """
+
+    expended_vertices = []
+    for vertex in graph.vertices:
+        if n < graph.get_vertex_out_degree(
+                vertex) < max_friends and (graph.get_node_label(vertex) == edge_label or edge_label is None):
+            expended_vertices.append(vertex)
+    return expended_vertices
+
+
+def read_targz(path):
+    tar = tarfile.open(path, "r:gz")
+    for member in tar.getmembers():
+        f = tar.extractfile(member)
+        for line in f:
+            print line
+
+
+def read_zip(path):
+    zip_file = zipfile.ZipFile(path, "r")
+    for member in zip_file.infolist():
+        with zip_file.open(member.filename) as f:
+            for line in f:
+                print line
+
+
+def download_file(url, local_filename=None):
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+
+    if not local_filename:
+        local_filename = url.split('/')[-1]
+    # NOTE the stream=True parameter
+    output_path = os.path.join(DATA_DIR, local_filename)
+    r = requests.get(url, stream=True)
+    with open(output_path, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:  # filter out keep-alive new chunks
+                f.write(chunk)
+                # f.flush() commented by recommendation from J.F.Sebastian
+    return output_path
+
+
+def load_data(file_path):
+    if not os.path.exists(file_path):
+        download_file(file_path)

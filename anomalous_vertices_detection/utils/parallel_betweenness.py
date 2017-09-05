@@ -33,16 +33,16 @@ def _betmap(G_normalized_weight_sources_tuple):
     return nx.betweenness_centrality_source(*G_normalized_weight_sources_tuple)
 
 
-def betweenness_centrality_parallel(G, processes=None):
+def betweenness_centrality_parallel(graph, processes=None):
     """Parallel betweenness centrality  function"""
     p = Pool(processes=processes)
     node_divisor = len(p._pool)*4
-    node_chunks = list(chunks(G.nodes(), int(G.order()/node_divisor)))
+    node_chunks = list(chunks(graph.nodes(), int(graph.order() / node_divisor)))
     num_chunks = len(node_chunks)
     bt_sc = p.map(_betmap,
-                  zip([G]*num_chunks,
-                      [True]*num_chunks,
-                      [None]*num_chunks,
+                  zip([graph] * num_chunks,
+                      [True] * num_chunks,
+                      [None] * num_chunks,
                       node_chunks))
 
     # Reduce the partial solutions
@@ -62,12 +62,12 @@ if __name__ == "__main__":
         print(nx.info(G))
         print("\tParallel version")
         start = time.time()
-        bt = betweenness_centrality_parallel(G)
+        betweenness = betweenness_centrality_parallel(G)
         print("\t\tTime: %.4F" % (time.time()-start))
         print("\t\tBetweenness centrality for node 0: %.5f" % (bt[0]))
         print("\tNon-Parallel version")
         start = time.time()
-        bt = nx.betweenness_centrality(G)
+        betweenness = nx.betweenness_centrality(G)
         print("\t\tTime: %.4F seconds" % (time.time()-start))
         print("\t\tBetweenness centrality for node 0: %.5f" % (bt[0]))
     print("")

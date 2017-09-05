@@ -116,7 +116,8 @@ class FeatureController(object):
             Iterator over a list of vertecies/edges that features should be extracted for them.
         """
         for count, item in enumerate(item_iter):
-            if type(item) is str: item = (item,)
+            if type(item) is str:
+                item = (item,)
             self.init_entry(*item[:2])
             if len(item) > 1 and self._graph.has_edge(item[0], item[1]):
                 self.extract_features_for_existing_edge(features_dict, item)
@@ -146,6 +147,7 @@ class FeatureController(object):
 
         Parameters
         ----------
+        temp_path
         array : list[dict]
         """
         dict_writer(array, temp_path, "a+")
@@ -155,6 +157,8 @@ class FeatureController(object):
 
         Parameters
         ----------
+        features_dict
+        output_path
         data_iter : iterator
             An iterable objects that contains the vertices/edges that their features should be extracted
         max_items_num : int, optional

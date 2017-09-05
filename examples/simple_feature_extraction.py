@@ -4,7 +4,7 @@ from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
 
 labels = {"neg": "Real", "pos": "Fake"}
 
-dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, type="simulation",
+dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, graph_type="simulation",
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
 edges_output_path = "../output/" + dataset_config.name + "_edges.csv"
 vetices_output_path = "../output/" + dataset_config.name + "_vertices.csv"

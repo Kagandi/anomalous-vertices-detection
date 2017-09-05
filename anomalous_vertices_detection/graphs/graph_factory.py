@@ -20,13 +20,20 @@ def get_graph(package="Networkx"):
 
 
 class GraphFactory(object):
-    def factory(self, type):
-        if type == "ba":
-            return self.make_barabasi_albert_graph
-        if type == "simulation":
-            return self.make_graph_with_fake_profiles
-        if type == "regular":
-            return self.make_graph
+    def factory(self, graph_config, fake_users_number=None, max_num_of_edges=1000000000, package="Networkx"):
+        if graph_config.type == "ba":
+            return self.make_barabasi_albert_graph(graph_config.node_number, graph_config.edge_number, package=package)
+        if graph_config.type == "simulation":
+            return self.make_graph_with_fake_profiles(graph_config.dataset_path, fake_users_number,
+                                                      graph_config.is_directed, graph_config.labels_path,
+                                                      max_num_of_edges=max_num_of_edges,
+                                                      package=package, pos_label="Sim",
+                                                      neg_label="Real", delimiter=graph_config.delimiter)
+        if graph_config.type == "regular":
+            return self.make_graph(graph_config.dataset_path, graph_config.is_directed, graph_config.labels_path,
+                                   max_num_of_edges=max_num_of_edges,
+                                   package=package, pos_label="Fake",
+                                   neg_label="Real", delimiter=graph_config.delimiter)
 
     def make_barabasi_albert_graph(self, node_number, edge_number, package="Networkx"):
         ba_graph = barabasi_albert_graph(node_number, edge_number)
@@ -38,15 +45,17 @@ class GraphFactory(object):
         graph.write_graph("tmp_graph.csv")
         is_directed = graph.is_directed
         return self.make_graph_with_fake_profiles("tmp_graph.csv", fake_users_number, is_directed,
-                                                  package="Networkx", pos_label=pos_label, neg_label=neg_label)
+                                                  package=package, pos_label=pos_label, neg_label=neg_label)
 
-    def make_graph(self, graph_path, is_directed=False, labels_path=False, package="Networkx", pos_label=None,
+    def make_graph(self, graph_path, is_directed=False, labels_path=None, package="Networkx", pos_label=None,
                    neg_label=None, start_line=0, max_num_of_edges=10000000, weight_field=None, blacklist_path=False,
                    delimiter=','):
         """
             Loads graph into specified package.
             Parameters
             ----------
+            blacklist_path
+            delimiter
             graph_path : string
 
             is_directed : boolean, optional (default=False)
@@ -100,6 +109,7 @@ class GraphFactory(object):
             Load graph that was save by the library into specified package.
             Parameters
             ----------
+            blacklist_path
             graph_path : string
 
             is_directed : boolean, optional (default=False)
@@ -116,12 +126,6 @@ class GraphFactory(object):
 
             neg_label : string or None, optional (default=None)
                The negative label.
-
-            start_line : integer, optional (default=0)
-               The number of the first line in the file to be read.
-
-            max_num_of_edges : integer, optional (default=10000000)
-               The maximal number of edges that should be loaded.
 
             weight_field : string
 
@@ -200,7 +204,7 @@ class GraphFactory(object):
         return graph
 
     def make_graph_with_fake_profiles(self, graph_path, fake_users_number=None,
-                                      is_directed=True, labels_path=False, package="Networkx", pos_label=None,
+                                      is_directed=True, labels_path=None, package="Networkx", pos_label=None,
                                       neg_label=None, start_line=0, max_num_of_edges=10000000, weight_field=None,
                                       delimiter=','):
         graph = self.make_graph(graph_path, is_directed, labels_path, package, pos_label, neg_label, start_line,

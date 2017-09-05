@@ -11,7 +11,7 @@ from anomalous_vertices_detection.utils.utils import *
 class IGraph(AbstractGraph):
     __slots__ = ['_is_directed']
 
-    def __init__(self, is_directed=False, weight_field=None, graph_obj=[]):
+    def __init__(self, is_directed=False, weight_field=None, graph_obj=None):
         super(IGraph, self).__init__(weight_field)
         if graph_obj:
             self._graph = graph_obj
@@ -28,7 +28,9 @@ class IGraph(AbstractGraph):
     def get_node_label(self, vertex):
         return self._labels_dict[self.get_vertex_name(vertex)]
 
-    def add_edge(self, vertex1, vertex2, edge_atrr={}):
+    def add_edge(self, vertex1, vertex2, edge_atrr=None):
+        if edge_atrr is None:
+            edge_atrr = {}
         try:
             vertex1, vertex2 = vertex1.strip(), vertex2.strip()
         except:
@@ -141,7 +143,7 @@ class IGraph(AbstractGraph):
         return self._graph.pagerank(weights=self._weight_field)
 
     def eigenvector(self):
-        return self._graph.evcent(directed=self.is_directed(), weights=self._weight_field)
+        return self._graph.evcent(directed=self.is_directed, weights=self._weight_field)
 
     def closeness(self):
         return self._graph.closeness
