@@ -1,6 +1,6 @@
 class GraphConfig(object):
     def __init__(self, set_name, dataset_path, is_directed=True, labels_path=False,
-                 type="regular", vertex_min_edge_number=1, vertex_max_edge_number=50000, delimiter=',', first_line=2):
+                 graph_type="regular", vertex_min_edge_number=1, vertex_max_edge_number=50000, delimiter=',', first_line=0):
         self._dataset_path = dataset_path
         self._labels_path = labels_path
         self._is_directed = is_directed
@@ -9,7 +9,7 @@ class GraphConfig(object):
         self._vertex_max_edge_number = vertex_max_edge_number
         self._delimiter = delimiter
         self._first_line = first_line
-        self._type = type
+        self._type = graph_type
 
     @property
     def delimiter(self):
@@ -49,7 +49,6 @@ class GraphConfig(object):
 
 
 class GraphSimConfig(GraphConfig):
-
     def __init__(self, node_number, edge_number, *args, **kwargs):
         super(GraphSimConfig, self).__init__(*args, **kwargs)
         self._edge_number = edge_number
