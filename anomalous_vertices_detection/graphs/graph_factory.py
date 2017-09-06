@@ -20,20 +20,22 @@ def get_graph(package="Networkx"):
 
 
 class GraphFactory(object):
-    def factory(self, graph_config, fake_users_number=None, max_num_of_edges=1000000000, package="Networkx"):
+    def factory(self, graph_config, labels=None, fake_users_number=None, max_num_of_edges=1000000000, package="Networkx"):
+        if not labels:
+            labels = {"neg": "Real", "pos": "Fake"}
         if graph_config.type == "ba":
             return self.make_barabasi_albert_graph(graph_config.node_number, graph_config.edge_number, package=package)
         if graph_config.type == "simulation":
             return self.make_graph_with_fake_profiles(graph_config.dataset_path, fake_users_number,
                                                       graph_config.is_directed, graph_config.labels_path,
                                                       max_num_of_edges=max_num_of_edges,
-                                                      package=package, pos_label="Sim",
-                                                      neg_label="Real", delimiter=graph_config.delimiter)
+                                                      package=package, pos_label=labels["pos"],
+                                                      neg_label=labels["neg"], delimiter=graph_config.delimiter)
         if graph_config.type == "regular":
             return self.make_graph(graph_config.dataset_path, graph_config.is_directed, graph_config.labels_path,
                                    max_num_of_edges=max_num_of_edges,
-                                   package=package, pos_label="Fake",
-                                   neg_label="Real", delimiter=graph_config.delimiter)
+                                   package=package, pos_label=labels["pos"],
+                                   neg_label=labels["neg"], delimiter=graph_config.delimiter)
 
     def make_barabasi_albert_graph(self, node_number, edge_number, package="Networkx"):
         ba_graph = barabasi_albert_graph(node_number, edge_number)
