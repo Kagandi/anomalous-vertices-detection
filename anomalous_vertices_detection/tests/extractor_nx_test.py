@@ -12,8 +12,6 @@ class ExtractorTest(unittest.TestCase):
         self._digraph.load_graph("input/test1.txt", start_line=0)
         self._fe = FeatureExtractor(self._graph)
         self._dife = FeatureExtractor(self._digraph)
-        # self._fe.load_centrality_features()
-        # self._dife.load_centrality_features()
 
     def test_total_friends(self):
         self.assertEqual(self._fe.get_total_friends("1", "4"), 4)
