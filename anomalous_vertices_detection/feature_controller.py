@@ -2,6 +2,7 @@ from configs.config import *
 from feature_extractor import FeatureExtractor
 from utils.utils import dict_writer, delete_file_content
 import types
+from tqdm import tqdm
 
 
 class FeatureController(object):
@@ -171,10 +172,10 @@ class FeatureController(object):
                 max_items_num = len(data_iter)
             except:
                 pass
-        for count, entry in enumerate(self.features_generator(features_dict, data_iter)):
-            if max_items_num and count % (max_items_num / 10) == 0:
-                print "%d%% (%d out of %d features were extracted)." % \
-                      (100 * count / max_items_num, count, max_items_num)
+        for entry in tqdm(self.features_generator(features_dict, data_iter), total=max_items_num, unit="feature"):
+            # if max_items_num and count % (max_items_num / 10) == 0:
+            #     print "%d%% (%d out of %d features were extracted)." % \
+            #           (100 * count / max_items_num, count, max_items_num)
             features_array.append(entry)
             if len(features_array) == save_progress_interval:
                 self.save_progress(features_array, output_path)

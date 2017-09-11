@@ -8,13 +8,13 @@ from anomalous_vertices_detection.utils import utils
 
 class DataSet(object):
     def __init__(self, features=None, labels=None, features_ids=None, metadata=None, container_type="DataFrame"):
-        if not features:
+        if features is None:
             features = []
-        if not features_ids:
+        if features_ids is None:
             features_ids = []
-        if not metadata:
+        if metadata is None:
             metadata = []
-        if not labels:
+        if labels is None:
             labels = []
 
         self._features_ids = features_ids

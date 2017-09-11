@@ -1,7 +1,7 @@
 from anomalous_vertices_detection.configs.config import *
 import anomalous_vertices_detection.utils.utils as utils
 import collections
-
+import types
 
 class AbstractGraph(object):
     # __slots__ = ['_graph', '_labels_dict', '_labels_map', '_weight_field']
@@ -72,34 +72,37 @@ class AbstractGraph(object):
         -------
 
         """
-        if isinstance(graph_path, str):
+        if isinstance(graph_path, str) or isinstance(graph_path, unicode):
             if graph_path.lower().endswith(".bz2"):
                 f = utils.read_bz2(graph_path)
             elif graph_path.lower().endswith(".gz"):
                 f = utils.read_gzip(graph_path)
             else:
                 f = utils.read_file(graph_path)
-        for i, edge in enumerate(f):
-            edge_attr = {}
-            if i >= start_line:
-                if i == limit + start_line:
-                    break
-                edge = utils.extract_items_from_line(edge, delimiter)[0:3]
-                if direction is 0:
-                    edge = reversed(edge)
-                if len(edge) >= 2 and edge[0] not in blacklist and edge[1] not in blacklist:
-                    edge = list(edge)
-                    if edge[0] == edge[1]:
-                        continue
-                    edge_attr['edge_label'] = self.generate_edge_label(edge[0], edge[1])
-                    if len(edge) == 3:
-                        try:
-                            edge_attr[self._weight_field] = int(edge[2])
-                        except ValueError:
-                            pass
-                    edge = edge[:2]
-                    edge.append(edge_attr)
-                    self.add_edge(*edge)
+        else:
+            f = graph_path
+        if isinstance(f, types.GeneratorType):
+            for i, edge in enumerate(f):
+                edge_attr = {}
+                if i >= start_line:
+                    if i == limit + start_line:
+                        break
+                    edge = utils.extract_items_from_line(edge, delimiter)[0:3]
+                    if direction is 0:
+                        edge = reversed(edge)
+                    if len(edge) >= 2 and edge[0] not in blacklist and edge[1] not in blacklist:
+                        edge = list(edge)
+                        if edge[0] == edge[1]:
+                            continue
+                        edge_attr['edge_label'] = self.generate_edge_label(edge[0], edge[1])
+                        if len(edge) == 3:
+                            try:
+                                edge_attr[self._weight_field] = int(edge[2])
+                            except ValueError:
+                                pass
+                        edge = edge[:2]
+                        edge.append(edge_attr)
+                        self.add_edge(*edge)
 
     def load_labels(self, labels_path):
         labels_list = utils.read_file_by_lines(labels_path)
@@ -200,15 +203,12 @@ class AbstractGraph(object):
         pass
 
     def get_inner_subgraph(self, vertex1, vertex2):
-        if self.is_directed:
-            inner_subgraph = self.__class__(True)
-        else:
-            inner_subgraph = self.__class__(False)
+        inner_subgraph = self.__class__(self.is_directed)
         for v_friend in self.neighbors_iter(vertex1):
             for u_friend in self.neighbors_iter(vertex2):
                 if self.has_edge(u_friend, v_friend):
                     inner_subgraph.add_edge(u_friend, v_friend)
-                if self.has_edge(v_friend, u_friend):
+                if self.is_directed and self.has_edge(v_friend, u_friend):
                     inner_subgraph.add_edge(v_friend, u_friend)
         return inner_subgraph
 

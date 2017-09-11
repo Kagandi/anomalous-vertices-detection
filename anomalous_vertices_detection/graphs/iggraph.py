@@ -3,21 +3,20 @@ try:
 except ImportError:
     pass
 
+import types
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
 from anomalous_vertices_detection.utils.utils import *
 
 
 class IGraph(AbstractGraph):
-    __slots__ = ['_is_directed']
-
     def __init__(self, is_directed=False, weight_field=None, graph_obj=None):
         super(IGraph, self).__init__(weight_field)
+        self._is_directed = is_directed
         if graph_obj:
             self._graph = graph_obj
         else:
             self._graph = igraph.Graph(directed=is_directed)
-            self._is_directed = is_directed
 
     def save_graph(self):
         pass
@@ -40,35 +39,47 @@ class IGraph(AbstractGraph):
             vertex2 = self.add_vertex(vertex2)
             self._graph.add_edge(vertex1, vertex2)
             edge_id = self._graph.get_eid(vertex1, vertex2)
-            self._graph.es[edge_id][self._weight_field] = edge_atrr[self._weight_field]
-            self._graph.es[edge_id]["edge_label"] = edge_atrr["edge_label"]
+            if edge_atrr:
+                self._graph.es[edge_id][self._weight_field] = edge_atrr[self._weight_field]
+                self._graph.es[edge_id]["edge_label"] = edge_atrr["edge_label"]
 
     def add_vertex(self, vertex):
+        vertex = str(vertex)
         if not self.has_vertex(vertex):
             self._graph.add_vertex(vertex)
         return self._graph.vs.find(vertex).index
 
     def load_graph(self, graph_path, direction=1, start_line=1, limit=graph_max_edge_number, blacklist=set(),
                    delimiter=','):
-        graph_path = read_file(graph_path)
         vetices_list = set()
         edges_list, label_list, weight_list = [], [], []
-        for i, edge in graph_path:
-            if i >= start_line:
-                if i == limit + start_line:
-                    break
-                edge = extract_items_from_line(edge, delimiter)[0:3]
-                if direction is 0:
-                    edge = reversed(edge)
-                if len(edge) >= 2 and edge[0] not in blacklist and edge[1] not in blacklist:
-                    vetices_list.add(edge[0])
-                    vetices_list.add(edge[1])
-                    label_list.append(self.generate_edge_label(edge[0], edge[1]))
-                    if len(edge) == 3:
-                        weight_list.append(int(edge[2]))
-                        edge = edge[:2]
-                    edges_list.append(edge)
-        self.load_igraph(list(vetices_list), edges_list, weight_list, label_list)
+        if isinstance(graph_path, str) or isinstance(graph_path, unicode):
+            if graph_path.lower().endswith(".bz2"):
+                f = read_bz2(graph_path)
+            elif graph_path.lower().endswith(".gz"):
+                f = read_gzip(graph_path)
+            else:
+                f = read_file(graph_path)
+        else:
+            f = graph_path
+        if isinstance(f, types.GeneratorType):
+            for i, edge in enumerate(f):
+
+                if i >= start_line:
+                    if i == limit + start_line:
+                        break
+                    edge = extract_items_from_line(edge, delimiter)[0:3]
+                    if direction is 0:
+                        edge = reversed(edge)
+                    if len(edge) >= 2 and edge[0] not in blacklist and edge[1] not in blacklist:
+                        vetices_list.add(edge[0])
+                        vetices_list.add(edge[1])
+                        label_list.append(self.generate_edge_label(edge[0], edge[1]))
+                        if len(edge) == 3:
+                            weight_list.append(int(edge[2]))
+                            edge = edge[:2]
+                        edges_list.append(edge)
+            self.load_igraph(list(vetices_list), edges_list, weight_list, label_list)
 
     def load_igraph(self, vertices_list, edges_list, weight_list, label_list):
         self._graph.add_vertices(len(vertices_list))
@@ -80,6 +91,7 @@ class IGraph(AbstractGraph):
             self._graph.es[self._weight_field] = weight_list
         if edges_list:
             self._graph.es["edge_label"] = label_list
+        self._graph = self._graph.simplify()
 
     def delete_graph(self):
         del self._graph
@@ -149,8 +161,12 @@ class IGraph(AbstractGraph):
 
     def get_shortest_path_length(self, vertex1, vertex2):
         try:
-            self._graph.bfs()
-            return self._graph.shortest_paths(source=vertex1, target=vertex2)
+            # self._graph.bfs()
+            # return self._graph.shortest_paths(source=vertex1, target=vertex2)
+            sl = self._graph.shortest_paths_dijkstra(vertex1, vertex2)[0][0]
+            if sl == float("inf"):
+                sl = 0
+            return sl
         except:
             return 0
 
@@ -179,6 +195,8 @@ class IGraph(AbstractGraph):
             return True
         except ValueError:
             return False
+        except IndexError:
+            return False
 
     @memoize
     def get_neighbors(self, node):
@@ -193,3 +211,6 @@ class IGraph(AbstractGraph):
             return self._graph.predecessors(node)
         else:
             return self.get_neighbors(node)
+
+    def get_subgraph(self, vertices):
+        return IGraph(self.is_directed, self._weight_field, self._graph.subgraph(vertices))

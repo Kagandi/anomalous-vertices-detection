@@ -1,5 +1,5 @@
 # Source: projects.csail.mit.edu/dnd/DBLP/DBLP2json.py
-#!/usr/bin/python
+# !/usr/bin/python
 # wget -N http://dblp.uni-trier.de/xml/dblp.xml.gz
 # then run this script
 import gzip

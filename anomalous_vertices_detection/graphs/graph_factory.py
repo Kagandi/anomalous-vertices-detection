@@ -26,13 +26,13 @@ class GraphFactory(object):
         if graph_config.type == "ba":
             return self.make_barabasi_albert_graph(graph_config.node_number, graph_config.edge_number, package=package)
         if graph_config.type == "simulation":
-            return self.make_graph_with_fake_profiles(graph_config.dataset_path, fake_users_number,
+            return self.make_graph_with_fake_profiles(graph_config.data_path, fake_users_number,
                                                       graph_config.is_directed, graph_config.labels_path,
                                                       max_num_of_edges=max_num_of_edges,
                                                       package=package, pos_label=labels["pos"],
                                                       neg_label=labels["neg"], delimiter=graph_config.delimiter)
         if graph_config.type == "regular":
-            return self.make_graph(graph_config.dataset_path, graph_config.is_directed, graph_config.labels_path,
+            return self.make_graph(graph_config.data_path, graph_config.is_directed, graph_config.labels_path,
                                    max_num_of_edges=max_num_of_edges,
                                    package=package, pos_label=labels["pos"],
                                    neg_label=labels["neg"], delimiter=graph_config.delimiter)
@@ -175,7 +175,7 @@ class GraphFactory(object):
         graph._labels_dict[node_name] = vertex_label
         graph.add_node(node_name, {"type": "sim"})
         for rand_vertex in random_vertices:
-            if len(graph.get_vertex_edges(rand_vertex, "out")) > 1:
+            if len(graph.get_vertex_edges(rand_vertex, "out")) >= 0:
                 graph.add_edge(node_name, rand_vertex, {"edge_label": vertex_label})
 
     def add_random_vertices(self, graph, random_vertices_number, vertex_label):

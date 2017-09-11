@@ -8,6 +8,7 @@ This project is under development and has a many planned improvements. More deta
 ## Installation
 ```
 git clone git://github.com/Kagandi/anomalous-vertices-detection.git
+if you are using conda run: conda env create -f environment.yml
 pip install -r requirements.txt
 python setup.py install
 ```

@@ -122,7 +122,7 @@ def intersect(a, b):
 
 
 def extract_items_from_line(line, delimiter=","):
-    return line.rstrip('\r\n').replace('"', '').split(delimiter)
+    return [item.strip() for item in line.rstrip('\r\n').replace('"', '').split(delimiter)]
 
 
 def write_to_file(path, data):

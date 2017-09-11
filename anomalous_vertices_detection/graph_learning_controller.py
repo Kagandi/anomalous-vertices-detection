@@ -6,7 +6,7 @@ from configs.predefined_features_sets import *
 from feature_controller import FeatureController
 from ml_controller import MlController
 from utils import utils
-
+from configs.config import DATA_DIR
 
 class GraphLearningController:
     def __init__(self, cls, config):
