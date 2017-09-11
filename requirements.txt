@@ -29,7 +29,9 @@ pytz==2017.2
 requests==2.9.1
 rsa==3.1.2
 scikit-learn==0.19.0
+scipy==0.19.1
 singledispatch==3.4.0.3
 six==1.10.0
 sseclient==0.0.8
 tornado==4.3
+tqdm==4.15.0

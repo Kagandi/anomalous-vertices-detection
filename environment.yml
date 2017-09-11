@@ -1,0 +1,50 @@
+name: anomaly
+channels:
+- defaults
+dependencies:
+- mkl=2017.0.3=0
+- numpy=1.13.1=py27_0
+- pip=9.0.1=py27_1
+- python=2.7.13=1
+- scipy=0.19.1=np113py27_0
+- setuptools=27.2.0=py27_1
+- vs2008_runtime=9.00.30729.5054=0
+- wheel=0.29.0=py27_0
+- pip:
+  - awscli==1.6.2
+  - backports-abc==0.5
+  - backports.ssl-match-hostname==3.5.0.1
+  - bcdoc==0.12.2
+  - boto==2.33.0
+  - botocore==0.73.0
+  - certifi==2015.4.28
+  - click==6.7
+  - colorama==0.2.5
+  - decorator==4.1.2
+  - docutils==0.14
+  - functools32==3.2.3.post2
+  - genson==0.1.0
+  - graphlab-create==2.1
+  - jmespath==0.5.0
+  - jsonschema==2.5.1
+  - multipledispatch==0.4.9
+  - networkx==1.11
+  - pandas==0.20.3
+  - prettytable==0.7.2
+  - psclient==2.0
+  - pyasn1==0.3.3
+  - python-dateutil==2.6.1
+  - python-dotenv==0.6.5
+  - python-igraph==0.7.1.post6
+  - python-louvain==0.8
+  - pytz==2017.2
+  - requests==2.9.1
+  - rsa==3.1.2
+  - scikit-learn==0.19.0
+  - singledispatch==3.4.0.3
+  - six==1.10.0
+  - sseclient==0.0.8
+  - tornado==4.3
+  - tqdm==4.15.0
+prefix: C:\Users\dimak\AppData\Local\Continuum\Miniconda2\envs\anomaly
+
