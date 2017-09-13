@@ -10,10 +10,8 @@ dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, grap
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
 glc = GraphLearningController(SkLearner(labels=labels), dataset_config)
 output_folder = "../output/"
-test_path, training_path, result_path, labels_output_path = output_folder + dataset_config.name + "_test.csv", \
-                                                            output_folder + dataset_config.name + "_train.csv", \
-                                                            output_folder + dataset_config.name + "_res.csv", \
-                                                            output_folder + dataset_config.name + "_labels.csv"
+result_path = os.path.join(output_folder, dataset_config.name + "_res.csv")
+
 
 my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path,
                                             is_directed=dataset_config.is_directed,
@@ -22,10 +20,8 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 
 if my_graph.is_directed:
     meta_data_cols = ["dst", "src", "out_degree_v", "in_degree_v", "out_degree_u", "in_degree_u"]
-    # meta_data_cols = ["dst", "src"]
 else:
     meta_data_cols = ["dst", "src", "number_of_friends_u", "number_of_friends_v"]
 
-glc.classify_by_links(my_graph, test_path, training_path, result_path,
-                      labels_output_path, test_size={"neg": 1000, "pos": 100},
+glc.classify_by_links(my_graph,result_path, test_size={"neg": 1000, "pos": 100},
                       train_size={"neg": 20000, "pos": 20000},meta_data_cols=meta_data_cols)

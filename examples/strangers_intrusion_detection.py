@@ -13,6 +13,7 @@ from anomalous_vertices_detection.configs.graph_config import GraphConfig
 from anomalous_vertices_detection.graph_learning_controller import *
 from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
 from anomalous_vertices_detection.learners.gllearner import GlLearner
+from anomalous_vertices_detection.datasets.twitter import load_data
 import os
 from graphlab import aggregate
 
@@ -37,6 +38,7 @@ twitter_path = "C:\\Users\\user\\Documents\\Datasets\\Twitter\\twitter_clean2.cs
 twitter_labels = "C:\\Users\\user\\Documents\\Datasets\\Twitter\\fake_users.txt"
 dataset_config = GraphConfig("twitter", twitter_path, True, labels_path=twitter_labels, graph_type="simulation",
                              vertex_min_edge_number=3, vertex_max_edge_number=50000)
+
 glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
 output_foldr = "../output/"
 test_path, training_path, result_path, labels_output_path = output_foldr + dataset_config.name + "_test.csv", \

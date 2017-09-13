@@ -1,23 +1,16 @@
-from anomalous_vertices_detection.configs.graph_config import GraphConfig
 from anomalous_vertices_detection.graph_learning_controller import *
 from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
 from anomalous_vertices_detection.learners.gllearner import GlLearner
+from anomalous_vertices_detection.datasets.academia import load_data
 
 labels = {"neg": "Real", "pos": "Fake"}
-#
-dataset_config = GraphConfig("academia", "..\\data\\academia.csv.gz", True, graph_type="simulation",
-                             vertex_min_edge_number=3, vertex_max_edge_number=50000)
+
+my_graph, dataset_config = load_data(labels_map=labels, simulate_fake_vertices=True)
+
 glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
 output_folder = "../output/"
-test_path, training_path, result_path, labels_output_path = output_folder + dataset_config.name + "_test.csv", \
-                                                            output_folder + dataset_config.name + "_train.csv", \
-                                                            output_folder + dataset_config.name + "_res.csv", \
-                                                            output_folder + dataset_config.name + "_labels.csv"
-
-my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path,
-                                                        is_directed=dataset_config.is_directed,
-                                                        pos_label=labels["pos"],
-                                                        neg_label=labels["neg"], max_num_of_edges=1000000)
+test_path, training_path, result_path = os.path.join(output_folder, dataset_config.name + "_test.csv"),\
+                                        os.path.join(output_folder, dataset_config.name + "_train.csv")
 
 sampler = GraphSampler(my_graph, 3, 10000)
 glc.extract_features_for_set(my_graph, sampler.generate_sample_for_unlabeled_links(10000, 10000), training_path,
