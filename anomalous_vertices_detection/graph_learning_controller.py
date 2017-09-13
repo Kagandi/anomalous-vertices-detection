@@ -124,7 +124,7 @@ class GraphLearningController:
             A graph object that implements the AbstractGraph interface
         results_output_path : string
             The path to where the classification results should be saved
-        test_size : int
+        test_size : dict
             The size of the test set that should be generated
         """
 
