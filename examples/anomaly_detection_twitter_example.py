@@ -8,7 +8,7 @@ twiiter_graph, twitter_config = load_data(labels_map=labels)
 
 glc = GraphLearningController(SkLearner(labels=labels), twitter_config)
 output_folder = "../output/"
-                                                            output_folder + twitter_config.name + "_labels.csv"
+
 result_path = os.path.join(output_folder, twitter_config.name + "_res.csv")
 
 if twiiter_graph.is_directed:

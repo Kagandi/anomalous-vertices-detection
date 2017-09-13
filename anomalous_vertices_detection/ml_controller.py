@@ -157,5 +157,5 @@ class MlController(object):
         probas = self.predict_class_probabilities(features)
         avg_prob = self._learner.classify_by_links_probability(probas, features.features_ids, labels_map,
                                                                metadata=features.metadata)
-        avg_prob = avg_prob.sort("mean_link_label")
+        avg_prob = avg_prob.sort_values("mean_link_label")
         return avg_prob

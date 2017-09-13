@@ -19,5 +19,9 @@ DATA_DIR_NAME = os.environ.get("LOCAL_DATA_FOLDER_NAME")
 DATA_DIR = os.path.expanduser(os.path.join('~', DATA_DIR_NAME))
 if not os.path.exists(DATA_DIR):
     os.mkdir(DATA_DIR)
+
+TEMP_DIR = os.path.expanduser(os.path.join(DATA_DIR, 'temp'))
+if not os.path.exists(TEMP_DIR):
+    os.mkdir(TEMP_DIR)
 # if not os.access(DATA_DIR, os.W_OK):
 #     DATA_DIR = os.path.join(DATA_DIR, '/tmp')

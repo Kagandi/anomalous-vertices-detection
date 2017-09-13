@@ -1,7 +1,6 @@
-from anomalous_vertices_detection.graph_learning_controller import *
-from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
-from anomalous_vertices_detection.learners.gllearner import GlLearner
 from anomalous_vertices_detection.datasets.academia import load_data
+from anomalous_vertices_detection.graph_learning_controller import *
+from anomalous_vertices_detection.learners.gllearner import GlLearner
 
 labels = {"neg": "Real", "pos": "Fake"}
 
@@ -9,7 +8,7 @@ my_graph, dataset_config = load_data(labels_map=labels, simulate_fake_vertices=T
 
 glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
 output_folder = "../output/"
-test_path, training_path, result_path = os.path.join(output_folder, dataset_config.name + "_test.csv"),\
+test_path, training_path = os.path.join(output_folder, dataset_config.name + "_test.csv"),\
                                         os.path.join(output_folder, dataset_config.name + "_train.csv")
 
 sampler = GraphSampler(my_graph, 3, 10000)

@@ -9,26 +9,26 @@ Fire, Michael, Gilad Katz, and Yuval Elovici. "Strangers intrusion detection
 detecting spammers and fake profiles in social networks based on topology
 anomalies." Human Journal 1, no. 1 (2012): 26-39.
 """
+
+from graphlab import aggregate
+
 from anomalous_vertices_detection.configs.graph_config import GraphConfig
 from anomalous_vertices_detection.graph_learning_controller import *
 from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
 from anomalous_vertices_detection.learners.gllearner import GlLearner
-from anomalous_vertices_detection.datasets.twitter import load_data
-import os
-from graphlab import aggregate
 
 
 def aggreagate_res(data_folder, res_path):
-    res = SFrame()
-    for file in os.listdir(data_folder):
-        temp_sf = SFrame.read_csv(data_folder + "\\" + file,
+    results_frame = SFrame()
+    for f in os.listdir(data_folder):
+        temp_sf = SFrame.read_csv(data_folder + "\\" + f,
                                   column_type_hints={"prob": float})
-        res = res.append(temp_sf)
+        results_frame = results_frame.append(temp_sf)
 
-    res = res.groupby("src_id", operations={"prob": aggregate.MEAN('prob'), "actual": aggregate.SELECT_ONE('actual')})
+    results_frame = results_frame.groupby("src_id", operations={"prob": aggregate.MEAN('prob'), "actual": aggregate.SELECT_ONE('actual')})
 
     # res["actual"] = res["actual"].apply(lambda x: "P" if x == 1 else "N")
-    res.save(res_path, 'csv')
+    results_frame.save(res_path, 'csv')
 
 
 labels = {"neg": "Real", "pos": "Fake"}

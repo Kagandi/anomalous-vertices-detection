@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn import svm, tree, ensemble, feature_extraction, preprocessing
 from sklearn.metrics import recall_score, precision_score, accuracy_score, roc_auc_score
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, StratifiedKFold
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.learners import AbstractLearner
 from anomalous_vertices_detection.utils.dataset import DataSetFactory, DataSet
@@ -86,10 +86,10 @@ class SkLearner(AbstractLearner):
         else:
             return self._classifier.predict_proba(prediction_data)
 
-    def split_kfold(self, labels, n_folds=10):
+    def split_kfold(self, features, labels, n_folds=10):
         # StratifiedKFold(self._labels, n_folds)
-        skf = KFold(n_folds)
-        for train_index, test_index in skf.split(labels):
+        skf = StratifiedKFold(n_folds)
+        for train_index, test_index in skf.split(features, labels):
             yield train_index, test_index
             # return cross_validation.StratifiedKFold(labels, n_folds)
 
@@ -109,7 +109,7 @@ class SkLearner(AbstractLearner):
 
     def cross_validate(self, dataset, n_folds=10):
         roc_auc, recall, precision, accuracy, fpr, tpr, tnr = [], [], [], [], [], [], []
-        for train_index, test_index in self.split_kfold(dataset.labels, n_folds):
+        for train_index, test_index in self.split_kfold(dataset.features, dataset.labels, n_folds):
             f_train, f_test = dataset.features[train_index], dataset.features[test_index]
             l_train, l_test = dataset.labels[train_index], dataset.labels[test_index]
             # prediction = self.train_classifier(DataSet(f_train, l_train)).predict(f_test)
