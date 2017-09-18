@@ -35,3 +35,4 @@ six==1.10.0
 sseclient==0.0.8
 tornado==4.3
 tqdm==4.15.0
+numpy==1.13.1

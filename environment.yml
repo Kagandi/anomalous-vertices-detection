@@ -46,5 +46,3 @@ dependencies:
   - sseclient==0.0.8
   - tornado==4.3
   - tqdm==4.15.0
-prefix: C:\Users\dimak\AppData\Local\Continuum\Miniconda2\envs\anomaly
-
