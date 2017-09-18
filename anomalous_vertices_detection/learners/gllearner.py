@@ -45,11 +45,10 @@ class GlLearner(AbstractLearner):
         # print self.get_evaluation(prediction_data)
         return self._classifier.predict(prediction_data.features, output_type='probability')
 
-    def split_kfold(self, data, n_folds=10):
+    def split_kfold(self, data, labels=None, n_folds=10):
         return gl.cross_validation.KFold(data, n_folds)
 
-    def classify_by_links_probability(self, probas, features_ids, labels=None, threshold=0.78,
-                                      metadata=None):
+    def classify_by_links_probability(self, probas, features_ids, labels=None, threshold=0.78):
         """
         @todo add metadata usgae
         Parameters
@@ -58,16 +57,11 @@ class GlLearner(AbstractLearner):
         features_ids
         labels
         threshold
-        metadata
 
         Returns
         -------
 
         """
-        if not metadata:
-            metadata = []
-        if not labels:
-            labels = {"neg": 0, "pos": 1}
         train_df = gl.SFrame()
         train_df["probas"] = probas
         train_df["src_id"] = features_ids

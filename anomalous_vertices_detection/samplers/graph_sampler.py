@@ -260,7 +260,7 @@ class GraphSampler(object):
         return random.choice(open_vertices)
 
     @staticmethod
-    def sample_vertecies_by_degree_distribution(graph, n):
+    def sample_vertices_by_degree_distribution(graph, n):
         closed_vertices = set()
         edges = graph.edges
         while len(closed_vertices) != n:

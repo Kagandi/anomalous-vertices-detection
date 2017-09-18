@@ -3,8 +3,8 @@ import anomalous_vertices_detection.utils.utils as utils
 import collections
 import types
 
+
 class AbstractGraph(object):
-    # __slots__ = ['_graph', '_labels_dict', '_labels_map', '_weight_field']
 
     def __init__(self, weight_field=None):
         self._graph = None

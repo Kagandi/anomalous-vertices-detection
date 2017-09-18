@@ -67,7 +67,7 @@ class DataSetFactory(object):
     def convert_data_to_sklearn_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=None):
         if not metadata_cols:
             metadata_cols = []
-        features_ids = None
+        features_id = None
         metadata = pd.DataFrame()
         if utils.is_valid_path(features):
             features = pd.read_csv(features, dtype={feature_id_col_name: str})
@@ -78,7 +78,7 @@ class DataSetFactory(object):
                 labels = features.pop(labels).values
             labels = label_encoder.transform(labels)
         if feature_id_col_name is not None:
-            features_ids = features.pop(feature_id_col_name).values
+            features_id = features.pop(feature_id_col_name).values
         for metadata_col in metadata_cols:
             if metadata_col in features:
                 metadata[metadata_col] = features[metadata_col]
@@ -86,20 +86,24 @@ class DataSetFactory(object):
         if isinstance(features, pd.DataFrame):
             features = features.values
         if isinstance(features[0], list) or isinstance(features, np.ndarray):
-            return DataSet(features, labels, features_ids, metadata)
+            return DataSet(features, labels, features_id, metadata)
 
     def convert_data_to_graphlab_format(self, features, labels=None, feature_id_col_name=None, metadata_cols=None,
                                         labels_map=None):
+        features_id = None
         if not metadata_cols:
             metadata_cols = []
         if utils.is_valid_path(features):
             features = gl.SFrame.read_csv(features, column_type_hints={feature_id_col_name: str, "dst": str})
+        elif isinstance(features[0], dict):
+            features = pd.DataFrame(features)
+        if feature_id_col_name:
             features_id = features[feature_id_col_name]
-            temp_metadata_cols = []
-            for col in metadata_cols:
-                if col in features.column_names():
-                    temp_metadata_cols.append(col)
-            features = features.remove_columns(temp_metadata_cols)
+        temp_metadata_cols = []
+        for col in metadata_cols:
+            if col in features.column_names():
+                temp_metadata_cols.append(col)
+        features = features.remove_columns(temp_metadata_cols)
         if 'label' not in features.column_names():
             features.rename({labels: 'label'})
             if labels_map:

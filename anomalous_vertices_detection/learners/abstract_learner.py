@@ -79,11 +79,12 @@ class AbstractLearner(object):
         """
         pass
 
-    def split_kfold(self, data, n_folds=10):
+    def split_kfold(self, data, labels=None, n_folds=10):
         """Return cross validation results dictionary
 
         Parameters
         ----------
+        labels
         data :
         n_folds : int (default=10)
             Number of folds

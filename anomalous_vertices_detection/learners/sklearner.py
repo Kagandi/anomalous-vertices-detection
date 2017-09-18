@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn import svm, tree, ensemble, feature_extraction, preprocessing
 from sklearn.metrics import recall_score, precision_score, accuracy_score, roc_auc_score
-from sklearn.model_selection import KFold, StratifiedKFold
+from sklearn.model_selection import StratifiedKFold
+
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.learners import AbstractLearner
 from anomalous_vertices_detection.utils.dataset import DataSetFactory, DataSet
@@ -86,8 +87,7 @@ class SkLearner(AbstractLearner):
         else:
             return self._classifier.predict_proba(prediction_data)
 
-    def split_kfold(self, features, labels, n_folds=10):
-        # StratifiedKFold(self._labels, n_folds)
+    def split_kfold(self, features, labels=None, n_folds=10):
         skf = StratifiedKFold(n_folds)
         for train_index, test_index in skf.split(features, labels):
             yield train_index, test_index
@@ -151,15 +151,11 @@ class SkLearner(AbstractLearner):
         return {"auc": np.mean(roc_auc), "recall": np.mean(recall), "precision": np.mean(precision),
                 "accuracy": np.mean(accuracy), "fpr": np.mean(fpr)}
 
-    def classify_by_links_probability(self, probas, features_ids, labels=None, threshold=0.5, metadata=None):
+    def classify_by_links_probability(self, probas, features_ids, labels=None, threshold=0.5):
         if not labels:
             labels = {"neg": 0, "pos": 1}
         train_df = pd.DataFrame(probas)
         train_df["src_id"] = pd.DataFrame(features_ids)
-        if isinstance(metadata, pd.DataFrame):
-            # Very weird I don't remember why I wrote this.
-            train_df["dst_id"] = metadata["dst"]
-            train_df.pop("dst_id")
         train_df["link_label"] = train_df[0].apply(lambda avg: 1 if avg <= threshold else 0)
         train_df = train_df.groupby("src_id", as_index=False).agg(
             {0: ['mean', 'count'], 1: 'mean', "link_label": ['mean', 'sum']})

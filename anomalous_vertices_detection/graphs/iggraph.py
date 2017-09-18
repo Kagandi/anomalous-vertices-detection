@@ -1,7 +1,7 @@
 try:
     import igraph
 except ImportError:
-    pass
+    print("If you want to use igraph instead of networkx please install it.")
 
 import types
 from anomalous_vertices_detection.configs.config import *

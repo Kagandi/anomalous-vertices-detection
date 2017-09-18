@@ -17,4 +17,4 @@ def load_data(dataset_file_name="twitter.csv.gz", labels_file_name="twitter_fake
     twitter_config = GraphConfig("twitter_config", data_path,
                                  is_directed=True, labels_path=labels_path,
                                  graph_type="regular", vertex_min_edge_number=10, vertex_max_edge_number=50000)
-    return GraphFactory().factory(twitter_config,labels=labels_map), twitter_config
+    return GraphFactory().factory(twitter_config, labels=labels_map), twitter_config

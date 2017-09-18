@@ -13,7 +13,6 @@ class ExtractorIgraphTest(unittest.TestCase):
         self._fe = FeatureExtractor(self._graph)
         self._dife = FeatureExtractor(self._digraph)
 
-
     def test_total_friends(self):
         self.assertEqual(self._fe.get_total_friends("1", "4"), 4)
         self.assertEqual(self._dife.get_total_friends("1", "4"), 4)
@@ -83,30 +82,30 @@ class ExtractorIgraphTest(unittest.TestCase):
     def test_is_opposite_direction_friends(self):
         self.assertEqual(self._dife.is_opposite_direction_friends("1", "4"), 0)
         self.assertEqual(self._dife.is_opposite_direction_friends("1", "3"), 1)
-    #
-    # def test_average_scc(self):
-    #     self.assertEqual(self._dife.get_average_scc("1"), float(4) / float(3))
+        #
+        # def test_average_scc(self):
+        #     self.assertEqual(self._dife.get_average_scc("1"), float(4) / float(3))
 
-    # def test_average_scc_plus(self):
-    #     self.assertEqual(self._dife.get_average_scc_plus("1"), 2)
+        # def test_average_scc_plus(self):
+        #     self.assertEqual(self._dife.get_average_scc_plus("1"), 2)
 
-    # def test_average_wcc(self):
-    #     self.assertEqual(self._dife.get_average_wcc("1"), 4)
-    #
-    # def test_scc_number(self):
-    #     self.assertEqual(self._dife.get_scc_number("1", "4"), 4)
-    #
-    # def test_scc_number_plus(self):
-    #     self.assertEqual(self._dife.get_scc_number_plus("1", "4"), 4)
+        # def test_average_wcc(self):
+        #     self.assertEqual(self._dife.get_average_wcc("1"), 4)
+        #
+        # def test_scc_number(self):
+        #     self.assertEqual(self._dife.get_scc_number("1", "4"), 4)
+        #
+        # def test_scc_number_plus(self):
+        #     self.assertEqual(self._dife.get_scc_number_plus("1", "4"), 4)
 
-    # def test_wcc_number(self):
-    #     self.assertEqual(self._dife.get_wcc_number("1", "4"), 1)
-    #
-    # def test_inner_subgraph_scc_number(self):
-    #     self.assertEqual(self._dife.get_inner_subgraph_scc_number("1", "4"), 4)
-    #
-    # def test_inner_subgraph_wcc_number(self):
-    #     self.assertEqual(self._dife.get_inner_subgraph_wcc_number("1", "4"), 1)
+        # def test_wcc_number(self):
+        #     self.assertEqual(self._dife.get_wcc_number("1", "4"), 1)
+        #
+        # def test_inner_subgraph_scc_number(self):
+        #     self.assertEqual(self._dife.get_inner_subgraph_scc_number("1", "4"), 4)
+        #
+        # def test_inner_subgraph_wcc_number(self):
+        #     self.assertEqual(self._dife.get_inner_subgraph_wcc_number("1", "4"), 1)
 
 
 if __name__ == '__main__':

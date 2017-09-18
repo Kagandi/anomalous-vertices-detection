@@ -20,7 +20,8 @@ def get_graph(package="Networkx"):
 
 
 class GraphFactory(object):
-    def factory(self, graph_config, labels=None, fake_users_number=None, max_num_of_edges=1000000000, package="Networkx"):
+    def factory(self, graph_config, labels=None, fake_users_number=None, max_num_of_edges=1000000000,
+                package="Networkx"):
         if not labels:
             labels = {"neg": "Real", "pos": "Fake"}
         if graph_config.type == "ba":
@@ -106,12 +107,11 @@ class GraphFactory(object):
         return graph
 
     def load_saved_graph(self, graph_path, is_directed=False, labels_path=False, package="Networkx", pos_label=None,
-                         neg_label=None, weight_field=None, blacklist_path=False):
+                         neg_label=None, weight_field=None):
         """
             Load graph that was save by the library into specified package.
             Parameters
             ----------
-            blacklist_path
             graph_path : string
 
             is_directed : boolean, optional (default=False)
@@ -141,11 +141,6 @@ class GraphFactory(object):
         if labels_path and utils.is_valid_path(labels_path):
             print("Loading labels...")
             graph.load_labels(labels_path)
-        if blacklist_path:
-            print("Loading black list...")
-            blacklist = utils.read_set_from_file(blacklist_path)
-        else:
-            blacklist = []
         graph.map_labels(positive=pos_label, negative=neg_label)
         print("Loading graph...")
         graph = graph.load_saved_graph(graph_path)
@@ -199,7 +194,7 @@ class GraphFactory(object):
         print("Generating " + str(random_vertices_number) + " vertices.")
         graph_vertices = graph.vertices
         for i, followers_neighbors_number in enumerate(
-                GraphSampler.sample_vertecies_by_degree_distribution(graph, random_vertices_number)):
+                GraphSampler.sample_vertices_by_degree_distribution(graph, random_vertices_number)):
             self.create_random_vertex(graph, int(followers_neighbors_number), graph_vertices, "Fake" + str(i),
                                       vertex_label)
         print(str(random_vertices_number) + " fake users generated.")
