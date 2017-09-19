@@ -10,6 +10,14 @@ import sys
 from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
+try:
+    from pypandoc import convert
+
+    read_md = lambda f: convert(f, 'rst')
+except ImportError:
+    print("warning: pypandoc module not found, could not convert Markdown to RST")
+    read_md = lambda f: open(f, 'r').read()
+
 # Package meta-data.
 NAME = 'anomalous-vertices-detection'
 DESCRIPTION = 'The Anomalous-Vertices-Detection project is a Python package for performing graph analysis. The package supports extracting graphs\' topological features, performing link prediction, and identifying anomalous vertices.'
@@ -19,7 +27,7 @@ AUTHOR = 'Dima Kagan'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-     'networkx', 'scikit-learn', 'pandas', 'tqdm', 'python-dotenv', 'numpy'
+    'networkx', 'scikit-learn', 'pandas', 'tqdm', 'python-dotenv', 'numpy'
 ]
 
 # The rest you shouldn't have to touch too much :)
@@ -31,7 +39,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.rst' is present in your MANIFEST.in file!
-with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+with io.open(read_md(os.path.join(here, 'README.md')), encoding='utf-8') as f:
     long_description = '\n' + f.read()
 
 # Load the package's __version__.py module as a dictionary.
