@@ -31,6 +31,7 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 ```
 
 ## Todo
+- [ ] Migrate to networkx 2.0
 - [ ] Complete the documentation
 - [ ] Write Jupiter notebooks
 - [ ] Clean the code
@@ -39,6 +40,6 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 - [X] Add basic examples
 - [ ] Add more examples
 - [ ] Add more test
-- [ ] Python 3.5 support
+- [ ] Python 3.6 support
 
 
