@@ -56,10 +56,10 @@ print("Graph was loaded")
 for i in range(10):
     sampler = GraphSampler(my_graph, 3, 10000)
     features = FeatureController(my_graph)
-    features.extract_features(sampler.generate_sample_for_labeled_vertices(1000, 100),
-                              stranger_intrusion_features[my_graph.is_directed], training_path)
-    features.extract_features(sampler.generate_sample_for_test_labeled_vertices(900, 100),
-                              stranger_intrusion_features[my_graph.is_directed], test_path)
+    features.extract_features_to_file(sampler.generate_sample_for_labeled_vertices(1000, 100),
+                                      stranger_intrusion_features[my_graph.is_directed], training_path)
+    features.extract_features_to_file(sampler.generate_sample_for_test_labeled_vertices(900, 100),
+                                      stranger_intrusion_features[my_graph.is_directed], test_path)
     meta_data_cols = ["src", "vertex_label"]
     ml = MlController(GlLearner(labels=labels).set_randomforest_classifier())
     ml.load_training_set(training_path,
