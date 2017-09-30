@@ -1,6 +1,10 @@
 import numpy as np
 import pandas as pd
-import graphlab as gl
+
+try:
+    import graphlab as gl
+except ImportError:
+    gl = None
 
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.utils import utils

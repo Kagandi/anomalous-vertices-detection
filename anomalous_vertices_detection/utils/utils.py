@@ -192,7 +192,7 @@ def dict_writer(mydict, output_path, mode='wb'):
 
 
 def is_valid_path(path):
-    if isinstance(path, str) and os.path.exists(path):
+    if (isinstance(path, str) or isinstance(path, unicode)) and os.path.exists(path):
         return True
     return False
 

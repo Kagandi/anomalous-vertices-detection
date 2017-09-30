@@ -1,6 +1,9 @@
 import json
 
-import graphlab as gl
+try:
+    import graphlab as gl
+except ImportError:
+    gl = None
 
 
 def load_nxgraph_from_sgraph(graph_path):

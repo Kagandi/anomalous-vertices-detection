@@ -1,4 +1,3 @@
-from graphlab import SFrame
 from pandas import DataFrame
 from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
 from configs.predefined_features_sets import *
@@ -7,9 +6,15 @@ from ml_controller import MlController
 from utils import utils
 from configs.config import TEMP_DIR
 import os
+try:
+    from graphlab import SFrame
+    is_graphlab_installed = True
+except ImportError:
+    is_graphlab_installed = False
 
 
 class GraphLearningController:
+
     def __init__(self, cls, config):
         """ Initialize a class the combines ml and graphs.
 
@@ -45,7 +50,8 @@ class GraphLearningController:
         """
         features = FeatureController(graph)
         print "Graph loaded"
-        features.extract_features(dataset, feature_dict, output_path, max_items_num=max_items_num)
+        features.extract_features_to_file(
+            dataset, feature_dict, output_path, max_items_num=max_items_num)
         print "Features were written to: " + output_path
 
     def create_training_test_sets(self, my_graph, test_size, training_size,
@@ -64,10 +70,12 @@ class GraphLearningController:
             The size of the training set that should be generated
         """
         if not (utils.is_valid_path(self._train_path) and utils.is_valid_path(self._test_path)):
-            gs = GraphSampler(my_graph, self._config.vertex_min_edge_number, self._config.vertex_max_edge_number)
+            gs = GraphSampler(
+                my_graph, self._config.vertex_min_edge_number, self._config.vertex_max_edge_number)
             if self._labels_path:
                 my_graph.write_nodes_labels(self._labels_path)
-            training_set, test_set = gs.split_training_test_set(training_size, test_size)
+            training_set, test_set = gs.split_training_test_set(
+                training_size, test_size)
 
             self.extract_features_for_set(my_graph, test_set, self._test_path, feature_dict[my_graph.is_directed],
                                           test_size["neg"] + test_size["pos"])
@@ -102,7 +110,8 @@ class GraphLearningController:
         self.create_training_test_sets(my_graph, test_size=test_size,
                                        training_size=training_size,
                                        feature_dict=feature_dict)  # Training the classifier
-        self._ml.load_training_set(self._train_path, "edge_label", id_col_name, meta_data_cols)
+        self._ml.load_training_set(
+            self._train_path, "edge_label", id_col_name, meta_data_cols)
         # self._ml.load_test_set(test_path, "edge_label", id_col_name, meta_data_cols)
         self._ml = self._ml.train_classifier()
         print("Training 10-fold validation: {}".format(self._ml.k_fold_validation()))
@@ -128,11 +137,14 @@ class GraphLearningController:
             The size of the test set that should be generated
         """
 
-        self.evaluate_classifier(my_graph, test_size, train_size, meta_data_cols=meta_data_cols)
-        classified = self._ml.classify_by_links_probability(self._test_path, "edge_label", id_col_name, meta_data_cols)
+        self.evaluate_classifier(
+            my_graph, test_size, train_size, meta_data_cols=meta_data_cols)
+        classified = self._ml.classify_by_links_probability(
+            self._test_path, "edge_label", id_col_name, meta_data_cols)
         # Output
-        classified = self._ml._learner.merge_with_labels(classified, self._labels_path)
-        if isinstance(classified, SFrame):
+        classified = self._ml._learner.merge_with_labels(
+            classified, self._labels_path)
+        if is_graphlab_installed and isinstance(classified, SFrame):
             classified.save(results_output_path)
         if isinstance(classified, DataFrame):
             classified.to_csv(results_output_path)

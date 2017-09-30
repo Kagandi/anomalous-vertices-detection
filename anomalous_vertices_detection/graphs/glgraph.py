@@ -1,6 +1,11 @@
 # from sframe import (Edge, SArray, SFrame, SGraph, aggregate)
-from graphlab import (Edge, SArray, SFrame, SGraph, aggregate, connected_components, pagerank,
-                      shortest_path)
+try:
+    from graphlab import (Edge, SArray, SFrame, SGraph, aggregate, connected_components, pagerank,
+                          shortest_path)
+except ImportError:
+    print("If you want to use graphlab instead of networkx please install it.")
+
+
 
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
