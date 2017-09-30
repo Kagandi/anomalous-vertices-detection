@@ -153,7 +153,7 @@ class FeatureController(object):
         """
         dict_writer(array, temp_path, "a+")
 
-    def extract_features(self, data_iter, features_dict, output_path, max_items_num=0):
+    def extract_features_to_file(self, data_iter, features_dict, output_path, max_items_num=0):
         """ Extract features from the graph and saves them to file.
 
         Parameters
@@ -173,9 +173,6 @@ class FeatureController(object):
             except:
                 pass
         for entry in tqdm(self.features_generator(features_dict, data_iter), total=max_items_num, unit="feature"):
-            # if max_items_num and count % (max_items_num / 10) == 0:
-            #     print "%d%% (%d out of %d features were extracted)." % \
-            #           (100 * count / max_items_num, count, max_items_num)
             features_array.append(entry)
             if len(features_array) == save_progress_interval:
                 self.save_progress(features_array, output_path)
