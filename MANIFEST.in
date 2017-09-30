@@ -1,0 +1,4 @@
+include README.md LICENSE
+recursive-include  anomalous_vertices_detection .env *.env
+include requirements.txt
+
