@@ -3,8 +3,6 @@
 # This file is based on: https://github.com/kennethreitz/setup.py
 # Note: To use the 'upload' functionality of this file, you must:
 #   $ pip install twine
-
-import io
 import os
 import sys
 from shutil import rmtree
@@ -19,7 +17,7 @@ except ImportError:
     read_md = lambda f: open(f, 'r').read()
 
 # Package meta-data.
-NAME = 'anomalous-vertices-detection'
+NAME = 'anomalous_vertices_detection'
 DESCRIPTION = 'The Anomalous-Vertices-Detection project is a Python package for performing graph analysis. The package supports extracting graphs\' topological features, performing link prediction, and identifying anomalous vertices.'
 URL = 'https://github.com/Kagandi/anomalous-vertices-detection'
 EMAIL = 'kagandi@post.bgu.ac.il'
@@ -27,7 +25,7 @@ AUTHOR = 'Dima Kagan'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'networkx', 'scikit-learn', 'pandas', 'tqdm', 'python-dotenv', 'numpy'
+    'networkx<=1.11', 'scikit-learn<=0.19.0', 'pandas<=0.20.3', 'tqdm<=4.15.0', 'python-dotenv<=0.6.5', 'numpy<=1.13.1', 'requests<=2.9.1', 'scipy<=0.19.1', 'python-louvain<=0.8'
 ]
 
 # The rest you shouldn't have to touch too much :)
@@ -39,8 +37,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.rst' is present in your MANIFEST.in file!
-with io.open(read_md(os.path.join(here, 'README.md')), encoding='utf-8') as f:
-    long_description = '\n' + f.read()
+# with io.open(read_md(os.path.join(here, 'README.md')), encoding='utf-8') as f:
+long_description = '\n' + read_md(os.path.join(here, 'README.md'))
 
 # Load the package's __version__.py module as a dictionary.
 about = {}
@@ -56,7 +54,9 @@ class PublishCommand(Command):
 
     @staticmethod
     def status(s):
-        """Prints things in bold."""
+        """
+        Prints things in bold.
+        """
         print('\033[1m{0}\033[0m'.format(s))
 
     def initialize_options(self):
@@ -66,12 +66,13 @@ class PublishCommand(Command):
         pass
 
     def run(self):
+        __builtins__.__NUMPY_SETUP__ = False
+        import numpy
         try:
             self.status('Removing previous builds…')
             rmtree(os.path.join(here, 'dist'))
         except OSError:
             pass
-
         self.status('Building Source and Wheel (universal) distribution…')
         os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
 
@@ -97,6 +98,7 @@ setup(
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
+    setup_requires=['numpy'],
     install_requires=REQUIRED,
     include_package_data=True,
     license='MIT',
