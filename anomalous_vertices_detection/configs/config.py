@@ -15,6 +15,10 @@ ACADEMIA_URL = os.environ.get("ACADEMIA_URL")
 
 TWITTER_URL = os.environ.get("TWITTER_URL")
 TWITTER_LABELS_URL = os.environ.get("TWITTER_LABELS_URL")
+
+KIDS_URL = os.environ.get("KIDS_URL")
+KIDS_LABELS_URL = os.environ.get("KIDS_LABELS_URL")
+
 DATA_DIR_NAME = os.environ.get("LOCAL_DATA_FOLDER_NAME")
 DATA_DIR = os.path.expanduser(os.path.join('~', DATA_DIR_NAME))
 if not os.path.exists(DATA_DIR):
