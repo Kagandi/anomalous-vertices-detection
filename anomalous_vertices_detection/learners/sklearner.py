@@ -37,6 +37,7 @@ class SkLearner(AbstractLearner):
         # labels = self.transform_labels(labels)
         node_labels["actual"] = labels
         merged_data = pd.merge(classified, node_labels, left_on='src_id', right_on=merge_col_name, how='left')
+        merged_data = merged_data.drop(["id"], axis=1)
         merged_data["actual"].fillna(default_label, inplace=True)
         merged_data["actual"] = self.transform_labels(merged_data["actual"])
         return merged_data

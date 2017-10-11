@@ -9,6 +9,8 @@ from anomalous_vertices_detection.graphs.iggraph import IGraph
 from anomalous_vertices_detection.graphs.nxgraph import NxGraph
 from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
 
+from tqdm import tqdm
+
 
 def get_graph(package="Networkx"):
     packages = dict(Networkx=NxGraph,
@@ -20,7 +22,7 @@ def get_graph(package="Networkx"):
 
 
 class GraphFactory(object):
-    def factory(self, graph_config, labels=None, fake_users_number=None, max_num_of_edges=1000000000,
+    def factory(self, graph_config, labels=None, fake_users_number=None, max_num_of_edges=5000000,
                 package="Networkx"):
         if not labels:
             labels = {"neg": "Real", "pos": "Fake"}
@@ -51,7 +53,7 @@ class GraphFactory(object):
                                                   package=package, pos_label=pos_label, neg_label=neg_label)
 
     def make_graph(self, graph_path, is_directed=False, labels_path=None, package="Networkx", pos_label=None,
-                   neg_label=None, start_line=0, max_num_of_edges=10000000, weight_field=None, blacklist_path=False,
+                   neg_label=None, start_line=0, max_num_of_edges=10000, weight_field=None, blacklist_path=False,
                    delimiter=','):
         """
             Loads graph into specified package.
@@ -193,8 +195,9 @@ class GraphFactory(object):
         """
         print("Generating " + str(random_vertices_number) + " vertices.")
         graph_vertices = graph.vertices
-        for i, followers_neighbors_number in enumerate(
-                GraphSampler.sample_vertices_by_degree_distribution(graph, random_vertices_number)):
+        for i, followers_neighbors_number in tqdm(enumerate(
+                GraphSampler.sample_vertices_by_degree_distribution(graph, random_vertices_number)),
+                total=random_vertices_number, unit=" simulated vertices"):
             self.create_random_vertex(graph, int(followers_neighbors_number), graph_vertices, "Fake" + str(i),
                                       vertex_label)
         print(str(random_vertices_number) + " fake users generated.")

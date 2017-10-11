@@ -28,7 +28,7 @@ class GraphLearningController:
         self._ml = MlController(cls.set_randomforest_classifier())
         self._config = config
         self._test_path = os.path.join(TEMP_DIR, config.name + "_test.csv")
-        self._train_path = os.path.join(TEMP_DIR, config.name + "_trsin.csv")
+        self._train_path = os.path.join(TEMP_DIR, config.name + "_train.csv")
         self._labels_path = os.path.join(TEMP_DIR, config.name + "_labels.csv")
 
     @staticmethod

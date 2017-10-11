@@ -8,11 +8,12 @@ This project is under development and has a many planned improvements. More deta
 ## Installation
 ```
 git clone git://github.com/Kagandi/anomalous-vertices-detection.git
-if you are using conda run: conda env create -f environment.yml
 pip install -r requirements.txt
-python setup.py install
+For Windows I suggest using conda and running:  run: conda env create -f environment.yml
+The default installation only installs networkx and scikit-learn.
+It is also possible to use the package with igraph, SGraph, GraphLab and GraphTools.
+Note: Currently the package works best with networkx + scikit-learn or networkx + GraphLab.
 ```
-GraphLab may require installation of additional requirements, if needed a message with instruction will be presented.
 ## Usage
 Init:
 ```python
@@ -23,11 +24,10 @@ from anomalous_vertices_detection.learners.gllearner import GlLearner
 
 labels = {"neg": "Real", "pos": "Fake"}
 dataset_config = GraphConfig("my_dataset", my_dataset_path, is_directed=True)
-gl = GraphLearningController(GlLearner(labels=labels), labels, dataset_config)
+gl = GraphLearningController(GlLearner(labels=labels), dataset_config)
 my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path,
                                             is_directed=dataset_config.is_directed,
                                             pos_label=labels["pos"], neg_label=labels["neg"])
-
 ```
 
 ## Todo
