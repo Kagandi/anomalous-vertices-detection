@@ -1,12 +1,12 @@
 from anomalous_vertices_detection.datasets.academia import load_data
 from anomalous_vertices_detection.graph_learning_controller import *
-from anomalous_vertices_detection.learners.gllearner import GlLearner
+from anomalous_vertices_detection.learners.sklearner import SkLearner
 
 labels = {"neg": "Real", "pos": "Fake"}
 
 my_graph, dataset_config = load_data(labels_map=labels, simulate_fake_vertices=True)
 
-glc = GraphLearningController(GlLearner(labels=labels), dataset_config)
+glc = GraphLearningController(SkLearner(labels=labels), dataset_config)
 output_folder = "../output/"
 test_path, training_path = os.path.join(output_folder, dataset_config.name + "_test.csv"),\
                                         os.path.join(output_folder, dataset_config.name + "_train.csv")
