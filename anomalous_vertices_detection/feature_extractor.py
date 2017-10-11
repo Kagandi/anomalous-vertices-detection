@@ -85,13 +85,6 @@ class FeatureExtractor(object):
         else:
             return self._graph.positive_label
 
-    # def is_enabled(self, feature_name):
-    #     if len(self._enabled_features) == 0:
-    #         return True
-    #     elif feature_name in self._enabled_features:
-    #         return True
-    #     return False
-
     # def get_vertices_by_label(self, label_values):
     #     """
     #
@@ -107,23 +100,6 @@ class FeatureExtractor(object):
 
     def get_graph(self):
         return self._graph
-
-    # def load_centrality_features(self):
-    #     return
-    #     self._degree_centrality = if not "degree_centrality", self._graph.degree_centrality)
-    #     self._out_degree_centrality = if not "out_degree_centrality", self._graph.out_degree_centrality)
-    #     self._in_degree_centrality = if not "degree_centrality", self._graph.in_degree_centrality)
-    #     self._pagerank = if not "pagerank", self._graph.pagerank)
-    #     self._disjoint_communities = if not "disjoint_communities", self._graph.disjoint_communities)
-    #     self._hits = if not "hits", self._graph.hits)
-    #     self._closeness = if not "closeness", self._graph.closeness)
-    #     self._load_centrality = if not "load_centrality", self._graph.load_centrality)
-    #     self._nodes_number_of_cliques = if not "nodes_number_of_cliques", self._graph.nodes_number_of_cliques)
-    #     self._average_neighbor_degree = if not "average_neighbor_degree",
-    #     self._graph.average_neighbor_degree)
-    #     self._communicability_centrality = if not "communicability", self._graph.communicability_centrality)
-    #     self._betweenness = if not "betweenness", self._graph.betweenness_centrality)
-    #     self._eigenvector = if not "eigenvector", self._graph.eigenvector)
 
     @property
     def nodes(self):
