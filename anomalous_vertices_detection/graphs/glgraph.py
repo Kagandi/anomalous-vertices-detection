@@ -5,9 +5,6 @@ try:
 except ImportError:
     print("If you want to use graphlab instead of networkx please install it.")
 
-
-
-from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
 from anomalous_vertices_detection.utils import utils
 
@@ -21,7 +18,7 @@ class GlGraph(AbstractGraph):
             self._graph = graph_obj
         self._is_directed = is_directed
 
-    def load_graph(self, graph_path, direction=1, start_line=0, limit=graph_max_edge_number, blacklist=set(),
+    def load_graph(self, graph_path, direction=1, start_line=0, limit=None, blacklist=set(),
                    delimiter=','):
         json_object = utils.is_json(graph_path)
         if json_object is not False:
@@ -31,7 +28,7 @@ class GlGraph(AbstractGraph):
         else:
             # load_sgraph()
             graph_path = SFrame.read_csv(graph_path, delimiter=delimiter, header=False, column_type_hints={
-                'X1': str, 'X2': str}, nrows=graph_max_edge_number, skiprows=start_line)
+                'X1': str, 'X2': str}, nrows=limit, skiprows=start_line)
             if self._weight_field != "":
                 graph_path.rename({'X3': 'Weight'})
         # print graph_data

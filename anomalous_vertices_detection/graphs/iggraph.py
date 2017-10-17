@@ -49,7 +49,7 @@ class IGraph(AbstractGraph):
             self._graph.add_vertex(vertex)
         return self._graph.vs.find(vertex).index
 
-    def load_graph(self, graph_path, direction=1, start_line=1, limit=graph_max_edge_number, blacklist=set(),
+    def load_graph(self, graph_path, direction=1, start_line=1, limit=None, blacklist=set(),
                    delimiter=','):
         vetices_list = set()
         edges_list, label_list, weight_list = [], [], []
@@ -66,7 +66,7 @@ class IGraph(AbstractGraph):
             for i, edge in enumerate(f):
 
                 if i >= start_line:
-                    if i == limit + start_line:
+                    if limit and i == limit + start_line:
                         break
                     edge = extract_items_from_line(edge, delimiter)[0:3]
                     if direction is 0:

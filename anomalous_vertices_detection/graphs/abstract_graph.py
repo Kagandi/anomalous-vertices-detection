@@ -48,7 +48,7 @@ class AbstractGraph(object):
     # def get_vertex(self, vertex):
     #     return vertex
     # @profile
-    def load_graph(self, graph_path, direction=1, start_line=1, limit=graph_max_edge_number, blacklist=set(),
+    def load_graph(self, graph_path, direction=1, start_line=1, limit=None, blacklist=set(),
                    delimiter=','):
         """Load a graph.
         The graph should be in csv format
@@ -85,7 +85,7 @@ class AbstractGraph(object):
             for i, edge in enumerate(f):
                 edge_attr = {}
                 if i >= start_line:
-                    if i == limit + start_line:
+                    if limit and i == limit + start_line:
                         break
                     edge = utils.extract_items_from_line(edge, delimiter)[0:3]
                     if direction is 0:
@@ -302,7 +302,7 @@ class AbstractGraph(object):
     def communicability_centrality(self):
         pass
 
-    def get_jaccard_coefficie_nt(self, vertex1, vertex2):
+    def get_jaccard_coefficient(self, vertex1, vertex2):
         pass
 
     def betweenness_centrality(self):
