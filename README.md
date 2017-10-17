@@ -33,12 +33,12 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 ## Todo
 - [ ] Migrate to networkx 2.0
 - [ ] Complete the documentation
-- [ ] Write Jupiter notebooks
+- [X] Write Jupiter notebooks
 - [ ] Clean the code
 - [X] Add setup.py
 - [X] Add requirements.txt
 - [X] Add basic examples
-- [ ] Add more examples
+- [X] Add more examples
 - [ ] Add more test
 - [ ] Python 3.6 support
 
