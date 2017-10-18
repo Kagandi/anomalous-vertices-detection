@@ -41,5 +41,6 @@ my_graph = GraphFactory().make_graph_with_fake_profiles(dataset_config.data_path
 - [X] Add more examples
 - [ ] Add more test
 - [ ] Python 3.6 support
+- [ ] Migrate form unittest to pytest
 
 
