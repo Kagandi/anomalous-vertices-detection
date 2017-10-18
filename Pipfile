@@ -6,7 +6,8 @@ name = "pypi"
 
 
 [dev-packages]
-
+python-igraph = "==0.7.1.post6"
+graphlab-create = "==2.1"
 
 
 [packages]
