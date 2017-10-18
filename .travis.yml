@@ -8,4 +8,5 @@ install:
   - pipenv install --dev
 # command to run tests
 script:
-  - python -m unittest # or py.test for Python versions 3.5 and below
+  - pipenv install -e .
+  - pipenv run python -m  unittest discover # or py.test for Python versions 3.5 and below
