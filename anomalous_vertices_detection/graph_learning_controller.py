@@ -116,8 +116,11 @@ class GraphLearningController:
         self._ml = self._ml.train_classifier()
         print("Training 10-fold validation: {}".format(self._ml.k_fold_validation()))
         # Testing the classifier
-        print(
-            "Test evaluation: {}".format(self._ml.evaluate(self._test_path, "edge_label", id_col_name, meta_data_cols)))
+        try:
+            print(
+                "Test evaluation: {}".format(self._ml.evaluate(self._test_path, "edge_label", id_col_name, meta_data_cols)))
+        except ValueError:
+            pass
 
     def classify_by_links(self, my_graph, results_output_path, test_size,
                           train_size, meta_data_cols=None, id_col_name="src", temp_folder=TEMP_DIR):
