@@ -1,15 +1,17 @@
 from anomalous_vertices_detection.feature_extractor import FeatureExtractor
 from anomalous_vertices_detection.graphs import NxGraph
-
+import os
 import unittest
 
 
 class ExtractorTest(unittest.TestCase):
     def setUp(self):
         self._graph = NxGraph(False)
-        self._graph.load_graph("input/test1.txt", start_line=0)
+        tests_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        tests_input = os.path.join(tests_path, "input\\test1.txt")
+        self._graph.load_graph(tests_input, start_line=0)
         self._digraph = NxGraph(True)
-        self._digraph.load_graph("input/test1.txt", start_line=0)
+        self._digraph.load_graph(tests_input, start_line=0)
         self._fe = FeatureExtractor(self._graph)
         self._dife = FeatureExtractor(self._digraph)
 

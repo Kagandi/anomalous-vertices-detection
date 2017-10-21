@@ -1,15 +1,17 @@
 from anomalous_vertices_detection.graphs.graph_factory import GraphFactory
 from anomalous_vertices_detection.graphs import NxGraph
-
+import os
 import unittest
 
 
 class SimulationTest(unittest.TestCase):
     def setUp(self):
+        tests_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        tests_input = os.path.join(tests_path, "input\\test1.txt")
         self._graph = NxGraph(False)
-        self._graph.load_graph("input/test1.txt", start_line=0)
+        self._graph.load_graph(tests_input, start_line=0)
         self._digraph = NxGraph(True)
-        self._digraph.load_graph("input/test1.txt", start_line=0)
+        self._digraph.load_graph(tests_input, start_line=0)
         self._factory = GraphFactory()
         self._count = 0
 
