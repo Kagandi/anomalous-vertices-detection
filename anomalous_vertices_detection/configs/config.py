@@ -1,6 +1,4 @@
 import os
-from os.path import join, dirname
-from dotenv import load_dotenv
 
 from anomalous_vertices_detection.utils.label_encoder import BinaryLabelEncoder
 
@@ -8,18 +6,16 @@ label_encoder = BinaryLabelEncoder()
 graph_max_edge_number = 10000000
 save_progress_interval = 200000
 
-dotenv_path = join(dirname(__file__), '.env')
-load_dotenv(dotenv_path)
+ACADEMIA_URL = "http://proj.ise.bgu.ac.il/sns/datasets/academia.csv.gz"
 
-ACADEMIA_URL = os.environ.get("ACADEMIA_URL")
+TWITTER_URL = "http://proj.ise.bgu.ac.il/sns/datasets/twitter.csv.gz"
+TWITTER_LABELS_URL = "http://proj.ise.bgu.ac.il/sns/datasets/twitter_fake_ids.csv"
 
-TWITTER_URL = os.environ.get("TWITTER_URL")
-TWITTER_LABELS_URL = os.environ.get("TWITTER_LABELS_URL")
+KIDS_URL = "http://proj.ise.bgu.ac.il/sns/datasets/Relationship_patterns_in_the_19th_century.csv"
+KIDS_LABELS_URL = "http://proj.ise.bgu.ac.il/sns/datasets/Relationship_patterns_labels.csv"
 
-KIDS_URL = os.environ.get("KIDS_URL")
-KIDS_LABELS_URL = os.environ.get("KIDS_LABELS_URL")
+DATA_DIR_NAME = ".avd"
 
-DATA_DIR_NAME = os.environ.get("LOCAL_DATA_FOLDER_NAME")
 DATA_DIR = os.path.expanduser(os.path.join('~', DATA_DIR_NAME))
 if not os.path.exists(DATA_DIR):
     os.mkdir(DATA_DIR)
