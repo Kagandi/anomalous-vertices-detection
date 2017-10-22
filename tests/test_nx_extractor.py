@@ -8,7 +8,7 @@ class ExtractorTest(unittest.TestCase):
     def setUp(self):
         self._graph = NxGraph(False)
         tests_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        tests_input = os.path.join(tests_path, "input\\test1.txt")
+        tests_input = os.path.join(tests_path, "input/test1.txt")
         self._graph.load_graph(tests_input, start_line=0)
         self._digraph = NxGraph(True)
         self._digraph.load_graph(tests_input, start_line=0)

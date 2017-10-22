@@ -7,7 +7,7 @@ import unittest
 class SimulationTest(unittest.TestCase):
     def setUp(self):
         tests_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        tests_input = os.path.join(tests_path, "input\\test1.txt")
+        tests_input = os.path.join(tests_path, "input/test1.txt")
         self._graph = NxGraph(False)
         self._graph.load_graph(tests_input, start_line=0)
         self._digraph = NxGraph(True)
