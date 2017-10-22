@@ -183,7 +183,7 @@ class NxGraph(AbstractGraph):
         >>> g.add_edge("c","b",{"weight": 5})
         """
         vertex1, vertex2 = str(vertex1).strip(), str(vertex2).strip()
-        self._graph.add_edge(vertex1, vertex2, edge_atrr)
+        self._graph.add_edge(vertex1, vertex2, attr=edge_atrr)
 
     def remove_edge(self, v, u):
         """Remove the edge between u and v.
@@ -729,7 +729,7 @@ class NxGraph(AbstractGraph):
         --------
         >>>
         """
-        return self._graph.neighbors_iter(vertex)
+        return self._graph.neighbors(vertex)
 
     def get_followers(self, node):
         """

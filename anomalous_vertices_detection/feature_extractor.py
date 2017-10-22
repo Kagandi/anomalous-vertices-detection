@@ -290,7 +290,7 @@ class FeatureExtractor(object):
         v : string
             vertex
         """
-        return len(self._graph.get_neighbors(v))
+        return len(list(self._graph.get_neighbors(v)))
 
     def get_sum_of_friends(self, u, v):
         """Return the number of sum of friends between two vertices v and u.
