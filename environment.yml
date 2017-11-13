@@ -63,7 +63,6 @@ dependencies:
   - pygments==2.2.0
   - python-dateutil==2.6.1
   - python-dotenv==0.6.5
-  - python-igraph==0.7.1.post6
   - python-louvain==0.9
   - pytz==2017.2
   - pyzmq==16.0.2
