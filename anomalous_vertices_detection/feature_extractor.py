@@ -106,10 +106,6 @@ class FeatureExtractor(object):
         return self._graph.vertices
 
     @property
-    def edges_iter(self):
-        return self._graph.edges_iter
-
-    @property
     def number_of_nodes(self):
         """Return the of the vertices in the graph.
 
