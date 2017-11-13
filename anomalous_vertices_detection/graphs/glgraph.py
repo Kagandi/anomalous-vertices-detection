@@ -15,7 +15,7 @@ class GlGraph(AbstractGraph):
     def __init__(self, is_directed=False, weight_field="", graph_obj=None):
         super(GlGraph, self).__init__(weight_field)
         if graph_obj:
-            self._graph = graph_obj
+            self._graph = graph_obj.copy()
         self._is_directed = is_directed
 
     def load_graph(self, graph_path, direction=1, start_line=0, limit=None, blacklist=set(),
@@ -149,7 +149,7 @@ class GlGraph(AbstractGraph):
             edges.append(df_induced.filter_by(verts_sa, "__dst_id"))
 
             g = g.add_edges(edges, src_field='__src_id', dst_field='__dst_id')
-        return g
+        return GlGraph(is_directed=self.is_directed, graph_obj=g)
 
     def get_number_weakly_connected_components(self, g):
         cc = connected_components.create(g)

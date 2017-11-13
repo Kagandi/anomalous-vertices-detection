@@ -14,7 +14,7 @@ class IGraph(AbstractGraph):
         super(IGraph, self).__init__(weight_field)
         self._is_directed = is_directed
         if graph_obj:
-            self._graph = graph_obj
+            self._graph = graph_obj.copy()
         else:
             self._graph = igraph.Graph(directed=is_directed)
 
