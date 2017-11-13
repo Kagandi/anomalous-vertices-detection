@@ -174,7 +174,7 @@ class GtGraph(AbstractGraph):
         return subgraph
 
     def get_subgraph_edges(self, subgraph):
-        return list(subgraph.edges_iter)
+        return list(subgraph.edges)
 
     def get_vertex_all_edges(self, vertex):
         return vertex.all_edges()

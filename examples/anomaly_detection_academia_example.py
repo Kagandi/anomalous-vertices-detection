@@ -6,7 +6,7 @@ import os
 labels = {"neg": "Real", "pos": "Fake"}
 
 academia_graph, academia_config = load_data(
-    labels_map=labels, simulate_fake_vertices=True)
+    labels_map=labels, simulate_fake_vertices=True, limit=100000)
 
 glc = GraphLearningController(SkLearner(labels=labels), academia_config)
 
