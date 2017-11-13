@@ -3,10 +3,42 @@ from itertools import product
 import community
 import networkx as nx
 import numpy as np
+from networkx.classes.reportviews import OutEdgeView, EdgeView, NodeView
 
 from anomalous_vertices_detection.graphs import AbstractGraph
 from anomalous_vertices_detection.utils.graphlab_utils import load_nxgraph_from_sgraph, save_nx_as_sgraph
 from anomalous_vertices_detection.utils.utils import *
+from itertools import islice
+
+
+class NxEdgeView(EdgeView):
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            # Get the start, stop, and step from the slice
+            return islice(self.__iter__(), key.start, key.stop, key.step)
+            # return [self[ii] for ii in xrange(*key.indices(len(self)))]
+        elif isinstance(key, int):
+            return next(islice(self.__iter__(), key, key+1))
+
+
+class NxOutEdgeView(OutEdgeView):
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            # Get the start, stop, and step from the slice
+            return islice(self.__iter__(), key.start, key.stop, key.step)
+            # return [self[ii] for ii in xrange(*key.indices(len(self)))]
+        elif isinstance(key, int):
+            return next(islice(self.__iter__(), key, key+1))
+
+
+class NxNodeView(NodeView):
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            # Get the start, stop, and step from the slice
+            return islice(self.__iter__(), key.start, key.stop, key.step)
+            # return [self[ii] for ii in xrange(*key.indices(len(self)))]
+        elif isinstance(key, int):
+            return next(islice(self.__iter__(), key, key+1))
 
 
 class NxGraph(AbstractGraph):
@@ -34,7 +66,7 @@ class NxGraph(AbstractGraph):
         """
         super(NxGraph, self).__init__(weight_field)
         if graph_obj:
-            self._graph = graph_obj
+            self._graph = graph_obj.copy()
         else:
             if is_directed is False:
                 self._graph = nx.Graph()
@@ -164,7 +196,7 @@ class NxGraph(AbstractGraph):
         return cls(graph_obj=nx.read_graphml(graph_path))
 
     def add_node(self, vertex, attr_dict=None):
-        self._graph.add_node(vertex, attr_dict)
+        self._graph.add_node(vertex, **attr_dict)
 
     def add_edge(self, vertex1, vertex2, edge_atrr=None):
         """ Adds a new edge to the graph
@@ -322,7 +354,7 @@ class NxGraph(AbstractGraph):
         --------
         >>> g.vertices
         """
-        return self._graph.nodes()
+        return NxNodeView(self._graph)
 
     @property
     def vertices_iter(self):
@@ -350,21 +382,11 @@ class NxGraph(AbstractGraph):
         --------
         >>> g.edges
         """
-        return self._graph.edges()
-
-    @property
-    def edges_iter(self):
-        """Return an iterator over the edges.
-
-        Returns
-        -------
-        iterator: An iterator over all the edges.
-
-        Examples
-        --------
-        >>> g.edges_iter
-        """
-        return self._graph.edges_iter()
+        if self.is_directed:
+            return NxOutEdgeView(self._graph)
+        else:
+            return NxEdgeView(self._graph)
+        # return self._graph.edges()
 
     @property
     def number_of_vertices(self):
@@ -713,7 +735,7 @@ class NxGraph(AbstractGraph):
         --------
         >>>
         """
-        return self._graph.neighbors(node)
+        return list(self._graph.neighbors(node))
 
     def neighbors_iter(self, vertex):
         """
