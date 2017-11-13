@@ -262,7 +262,7 @@ class GraphSampler(object):
     @staticmethod
     def sample_vertices_by_degree_distribution(graph, n):
         closed_vertices = set()
-        edges = graph.edges
+        edges = list(graph.edges)
         while len(closed_vertices) != n:
             v = random.choice(edges)[0]
             if v not in closed_vertices:
