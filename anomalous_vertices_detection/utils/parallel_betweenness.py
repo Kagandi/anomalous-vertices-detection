@@ -36,7 +36,7 @@ def _betmap(G_normalized_weight_sources_tuple):
 def betweenness_centrality_parallel(graph, processes=None):
     """Parallel betweenness centrality  function"""
     p = Pool(processes=processes)
-    node_divisor = len(p._pool)*4
+    node_divisor = len(p._pool) * 4
     node_chunks = list(chunks(graph.nodes(), int(graph.order() / node_divisor)))
     num_chunks = len(node_chunks)
     bt_sc = p.map(_betmap,
@@ -52,6 +52,7 @@ def betweenness_centrality_parallel(graph, processes=None):
             bt_c[n] += bt[n]
     return bt_c
 
+
 if __name__ == "__main__":
     G_ba = nx.barabasi_albert_graph(1000, 3)
     G_er = nx.gnp_random_graph(1000, 0.01)
@@ -63,11 +64,11 @@ if __name__ == "__main__":
         print("\tParallel version")
         start = time.time()
         betweenness = betweenness_centrality_parallel(G)
-        print("\t\tTime: %.4F" % (time.time()-start))
+        print("\t\tTime: %.4F" % (time.time() - start))
         print("\t\tBetweenness centrality for node 0: %.5f" % (bt[0]))
         print("\tNon-Parallel version")
         start = time.time()
         betweenness = nx.betweenness_centrality(G)
-        print("\t\tTime: %.4F seconds" % (time.time()-start))
+        print("\t\tTime: %.4F seconds" % (time.time() - start))
         print("\t\tBetweenness centrality for node 0: %.5f" % (bt[0]))
     print("")

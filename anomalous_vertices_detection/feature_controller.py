@@ -1,8 +1,9 @@
-from configs.config import *
-from feature_extractor import FeatureExtractor
-from utils.utils import dict_writer, delete_file_content
+from anomalous_vertices_detection.configs.config import *
+from anomalous_vertices_detection.feature_extractor import FeatureExtractor
+from anomalous_vertices_detection.utils.utils import dict_writer, delete_file_content
 import types
 from tqdm import tqdm
+from six import iteritems
 
 
 class FeatureController(object):
@@ -103,7 +104,7 @@ class FeatureController(object):
             The feature extraction function arguments.
         """
         if features_type in features_list:
-            for name, feature in features_list[features_type].iteritems():
+            for name, feature in iteritems(features_list[features_type]):
                 self.set_feature(name, feature, *args)
 
     def features_generator(self, features_dict, item_iter):

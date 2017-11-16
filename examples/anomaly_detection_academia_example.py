@@ -4,7 +4,7 @@ from anomalous_vertices_detection.datasets.academia import load_data
 import os
 
 labels = {"neg": "Real", "pos": "Fake"}
-
+os.
 academia_graph, academia_config = load_data(
     labels_map=labels, simulate_fake_vertices=True, limit=100000)
 

@@ -1,1 +1,1 @@
-from abstract_learner import AbstractLearner
+from anomalous_vertices_detection.learners.abstract_learner import AbstractLearner

@@ -8,7 +8,7 @@ import DBLP2json
 
 
 def force():
-    print '** Computing coauthorship half-square graph...'
+    print('** Computing coauthorship half-square graph...')
 
     allauthors = set()
     out = gzip.GzipFile('tmp_dblp_coauthorship.json.gz', 'w')
@@ -24,8 +24,8 @@ def force():
     out.close()
     os.rename('tmp_dblp_coauthorship.json.gz', 'dblp_coauthorship2.json.gz')
 
-    print '--', len(allauthors), 'unique authors'
-    print '--', edgecount, 'total coauthorship edges'
+    print('--', len(allauthors), 'unique authors')
+    print('--', edgecount, 'total coauthorship edges')
 
 
 if __name__ == '__main__':

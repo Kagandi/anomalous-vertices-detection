@@ -1,5 +1,5 @@
 import bz2
-import cPickle as pickle
+import pickle
 import csv
 import datetime
 import functools
@@ -12,6 +12,8 @@ import zipfile
 from functools import wraps
 import requests
 from anomalous_vertices_detection.configs.config import DATA_DIR
+from builtins import str
+from six import iteritems
 
 
 class memoize(object):
@@ -72,7 +74,7 @@ def extract_graph_from_csv(f, labels=False):
 
 
 def read_file_by_lines(path):
-    with open(path, "rb") as f:
+    with open(path, "r") as f:
         line_list = f.read().splitlines()
     return line_list
 
@@ -82,19 +84,19 @@ def read_set_from_file(set_path):
 
 
 def read_file(path):
-    with open(path, "rb") as f:
+    with open(path, "r") as f:
         for line in f:
             yield line
 
 
 def read_bz2(path):
-    with bz2.BZ2File(path, "rb") as f:
+    with bz2.BZ2File(path, "rt") as f:
         for line in f:
             yield line
 
 
 def read_gzip(path):
-    with gzip.open(path, "rb") as f:
+    with gzip.open(path, "rt") as f:
         for line in f:
             yield line
 
@@ -164,7 +166,7 @@ def deserilize_list(output_path):
 def to_iterable(item):
     if item is None:  # include all nodes via iterator
         item = []
-    elif not hasattr(item, "__iter__"):  # if vertices is a single node
+    elif not hasattr(item, "__iter__") or isinstance(item, str):  # if vertices is a single node
         item = [item]  # ?iter()
     return item
 
@@ -192,14 +194,14 @@ def dict_writer(mydict, output_path, mode='wb'):
 
 
 def is_valid_path(path):
-    if (isinstance(path, str) or isinstance(path, unicode)) and os.path.exists(path):
+    if (isinstance(path, str) or isinstance(path, str)) and os.path.exists(path):
         return True
     return False
 
 
 def write_hash_table(hash_table, output_path, header=None):
     # csv_list = [[key, value] for key, value in hash_table.iteritems()]
-    csv_list = list(hash_table.iteritems())
+    csv_list = list(iteritems(hash_table))
     if header is not None:
         csv_list = [header] + csv_list
     write_to_file(output_path, two_dimensional_list_to_string(csv_list))
@@ -348,7 +350,7 @@ def read_targz(path):
     for member in tar.getmembers():
         f = tar.extractfile(member)
         for line in f:
-            print line
+            yield line
 
 
 def read_zip(path):
@@ -356,7 +358,7 @@ def read_zip(path):
     for member in zip_file.infolist():
         with zip_file.open(member.filename) as f:
             for line in f:
-                print line
+                yield line
 
 
 def download_file(url, local_filename=None):

@@ -51,7 +51,7 @@ class DBLPHandler(xml.sax.ContentHandler):
         self.edgecount += len(self.authors)
         json.dump([self.paper, self.authors, self.year], self.out)
         if self.papercount % report_frequency == 0:
-            print '... processed %d papers, %d edges so far ...' % (self.papercount, self.edgecount)
+            print('... processed %d papers, %d edges so far ...' % (self.papercount, self.edgecount))
             sys.stdout.flush()
 
     def characters(self, chars):
@@ -59,7 +59,7 @@ class DBLPHandler(xml.sax.ContentHandler):
 
 
 def force():
-    print '** Parsing XML...'
+    print('** Parsing XML...')
 
     xmlfile = gzip.GzipFile(xml_filename, 'r')
     out = gzip.GzipFile(tmp_filename, 'w')
@@ -70,7 +70,7 @@ def force():
     out.close()
     os.rename(tmp_filename, json_gz_filename)
 
-    print '-- %d papers, %d edges' % (dblp.papercount, dblp.edgecount)
+    print('-- %d papers, %d edges' % (dblp.papercount, dblp.edgecount))
 
 
 def main(parse_args=False):

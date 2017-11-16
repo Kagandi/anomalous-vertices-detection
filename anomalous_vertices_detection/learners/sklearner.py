@@ -148,7 +148,7 @@ class SkLearner(AbstractLearner):
             accuracy.append(metrics["accuracy"])
             fpr.append(metrics["fpr"])
         except ValueError:
-            print "Error"
+            print("Error")
         return {"auc": np.mean(roc_auc), "recall": np.mean(recall), "precision": np.mean(precision),
                 "accuracy": np.mean(accuracy), "fpr": np.mean(fpr)}
 

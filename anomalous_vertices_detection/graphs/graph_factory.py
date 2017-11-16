@@ -31,12 +31,12 @@ class GraphFactory(object):
         if graph_config.type == "simulation":
             return self.make_graph_with_fake_profiles(graph_config.data_path, fake_users_number,
                                                       graph_config.is_directed, graph_config.labels_path,
-                                                      max_num_of_edges=limit,
+                                                      max_num_of_edges=limit, start_line=graph_config.first_line,
                                                       package=package, pos_label=labels["pos"],
                                                       neg_label=labels["neg"], delimiter=graph_config.delimiter)
         if graph_config.type == "regular":
             return self.make_graph(graph_config.data_path, graph_config.is_directed, graph_config.labels_path,
-                                   max_num_of_edges=limit,
+                                   max_num_of_edges=limit, start_line=graph_config.first_line,
                                    package=package, pos_label=labels["pos"],
                                    neg_label=labels["neg"], delimiter=graph_config.delimiter)
 

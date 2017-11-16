@@ -32,7 +32,7 @@ class GlLearner(AbstractLearner):
 
     def train_classifier(self, dataset, **kwargs):
         self._classifier = self._classifier(dataset.features, target=dataset.labels)
-        print self.get_evaluation(dataset)
+        print(self.get_evaluation(dataset))
         return self
 
     def get_prediction(self, prediction_data):

@@ -1,5 +1,6 @@
-from anomalous_vertices_detection.graph_learning_controller import *
+from anomalous_vertices_detection.graph_learning_controller import FeatureController
 from anomalous_vertices_detection.datasets.academia import load_data
+from anomalous_vertices_detection.configs.predefined_features_sets import fast_link_features, fast_vertex_features
 from itertools import islice
 labels = {"neg": "Real", "pos": "Fake"}
 
@@ -8,8 +9,8 @@ print(my_graph.number_of_vertices)
 print(len(my_graph.edges))
 edges_output_path = "../output/" + dataset_config.name + "_edges.csv"
 vetices_output_path = "../output/" + dataset_config.name + "_vertices.csv"
-print len(my_graph.vertices)
-print my_graph.vertices[10]
+print(len(my_graph.vertices))
+print(my_graph.vertices[10])
 
 features = FeatureController(my_graph)
 # Edge feature extraction

@@ -1,10 +1,10 @@
 from pandas import DataFrame
 from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
-from configs.predefined_features_sets import *
-from feature_controller import FeatureController
-from ml_controller import MlController
-from utils import utils
-from configs.config import TEMP_DIR
+from anomalous_vertices_detection.configs.predefined_features_sets import *
+from anomalous_vertices_detection.feature_controller import FeatureController
+from anomalous_vertices_detection.ml_controller import MlController
+from anomalous_vertices_detection.utils import utils
+from anomalous_vertices_detection.configs.config import TEMP_DIR
 import os
 try:
     from graphlab import SFrame
@@ -49,10 +49,10 @@ class GraphLearningController:
 
         """
         features = FeatureController(graph)
-        print "Graph loaded"
+        print("Graph loaded")
         features.extract_features_to_file(
             dataset, feature_dict, output_path, max_items_num=max_items_num)
-        print "Features were written to: " + output_path
+        print("Features were written to: " + output_path)
 
     def create_training_test_sets(self, my_graph, test_size, training_size,
                                   feature_dict):
@@ -82,7 +82,7 @@ class GraphLearningController:
             self.extract_features_for_set(my_graph, training_set, self._train_path, feature_dict[my_graph.is_directed],
                                           training_size["neg"] + training_size["pos"])
         else:
-            print "Existing files were loaded."
+            print("Existing files were loaded.")
 
     def evaluate_classifier(self, my_graph, test_size=0,
                             training_size=0, id_col_name="src", feature_dict=fast_link_features,
@@ -94,7 +94,7 @@ class GraphLearningController:
         meta_data_cols
         my_graph : AbstractGraph
             A graph object that implements the AbstractGraph interface
-        test_size : int
+        test_size : dict
             The size of the test set that should be generated
         training_size : int
             The size of the training set that should be generated
@@ -102,7 +102,7 @@ class GraphLearningController:
             The column name of the vertices id
         feature_dict: dict
         """
-        print "Setting training and test sets"
+        print("Setting training and test sets")
         if not meta_data_cols:
             if my_graph.is_directed:
                 meta_data_cols = ["dst", "src"]
@@ -123,12 +123,11 @@ class GraphLearningController:
             pass
 
     def classify_by_links(self, my_graph, results_output_path, test_size,
-                          train_size, meta_data_cols=None, id_col_name="src", temp_folder=TEMP_DIR):
+                          train_size, meta_data_cols=None, id_col_name="src"):
         """Execute the vertex anomaly detection process
 
         Parameters
         ----------
-        temp_folder
         train_size
         meta_data_cols
         id_col_name

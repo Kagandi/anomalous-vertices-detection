@@ -1,5 +1,5 @@
-from abstract_graph import AbstractGraph
-from nxgraph import NxGraph
-from iggraph import IGraph
+from anomalous_vertices_detection.graphs.abstract_graph import AbstractGraph
+from anomalous_vertices_detection.graphs.nxgraph import NxGraph
+from anomalous_vertices_detection.graphs.iggraph import IGraph
 # from glgraph import GlGraph
-from gtgraph import GtGraph
+from anomalous_vertices_detection.graphs.gtgraph import GtGraph

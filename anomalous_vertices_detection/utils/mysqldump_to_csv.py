@@ -121,5 +121,5 @@ def main():
 
 
 if __name__ == "__main__":
-    print "start"
+    print("start")
     main()

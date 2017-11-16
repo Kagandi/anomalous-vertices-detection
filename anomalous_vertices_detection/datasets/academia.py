@@ -12,12 +12,12 @@ def load_data(dataset_file_name="academia.csv.gz", labels_map=None, simulate_fak
 
     if simulate_fake_vertices:
         academia_config = GraphConfig("academia_config", data_path,
-                                      is_directed=True,
+                                      is_directed=True, first_line=1,
                                       graph_type="simulation", vertex_min_edge_number=10, vertex_max_edge_number=50000)
         graph = GraphFactory().factory(academia_config, labels=labels_map, limit=limit)
     else:
         academia_config = GraphConfig("academia_config", data_path,
-                                      is_directed=True,
+                                      is_directed=True, first_line=1,
                                       graph_type="regular", vertex_min_edge_number=10, vertex_max_edge_number=50000)
         graph = GraphFactory().factory(academia_config, labels=labels_map, limit=limit)
     return graph, academia_config

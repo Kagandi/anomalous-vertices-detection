@@ -150,7 +150,7 @@ def get_last_written_id(file_path):
 
 
 if __name__ == '__main__':
-    print "start"
+    print("start")
     batch_url_extractor("twitter_nodes.csv", "fake_users.txt")
     # if len(sys.argv) == 3:
     # batch_url_extractor(sys.argv[2], sys.argv[3], 0)
@@ -165,5 +165,5 @@ if __name__ == '__main__':
     else:
         print "Error: Please enter 3 parameters"
     """
-    print "finished"
+    print("finished")
     sys.exit(1)

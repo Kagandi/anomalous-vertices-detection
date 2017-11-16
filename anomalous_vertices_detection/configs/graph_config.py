@@ -46,7 +46,7 @@ class GraphConfig(object):
 
     @property
     def first_line(self):
-        return self.first_line
+        return self._first_line
 
 
 class GraphSimConfig(GraphConfig):

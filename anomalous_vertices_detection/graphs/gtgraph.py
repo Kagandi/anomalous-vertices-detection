@@ -1,6 +1,6 @@
 from anomalous_vertices_detection.utils import utils
-import string_gtgraph as gt
 from anomalous_vertices_detection.graphs import AbstractGraph
+from anomalous_vertices_detection.graphs import string_gtgraph as gt
 
 
 class GtGraph(AbstractGraph):
@@ -69,10 +69,6 @@ class GtGraph(AbstractGraph):
         count = 0
         for edge in edges:
             count += 1
-            if count % 100000 == 0:
-                print count
-            # if count % 10000 == 0:
-            #     break
             edge = utils.extract_items_from_line(edge, ",")
             vertex1, vertex2 = self.create_edge(edge[0].strip(), edge[1].strip())
             if not self.has_edge(vertex1, vertex2) and (vertex1, vertex2) not in edge_list:
