@@ -7,11 +7,11 @@ python:
   - "3.6"
 # command to install dependencies
 install:
-  - pip freeze
   - pip install --upgrade pip
   - pip install pipenv --upgrade
   - pipenv install --dev --skip-lock
 # command to run tests
+cache: pip
 script:
   - pipenv install -e .
   - pipenv run python -m  unittest discover # or py.test for Python versions 3.5 and below
