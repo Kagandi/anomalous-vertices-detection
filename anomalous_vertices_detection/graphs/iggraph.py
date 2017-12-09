@@ -7,6 +7,7 @@ import types
 from anomalous_vertices_detection.configs.config import *
 from anomalous_vertices_detection.graphs import AbstractGraph
 from anomalous_vertices_detection.utils.utils import *
+from builtins import str
 
 
 class IGraph(AbstractGraph):
@@ -53,7 +54,7 @@ class IGraph(AbstractGraph):
                    delimiter=','):
         vetices_list = set()
         edges_list, label_list, weight_list = [], [], []
-        if isinstance(graph_path, str) or isinstance(graph_path, unicode):
+        if isinstance(graph_path, str):
             if graph_path.lower().endswith(".bz2"):
                 f = read_bz2(graph_path)
             elif graph_path.lower().endswith(".gz"):
