@@ -25,7 +25,7 @@ AUTHOR = 'Dima Kagan'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'networkx<=2.0', 'scikit-learn<=0.19.0', 'pandas<=0.20.3', 'tqdm<=4.15.0', 'numpy<=1.13.1', 'requests<=2.9.1', 'scipy<=0.19.1', 'python-louvain<=0.9'
+    'networkx>=2.0', 'scikit-learn<=0.19.0', 'pandas<=0.20.3', 'tqdm<=4.15.0', 'numpy<=1.13.1', 'requests<=2.9.1', 'scipy>=1.0', 'python-louvain<=0.9'
 ]
 
 # The rest you shouldn't have to touch too much :)
