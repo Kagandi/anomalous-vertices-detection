@@ -1,6 +1,6 @@
 # from sframe import (Edge, SArray, SFrame, SGraph, aggregate)
 try:
-    from graphlab import (Edge, SArray, SFrame, SGraph, aggregate, connected_components, pagerank,
+    from turicreate import (Edge, SArray, SFrame, SGraph, aggregate, connected_components, pagerank,
                           shortest_path)
 except ImportError:
     print("If you want to use graphlab instead of networkx please install it.")
@@ -14,6 +14,7 @@ class GlGraph(AbstractGraph):
 
     def __init__(self, is_directed=False, weight_field="", graph_obj=None):
         super(GlGraph, self).__init__(weight_field)
+        self._graph = SGraph()
         if graph_obj:
             self._graph = graph_obj.copy()
         self._is_directed = is_directed
@@ -28,7 +29,7 @@ class GlGraph(AbstractGraph):
         else:
             # load_sgraph()
             graph_path = SFrame.read_csv(graph_path, delimiter=delimiter, header=False, column_type_hints={
-                'X1': str, 'X2': str}, nrows=limit, skiprows=start_line)
+                'X1': str, 'X2': str}, nrows=limit, skiprows=start_line, verbose=False)
             if self._weight_field != "":
                 graph_path.rename({'X3': 'Weight'})
         # print graph_data
@@ -108,52 +109,58 @@ class GlGraph(AbstractGraph):
         return [x for x in shortest_paths if x != 1e30]
 
     def get_shortest_path_length(self, vertex1, vertex2):
-        shortest_paths = shortest_path.create(self._graph, vertex1, weight_field=self._weight_field)['distance']
-        path_distance = (
-            item for item in shortest_paths if item["__id"] == vertex2).next()['distance']
+        shortest_paths = shortest_path.create(self._graph, vertex1, weight_field=self._weight_field)
+        try:
+            path= shortest_paths.get_path(vid=vertex2)
+        except ValueError:
+            return 0
+        # path_distance = (
+        #     item for item in shortest_paths if item["__id"] == vertex2).next()['distance']
         # print path_distance
-        return 0 if path_distance == 1e30 else path_distance
+        return len(path) - 1
 
     #
-    # def get_subgraph(self, nodes):
-    #     # print nodes
-    #     try:
-    #         return GlGraph(self._is_directed, self._weight_field, self._graph.get_neighborhood(nodes, 0))
-    #     except RuntimeError:
-    #         return GlGraph(self._is_directed, self._weight_field)
-
-    def get_subgraph(self, ids, radius=1, full_subgraph=True):
-        verts = ids
-
-        # find the vertices within radius (and the path edges)
-        for i in range(radius):
-            edges_out = self._graph.get_edges(src_ids=verts)
-            # edges_in = self._graph.get_edges(dst_ids=verts)
-
-            verts = list(edges_out['__src_id']) + list(edges_out['__dst_id'])
-            verts = list(set(verts))
-
-        # make a new graph to return and add the vertices
-        g = SGraph()
-        g = g.add_vertices(self._graph.get_vertices(verts), vid_field='__id')
-
-        # add the requested edge set
-        if full_subgraph is True:
-            df_induced = self._graph.get_edges(src_ids=verts)
-            # induced_edge_in = self._graph.get_edges(dst_ids=verts)
-            # df_induced = induced_edge_out.append(induced_edge_in)
-            df_induced = df_induced.groupby(df_induced.column_names(), {})
-
-            verts_sa = SArray(list(ids))
-            edges = df_induced.filter_by(verts_sa, "__src_id")
-            edges.append(df_induced.filter_by(verts_sa, "__dst_id"))
-
-            g = g.add_edges(edges, src_field='__src_id', dst_field='__dst_id')
-        return GlGraph(is_directed=self.is_directed, graph_obj=g)
-
     def get_number_weakly_connected_components(self, g):
-        cc = connected_components.create(g)
-        return len(cc['component_size'])
+        cc = connected_components.create(g, verbose=False)
+        return len(cc.component_size)
+
+    # def get_subgraph(self, ids, radius=1, full_subgraph=True):
+    #     verts = ids
+    #
+    #     # find the vertices within radius (and the path edges)
+    #     for i in range(radius):
+    #         edges_out = self._graph.get_edges(src_ids=verts)
+    #         # edges_in = self._graph.get_edges(dst_ids=verts)
+    #
+    #         verts = list(edges_out['__src_id']) + list(edges_out['__dst_id'])
+    #         verts = list(set(verts))
+    #
+    #     # make a new graph to return and add the vertices
+    #     g = SGraph()
+    #     g = g.add_vertices(self._graph.get_vertices(verts), vid_field='__id')
+    #
+    #     # add the requested edge set
+    #     if full_subgraph is True:
+    #         df_induced = self._graph.get_edges(src_ids=verts)
+    #         # induced_edge_in = self._graph.get_edges(dst_ids=verts)
+    #         # df_induced = induced_edge_out.append(induced_edge_in)
+    #         df_induced = df_induced.groupby(df_induced.column_names(), {})
+    #
+    #         verts_sa = SArray(list(ids))
+    #         edges = df_induced.filter_by(verts_sa, "__src_id")
+    #         edges.append(df_induced.filter_by(verts_sa, "__dst_id"))
+    #
+    #         g = g.add_edges(edges, src_field='__src_id', dst_field='__dst_id')
+    #     return GlGraph(is_directed=self.is_directed, graph_obj=g)
+
+    def get_subgraph(self, nodes):
+        # print nodes
+        # subgraph = g.get_neighborhood(ids=[1, 7], radius=2,
+        #                               full_subgraph=True)
+        try:
+            return GlGraph(self._is_directed, self._weight_field, self._graph.get_neighborhood(nodes, 0))
+        except RuntimeError:
+            return GlGraph(self._is_directed, self._weight_field)
 
     def get_node_wcc_number(self, node):
         neighborhood_subgraph = self.get_neighborhoods_subgraph(node)
