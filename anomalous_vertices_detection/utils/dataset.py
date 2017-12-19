@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 try:
-    import graphlab as gl
+    import turicreate as tc
 except ImportError:
     gl = None
 
@@ -98,7 +98,7 @@ class DataSetFactory(object):
         if not metadata_cols:
             metadata_cols = []
         if utils.is_valid_path(features):
-            features = gl.SFrame.read_csv(features, column_type_hints={feature_id_col_name: str, "dst": str})
+            features = tc.SFrame.read_csv(features, column_type_hints={feature_id_col_name: str, "dst": str})
         elif isinstance(features[0], dict):
             features = pd.DataFrame(features)
         if feature_id_col_name:
@@ -109,7 +109,8 @@ class DataSetFactory(object):
                 temp_metadata_cols.append(col)
         features = features.remove_columns(temp_metadata_cols)
         if 'label' not in features.column_names():
-            features.rename({labels: 'label'})
+            features = features.rename({labels: 'label'})
             if labels_map:
+                print(features)
                 features["label"] = features["label"] == labels_map["pos"]
         return DataSet(features, 'label', features_id)
