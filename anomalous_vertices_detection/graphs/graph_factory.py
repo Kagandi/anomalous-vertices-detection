@@ -11,7 +11,6 @@ from anomalous_vertices_detection.samplers.graph_sampler import GraphSampler
 
 from tqdm import tqdm
 
-
 def get_graph(package="Networkx"):
     packages = dict(Networkx=NxGraph,
                     GraphLab=GlGraph,
@@ -194,7 +193,7 @@ class GraphFactory(object):
                 A graph object with the randomly generated nodes.
         """
         print("Generating " + str(random_vertices_number) + " vertices.")
-        graph_vertices = graph.vertices
+        graph_vertices = list(graph.vertices)
         for i, followers_neighbors_number in tqdm(enumerate(
                 GraphSampler.sample_vertices_by_degree_distribution(graph, random_vertices_number)),
                 total=random_vertices_number, unit=" simulated vertices"):
