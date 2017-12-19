@@ -1,16 +1,16 @@
 from anomalous_vertices_detection.feature_extractor import FeatureExtractor
-from anomalous_vertices_detection.graphs import IGraph
+from anomalous_vertices_detection.graphs import GlGraph
 import os
 import unittest
 
 
-class ExtractorIgraphTest(unittest.TestCase):
+class ExtractorSgraphTest(unittest.TestCase):
     def setUp(self):
+        self._graph = GlGraph(False)
         tests_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        tests_input = os.path.join(tests_path, u"input/test1.txt")
-        self._graph = IGraph(False)
+        tests_input = os.path.join(tests_path, "input/test1.txt")
         self._graph.load_graph(tests_input, start_line=0)
-        self._digraph = IGraph(True)
+        self._digraph = GlGraph(True)
         self._digraph.load_graph(tests_input, start_line=0)
         self._fe = FeatureExtractor(self._graph)
         self._dife = FeatureExtractor(self._digraph)
@@ -84,30 +84,30 @@ class ExtractorIgraphTest(unittest.TestCase):
     def test_is_opposite_direction_friends(self):
         self.assertEqual(self._dife.is_opposite_direction_friends("1", "4"), 0)
         self.assertEqual(self._dife.is_opposite_direction_friends("1", "3"), 1)
-        #
-        # def test_average_scc(self):
-        #     self.assertEqual(self._dife.get_average_scc("1"), float(4) / float(3))
 
-        # def test_average_scc_plus(self):
-        #     self.assertEqual(self._dife.get_average_scc_plus("1"), 2)
-
-        # def test_average_wcc(self):
-        #     self.assertEqual(self._dife.get_average_wcc("1"), 4)
-        #
-        # def test_scc_number(self):
-        #     self.assertEqual(self._dife.get_scc_number("1", "4"), 4)
-        #
-        # def test_scc_number_plus(self):
-        #     self.assertEqual(self._dife.get_scc_number_plus("1", "4"), 4)
-
-        # def test_wcc_number(self):
-        #     self.assertEqual(self._dife.get_wcc_number("1", "4"), 1)
-        #
-        # def test_inner_subgraph_scc_number(self):
-        #     self.assertEqual(self._dife.get_inner_subgraph_scc_number("1", "4"), 4)
-        #
-        # def test_inner_subgraph_wcc_number(self):
-        #     self.assertEqual(self._dife.get_inner_subgraph_wcc_number("1", "4"), 1)
+    # def test_average_scc(self):
+    #     self.assertEqual(self._dife.get_average_scc("1"), float(4) / float(3))
+    #
+    # def test_average_scc_plus(self):
+    #     self.assertEqual(self._dife.get_average_scc_plus("1"), 2)
+    #
+    def test_average_wcc(self):
+        self.assertEqual(self._dife.get_average_wcc("1"), 4)
+    #
+    # def test_scc_number(self):
+    #     self.assertEqual(self._dife.get_scc_number("1", "4"), 4)
+    #
+    # def test_scc_number_plus(self):
+    #     self.assertEqual(self._dife.get_scc_number_plus("1", "4"), 4)
+    #
+    def test_wcc_number(self):
+        self.assertEqual(self._dife.get_wcc_number("1", "4"), 1)
+    #
+    # def test_inner_subgraph_scc_number(self):
+    #     self.assertEqual(self._dife.get_inner_subgraph_scc_number("1", "4"), 4)
+    #
+    def test_inner_subgraph_wcc_number(self):
+        self.assertEqual(self._dife.get_inner_subgraph_wcc_number("1", "4"), 1)
 
 
 if __name__ == '__main__':
