@@ -2,6 +2,7 @@ from anomalous_vertices_detection.configs.config import *
 import anomalous_vertices_detection.utils.utils as utils
 import collections
 import types
+from past.builtins import basestring
 
 
 class AbstractGraph(object):
@@ -72,7 +73,7 @@ class AbstractGraph(object):
         -------
 
         """
-        if isinstance(graph_path, str) or isinstance(graph_path, unicode):
+        if isinstance(graph_path, basestring):
             if graph_path.lower().endswith(".bz2"):
                 f = utils.read_bz2(graph_path)
             elif graph_path.lower().endswith(".gz"):

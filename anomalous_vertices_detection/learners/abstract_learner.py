@@ -1,4 +1,7 @@
 import abc
+import numpy as np
+from sklearn.model_selection import StratifiedKFold
+from anomalous_vertices_detection.utils.dataset import DataSetFactory, DataSet
 
 
 class AbstractLearner(object):
@@ -79,7 +82,7 @@ class AbstractLearner(object):
         """
         pass
 
-    def split_kfold(self, data, labels=None, n_folds=10):
+    def split_kfold(self, features, labels=None, n_folds=10):
         """Return cross validation results dictionary
 
         Parameters
@@ -94,7 +97,9 @@ class AbstractLearner(object):
         Dict
             Dict contains the AUC
         """
-        pass
+        skf = StratifiedKFold(n_folds)
+        for train_index, test_index in skf.split(features, labels):
+            yield train_index, test_index
 
     def get_evaluation(self, data):
         """Run evaluation function on provided data.
@@ -110,4 +115,7 @@ class AbstractLearner(object):
             evaluation metric (e.g. `accuracy`) and the value is the evaluation
             score.
         """
+        pass
+
+    def cross_validate(self, dataset, n_folds=10):
         pass

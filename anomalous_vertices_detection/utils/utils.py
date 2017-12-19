@@ -90,15 +90,25 @@ def read_file(path):
 
 
 def read_bz2(path):
-    with bz2.BZ2File(path, "rt") as f:
-        for line in f:
-            yield line
+    try:
+        with bz2.BZ2File(path, "rt") as f:
+            for line in f:
+                yield line
+    except ValueError:
+        with bz2.BZ2File(path, "r") as f:
+            for line in f:
+                yield line
 
 
 def read_gzip(path):
-    with gzip.open(path, "rt") as f:
-        for line in f:
-            yield line
+    try:
+        with gzip.open(path, "rt") as f:
+            for line in f:
+                yield line
+    except ValueError:
+        with gzip.open(path, "r") as f:
+            for line in f:
+                yield line
 
 
 def append_to_file(data, path):
@@ -194,8 +204,11 @@ def dict_writer(mydict, output_path, mode='wb'):
 
 
 def is_valid_path(path):
-    if (isinstance(path, str) or isinstance(path, str)) and os.path.exists(path):
-        return True
+    try:
+        if os.path.exists(path):
+            return True
+    except:
+        return False
     return False
 
 

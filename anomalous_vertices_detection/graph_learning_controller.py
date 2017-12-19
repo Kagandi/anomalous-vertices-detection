@@ -7,7 +7,7 @@ from anomalous_vertices_detection.utils import utils
 from anomalous_vertices_detection.configs.config import TEMP_DIR
 import os
 try:
-    from graphlab import SFrame
+    from turicreate import SFrame
     is_graphlab_installed = True
 except ImportError:
     is_graphlab_installed = False
