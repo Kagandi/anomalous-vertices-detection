@@ -6,7 +6,7 @@ import numpy as np
 from networkx.classes.reportviews import OutEdgeView, EdgeView, NodeView
 
 from anomalous_vertices_detection.graphs import AbstractGraph
-from anomalous_vertices_detection.utils.graphlab_utils import load_nxgraph_from_sgraph, save_nx_as_sgraph
+from anomalous_vertices_detection.utils.turi_utils import load_nxgraph_from_sgraph, save_nx_as_sgraph
 from anomalous_vertices_detection.utils.utils import *
 from itertools import islice
 

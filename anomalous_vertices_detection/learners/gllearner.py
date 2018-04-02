@@ -1,7 +1,8 @@
 import turicreate as tc
 from itertools import izip
 import numpy as np
-
+from anomalous_vertices_detection.utils.turi_utils import split_stratified_kfold, get_classification_metrics, \
+    cross_validate
 from anomalous_vertices_detection.learners import AbstractLearner
 from anomalous_vertices_detection.utils.dataset import DataSetFactory, DataSet
 from anomalous_vertices_detection.utils.exceptions import *
@@ -46,36 +47,6 @@ class GlLearner(AbstractLearner):
     def get_prediction_probabilities(self, prediction_data):
         # print self.get_evaluation(prediction_data)
         return self._classifier.predict(prediction_data.features, output_type='probability')
-
-    def split_kfold(self, data, labels=None, n_folds=10):
-        pos_data = data[data["label"] == 0]
-        neg_data = data[data["label"] == 1]
-        pos_split = np.arange(pos_data.num_rows())
-        neg_split = np.arange(neg_data.num_rows())
-        np.random.shuffle(pos_split)
-        np.random.shuffle(neg_split)
-        pos_split = np.array_split(pos_split, n_folds)
-        neg_split = np.array_split(neg_split, n_folds)
-        neg_split_copy = np.copy(neg_split)
-        pos_split_copy = np.copy(pos_split)
-        for i, item in enumerate(izip(neg_split, pos_split)):
-            neg_item, pos_item = item
-            pos_split_copy = np.delete(pos_split_copy, i, 0)
-            neg_split_copy = np.delete(neg_split_copy, i, 0)
-            yield np.hstack(pos_split_copy + neg_split_copy), neg_item + pos_item
-            pos_split_copy = np.insert(pos_split_copy, i, pos_item, axis=0)
-            neg_split_copy = np.insert(neg_split_copy, i, neg_item, axis=0)
-
-    def split_k(self, data, n_folds=10):
-        x = np.arange(data.num_rows())
-        np.random.shuffle(x)
-        split = np.array_split(x, n_folds)
-        split_copy = np.copy(split)
-        for i, item in enumerate(split):
-            temp = item
-            split_copy = np.delete(split_copy, i, 0)
-            yield np.hstack(split_copy), item
-            split_copy = np.insert(split_copy, i, item, axis=0)
 
     def classify_by_links_probability(self, probas, features_ids, labels=None, threshold=0.78):
         """
@@ -132,44 +103,27 @@ class GlLearner(AbstractLearner):
                 "auc": auc
                 }
 
-    # def cross_validate(self, dataset, n_folds=10):
-    #     folds = self.split_kfold(dataset.features, n_folds)
-    #     params = {'target': dataset.labels}
-    #     job = tc.cross_validation.cross_val_score(folds,
-    #                                               self._base_classifier,
-    #                                               params)
-    #     res = job.get_results()["summary"]
-    #     return {"validation_accuracy": res["validation_accuracy"].mean(),
-    #             "training_accuracy": res["training_accuracy"].mean()}
-
-    def get_classification_metrics(self, l_test, prediction, probas):
-        # fpr, tpr, thresholds = roc_curve(l_test, prediction)
-        false_positive = float(
-            len(np.where(l_test - prediction == -1)[0]))  # 0 (truth) - 1 (prediction) == -1 which is a false positive
-        true_negative = float(
-            len(np.where(l_test + prediction == 0)[0]))  # 0 (truth) - 0 (prediction) == 0 which is a true positive
-        return {"fpr": false_positive / (true_negative + false_positive),
-                "tnr": true_negative / (true_negative + false_positive)
-                }
-
     def cross_validate(self, dataset, n_folds=10):
-        roc_auc, recall, precision, accuracy, fpr, tpr, tnr = [], [], [], [], [], [], []
-        dataset.features['id'] = range(dataset.features.num_rows())
-        for train_index, test_index in self.split_kfold(dataset.features, dataset.labels, n_folds):
-            f_train, f_test = DataSet(dataset.features.filter_by(train_index, 'id'), 'label'), DataSet(
-                dataset.features.filter_by(test_index, 'id'), 'label')
-            # l_train, l_test = dataset.labels.filter_by(train_index, 'id'), dataset.labels.filter_by(test_index, 'id')
+        folds = self.split_kfold(dataset.features, n_folds)
+        params = {'target': dataset.labels}
+        return cross_validate(folds,
+                             self._base_classifier,
+                             params)
 
-            # l_train, l_test = dataset.labels[train_index], dataset.labels[test_index]
-            # prediction = self.train_classifier(DataSet(f_train, l_train)).predict(f_test)
-            cross_val = self.set_randomforest_classifier()
-            prediction = cross_val.train_classifier(f_train).get_prediction(f_test)
-            probas = cross_val.get_prediction_probabilities(f_test)
-            metrics = cross_val.get_classification_metrics(f_test.features['label'], prediction, probas)
-            fpr.append(metrics["fpr"])
-            tnr.append(metrics["tnr"])
-        # return {"auc": np.mean(roc_auc)}
-        # print classification_report(l_test, prediction)
-        # print "Predicted: 0   1"
-        # print confusion_matrix(l_test, prediction)
-        return {"fpr": np.mean(fpr), "tnr": np.mean(tnr)}
+    # def cross_validate(self, dataset, n_folds=10):
+    #     roc_auc, recall, precision, accuracy, fpr, tpr, tnr = [], [], [], [], [], [], []
+    #     for train, test in split_stratified_kfold(dataset.features, n_folds=n_folds):
+    #         f_train, f_test = DataSet(train, 'label'), DataSet(test, 'label')
+    #         # l_train, l_test = dataset.labels.filter_by(train_index, 'id'), dataset.labels.filter_by(test_index, 'id')
+    #
+    #         # l_train, l_test = dataset.labels[train_index], dataset.labels[test_index]
+    #         # prediction = self.train_classifier(DataSet(f_train, l_train)).predict(f_test)
+    #         cross_val = self.set_randomforest_classifier()
+    #         prediction = cross_val.train_classifier(f_train).get_prediction(f_test)
+    #         # probas = cross_val.get_prediction_probabilities(f_test)
+    #         metrics = cross_val.get_classification_metrics(f_test.features['label'], prediction)
+    #         recall.append(metrics["recall"])
+    #         precision.append(metrics["precision"])
+    #         accuracy.append(metrics["accuracy"])
+    #         roc_auc.append(metrics["auc"])
+    #     return {"auc": np.mean(roc_auc), "accuracy": np.mean(accuracy), "precision": np.mean(precision), "recall": np.mean(recall)}
