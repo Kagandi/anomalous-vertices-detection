@@ -44,15 +44,15 @@ events, make lists, and talk with other Yelpers.
 In 2016 Yelp published several big datasets as part of the Yelp Dataset Challenge; one is a social network of its users. [[Source][20]]
 
 
-[1]: http://proj.ise.bgu.ac.il/sns/datasets/academia.csv.gz
+[1]: https://drive.google.com/file/d/16K1QrjM98B6Rj1qQv1YmllZfMBc5Hfq0/view?usp=sharing
 [2]: http://proj.ise.bgu.ac.il/sns/datasets/Cit-HepPh.txt.csv.gz
 [3]: http://proj.ise.bgu.ac.il/sns/datasets/Relationship_patterns_in_the_19th_century.csv
 [4]: http://proj.ise.bgu.ac.il/sns/datasets/dblp_coauthorship.csv.csv.gz
 [5]: http://proj.ise.bgu.ac.il/sns/datasets/flixster.csv.gz
-[6]: http://proj.ise.bgu.ac.il/sns/datasets/twitter.csv.gz
+[6]: https://drive.google.com/file/d/1lWTlzwBJqFFRxlHNsr4E2bDQ8ko95HcZ/view?usp=sharing
 [7]: http://proj.ise.bgu.ac.il/sns/datasets/yelp_user_graph.csv.csv.gz
 [8]: http://proj.ise.bgu.ac.il/sns/datasets/Relationship_patterns_labels.csv
-[9]: http://proj.ise.bgu.ac.il/sns/datasets/twitter_fake_ids.csv
+[9]: https://drive.google.com/file/d/1lWTlzwBJqFFRxlHNsr4E2bDQ8ko95HcZ/view?usp=sharing
 [10]: https://www.academia.edu/
 [11]: https://arxiv.org
 [12]: http://www.sciencedirect.com/science/article/pii/S0378873313000865
