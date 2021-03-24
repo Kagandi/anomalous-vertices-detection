@@ -45,13 +45,13 @@ In 2016 Yelp published several big datasets as part of the Yelp Dataset Challeng
 
 
 [1]: https://drive.google.com/file/d/16K1QrjM98B6Rj1qQv1YmllZfMBc5Hfq0/view?usp=sharing
-[2]: http://proj.ise.bgu.ac.il/sns/datasets/Cit-HepPh.txt.csv.gz
-[3]: http://proj.ise.bgu.ac.il/sns/datasets/Relationship_patterns_in_the_19th_century.csv
-[4]: http://proj.ise.bgu.ac.il/sns/datasets/dblp_coauthorship.csv.csv.gz
-[5]: http://proj.ise.bgu.ac.il/sns/datasets/flixster.csv.gz
+[2]: https://drive.google.com/file/d/1-CMLs8PdOByMKtf8scq05tv49yoNZnHW/view?usp=sharing
+[3]: https://drive.google.com/file/d/1koc1pMxj8WXMhTGUw8DLyKQBmRq-KBte/view?usp=sharing
+[4]: https://drive.google.com/file/d/1zzTdF5NfgT5Fao6mItOS1ARxMqdLMu6L/view?usp=sharing
+[5]: https://drive.google.com/file/d/1zzTdF5NfgT5Fao6mItOS1ARxMqdLMu6L/view?usp=sharing
 [6]: https://drive.google.com/file/d/1lWTlzwBJqFFRxlHNsr4E2bDQ8ko95HcZ/view?usp=sharing
-[7]: http://proj.ise.bgu.ac.il/sns/datasets/yelp_user_graph.csv.csv.gz
-[8]: http://proj.ise.bgu.ac.il/sns/datasets/Relationship_patterns_labels.csv
+[7]: https://drive.google.com/file/d/1TMTD6jYolynZSIf3L2dwyCIv94lPTIbI/view?usp=sharing
+[8]: https://drive.google.com/file/d/1dqARB4dGm7W_9sJw8BmDtqZaJoFxvIwU/view?usp=sharing
 [9]: https://drive.google.com/file/d/1lWTlzwBJqFFRxlHNsr4E2bDQ8ko95HcZ/view?usp=sharing
 [10]: https://www.academia.edu/
 [11]: https://arxiv.org
