@@ -44,15 +44,15 @@ events, make lists, and talk with other Yelpers.
 In 2016 Yelp published several big datasets as part of the Yelp Dataset Challenge; one is a social network of its users. [[Source][20]]
 
 
-[1]: https://drive.google.com/file/d/16K1QrjM98B6Rj1qQv1YmllZfMBc5Hfq0/view?usp=sharing
-[2]: https://drive.google.com/file/d/1-CMLs8PdOByMKtf8scq05tv49yoNZnHW/view?usp=sharing
-[3]: https://drive.google.com/file/d/1koc1pMxj8WXMhTGUw8DLyKQBmRq-KBte/view?usp=sharing
-[4]: https://drive.google.com/file/d/1zzTdF5NfgT5Fao6mItOS1ARxMqdLMu6L/view?usp=sharing
-[5]: https://drive.google.com/file/d/1zzTdF5NfgT5Fao6mItOS1ARxMqdLMu6L/view?usp=sharing
-[6]: https://drive.google.com/file/d/1lWTlzwBJqFFRxlHNsr4E2bDQ8ko95HcZ/view?usp=sharing
-[7]: https://drive.google.com/file/d/1TMTD6jYolynZSIf3L2dwyCIv94lPTIbI/view?usp=sharing
-[8]: https://drive.google.com/file/d/1dqARB4dGm7W_9sJw8BmDtqZaJoFxvIwU/view?usp=sharing
-[9]: https://drive.google.com/file/d/1lWTlzwBJqFFRxlHNsr4E2bDQ8ko95HcZ/view?usp=sharing
+[1]: https://drive.google.com/file/d/1JsDCB0XDbld__NPPkAHMYtKPuj7BL3p0/view?usp=share_link
+[2]: https://drive.google.com/file/d/1HYyCJSlX6aE3io7k2iUG6TgOp1NXR6g8/view?usp=share_link
+[3]: https://drive.google.com/file/d/1uCTlkcJUFuyWeQvX-Mwj9T5rdnCOOlpK/view?usp=share_link
+[4]: https://drive.google.com/file/d/19U6Gb7P18WsHidD0mtg7TyC_CPb07aSf/view?usp=share_link
+[5]: https://drive.google.com/file/d/1q7ynTxxn0QrTUxYWgkRQpQM64iuUV3pY/view?usp=share_link
+[6]: https://drive.google.com/file/d/1IrF_Vx38ZmZSGhwaZw9MqctindNRQ5bp/view?usp=share_link
+[7]: https://drive.google.com/file/d/155dpG145huGf_gWfMp4YJD181wIev4wx/view?usp=share_link
+[8]: https://drive.google.com/file/d/1AMKatYzDrpfgv52w8Mzz__L73KEIWqsb/view?usp=share_link
+[9]: https://drive.google.com/file/d/13oWysQS6PakSgf56ffZXfyf0ombvS9dL/view?usp=share_link
 [10]: https://www.academia.edu/
 [11]: https://arxiv.org
 [12]: http://www.sciencedirect.com/science/article/pii/S0378873313000865
